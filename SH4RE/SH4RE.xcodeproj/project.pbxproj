@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		124EAF532914363F00CCB9EE /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 124EAF522914363F00CCB9EE /* FirebaseFirestore */; };
+		124EAF5B29144C3400CCB9EE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 124EAF5A29144C3400CCB9EE /* GoogleService-Info.plist */; };
 		5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D35D29132D7000866FA5 /* SH4REApp.swift */; };
 		5939D36029132D7000866FA5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D35F29132D7000866FA5 /* ContentView.swift */; };
 		5939D36229132D7200866FA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5939D36129132D7200866FA5 /* Assets.xcassets */; };
@@ -35,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		124EAF5A29144C3400CCB9EE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5939D35A29132D7000866FA5 /* SH4RE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SH4RE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5939D35D29132D7000866FA5 /* SH4REApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SH4REApp.swift; sourceTree = "<group>"; };
 		5939D35F29132D7000866FA5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -54,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				124EAF532914363F00CCB9EE /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +81,7 @@
 		5939D35129132D7000866FA5 = {
 			isa = PBXGroup;
 			children = (
+				124EAF5A29144C3400CCB9EE /* GoogleService-Info.plist */,
 				5939D35C29132D7000866FA5 /* SH4RE */,
 				5939D36E29132D7200866FA5 /* SH4RETests */,
 				5939D37829132D7200866FA5 /* SH4REUITests */,
@@ -148,6 +153,9 @@
 			dependencies = (
 			);
 			name = SH4RE;
+			packageProductDependencies = (
+				124EAF522914363F00CCB9EE /* FirebaseFirestore */,
+			);
 			productName = SH4RE;
 			productReference = 5939D35A29132D7000866FA5 /* SH4RE.app */;
 			productType = "com.apple.product-type.application";
@@ -220,6 +228,9 @@
 				Base,
 			);
 			mainGroup = 5939D35129132D7000866FA5;
+			packageReferences = (
+				124EAF512914363F00CCB9EE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 5939D35B29132D7000866FA5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -238,6 +249,7 @@
 			files = (
 				5939D36629132D7200866FA5 /* Preview Assets.xcassets in Resources */,
 				5939D36229132D7200866FA5 /* Assets.xcassets in Resources */,
+				124EAF5B29144C3400CCB9EE /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -608,6 +620,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		124EAF512914363F00CCB9EE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		124EAF522914363F00CCB9EE /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 124EAF512914363F00CCB9EE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5939D35229132D7000866FA5 /* Project object */;
 }
