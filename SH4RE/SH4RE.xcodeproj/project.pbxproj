@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		124EAF532914363F00CCB9EE /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 124EAF522914363F00CCB9EE /* FirebaseFirestore */; };
-		124EAF5B29144C3400CCB9EE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 124EAF5A29144C3400CCB9EE /* GoogleService-Info.plist */; };
 		5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D35D29132D7000866FA5 /* SH4REApp.swift */; };
 		5939D36029132D7000866FA5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D35F29132D7000866FA5 /* ContentView.swift */; };
 		5939D36229132D7200866FA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5939D36129132D7200866FA5 /* Assets.xcassets */; };
@@ -17,6 +16,7 @@
 		5939D37A29132D7200866FA5 /* SH4REUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D37929132D7200866FA5 /* SH4REUITests.swift */; };
 		5939D37C29132D7200866FA5 /* SH4REUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D37B29132D7200866FA5 /* SH4REUITestsLaunchTests.swift */; };
 		5939D38929132D8500866FA5 /* FirebaseDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D38829132D8500866FA5 /* FirebaseDB.swift */; };
+		59E1DD1E292047D900A75E6E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 59E1DD1D292047D900A75E6E /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +37,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		124EAF5A29144C3400CCB9EE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5939D35A29132D7000866FA5 /* SH4RE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SH4RE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5939D35D29132D7000866FA5 /* SH4REApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SH4REApp.swift; sourceTree = "<group>"; };
 		5939D35F29132D7000866FA5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -50,6 +49,7 @@
 		5939D37929132D7200866FA5 /* SH4REUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SH4REUITests.swift; sourceTree = "<group>"; };
 		5939D37B29132D7200866FA5 /* SH4REUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SH4REUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		5939D38829132D8500866FA5 /* FirebaseDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDB.swift; sourceTree = "<group>"; };
+		59E1DD1D292047D900A75E6E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +81,7 @@
 		5939D35129132D7000866FA5 = {
 			isa = PBXGroup;
 			children = (
-				124EAF5A29144C3400CCB9EE /* GoogleService-Info.plist */,
+				59E1DD1D292047D900A75E6E /* GoogleService-Info.plist */,
 				5939D35C29132D7000866FA5 /* SH4RE */,
 				5939D36E29132D7200866FA5 /* SH4RETests */,
 				5939D37829132D7200866FA5 /* SH4REUITests */,
@@ -249,7 +249,7 @@
 			files = (
 				5939D36629132D7200866FA5 /* Preview Assets.xcassets in Resources */,
 				5939D36229132D7200866FA5 /* Assets.xcassets in Resources */,
-				124EAF5B29144C3400CCB9EE /* GoogleService-Info.plist in Resources */,
+				59E1DD1E292047D900A75E6E /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
