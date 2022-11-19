@@ -11,4 +11,5 @@ Required Tools:
 ```
 - GitHub CLI
     - `brew install gh`
-    - Once installed, login to your github account using `gh auth login` and following the prompts. Note: it is easiest to login using HTTPS via a web browser. 
+    - Once installed, login to your github account using `gh auth login` and following the prompts. Note: it is easiest to login using HTTPS via a web browser.
+- All image icon assets are already downloaded as part of Xcode, to view the full list of these assets you have to download Apple's MacOS app [here](https://developer.apple.com/sf-symbols/). 
