@@ -7,22 +7,23 @@
 
 import Foundation
 import Firebase
-
+import FirebaseStorage
+import SwiftUI
 
 //Writes new document to collection assigns it a random unique ID
-func documentWrite(collectionPath : String, data:Dictionary<String,Any>) -> Bool{
-    var writeSucess : Bool = false
+func documentWrite(collectionPath : String, data:Dictionary<String,Any>) -> String{
     let db = Firestore.firestore()
-    db.collection(collectionPath).addDocument(data:data)
+    let ref = db.collection(collectionPath).document()
+    let id = ref.documentID
+    ref.setData(data)
     { err in
         if let err = err {
             print("Error writing document: \(err)")
         }else{
             print("Document sucessfully written")
-            writeSucess = true
         }
     }
-    return writeSucess
+    return id
 }
 
 //Modifies documents data, creates document if not yet created
@@ -101,4 +102,45 @@ func collectionRead(collectionPath : String, completion: @escaping ((QuerySnapsh
         }
     }
     return
+}
+
+extension UIImage {
+    func aspectFittedToHeight(_ newHeight: CGFloat) -> UIImage {
+        let scale = newHeight / self.size.height
+        let newWidth = self.size.width * scale
+        let newSize = CGSize(width: newWidth, height: newHeight)
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: newSize))
+        }
+    }
+}
+
+public class StorageManager: ObservableObject {
+    let storage = Storage.storage()
+    
+    func upload(image: UIImage, path: String) {
+        // Create a storage reference
+        let storageRef = storage.reference().child(path)
+        
+        // Resize the image to 200px with a custom extension
+        let resizedImage = image.aspectFittedToHeight(200)
+        
+        // Convert the image into JPEG and compress the quality to reduce its size
+        let data = resizedImage.jpegData(compressionQuality: 0.2)
+        
+        // Change the content type to jpg. If you don't, it'll be saved as application/octet-stream type
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpg"
+        
+        // Upload the image
+        if let data = data {
+            storageRef.putData(data, metadata: metadata) { (metadata, error) in
+                if let error = error {
+                    print("Error while uploading file: ", error)
+                }
+            }
+        }
+    }
 }
