@@ -9,7 +9,12 @@ import SwiftUI
 
 struct ViewListingView: View {
     var body: some View {
-        Text("View Listing")
+        ZStack {
+            Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
+            VStack {
+                Text("View Listing View")
+            }
+        }
     }
 }
 

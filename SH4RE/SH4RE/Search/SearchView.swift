@@ -12,12 +12,13 @@ struct SearchView: View {
 
     
     var body: some View {
-        ZStack {
-            Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
-            NavigationView {
+        NavigationView {
+            ZStack {
+                Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
                 VStack {
+                    Text("Search View")
                     NavigationLink(destination: ViewListingView()) {
-                        Text("View Listing")
+                        Text("See Listing")
                     }
                 }
             }
