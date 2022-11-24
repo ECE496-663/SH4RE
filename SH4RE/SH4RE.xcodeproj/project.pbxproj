@@ -23,6 +23,8 @@
 		9D080589292FE85900094169 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D080588292FE85900094169 /* MessagesView.swift */; };
 		9D080590292FE9D900094169 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D08058F292FE9D900094169 /* Account.swift */; };
 		9D080594292FE9F400094169 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D080593292FE9F400094169 /* AccountView.swift */; };
+		9D080596292FF43800094169 /* ViewListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D080595292FF43800094169 /* ViewListingView.swift */; };
+		9D080598292FF44200094169 /* ViewListing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D080597292FF44200094169 /* ViewListing.swift */; };
 		D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C03D29280D0600E83142 /* CreateListingView.swift */; };
 		D119C04029281B0500E83142 /* CreatingListing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C03F29281B0400E83142 /* CreatingListing.swift */; };
 		D119C04229281DBA00E83142 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C04129281DBA00E83142 /* HomeView.swift */; };
@@ -67,6 +69,8 @@
 		9D080588292FE85900094169 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		9D08058F292FE9D900094169 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		9D080593292FE9F400094169 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
+		9D080595292FF43800094169 /* ViewListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewListingView.swift; sourceTree = "<group>"; };
+		9D080597292FF44200094169 /* ViewListing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewListing.swift; sourceTree = "<group>"; };
 		D119C03D29280D0600E83142 /* CreateListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
 		D119C03F29281B0400E83142 /* CreatingListing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingListing.swift; sourceTree = "<group>"; };
 		D119C04129281DBA00E83142 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -132,8 +136,9 @@
 				9D08058A292FE94100094169 /* Home */,
 				9D08058B292FE96A00094169 /* CreateListing */,
 				5939D36429132D7200866FA5 /* Preview Content */,
-				5939D38829132D8500866FA5 /* FirebaseDB.swift */,
+				9D080599292FF48200094169 /* ViewListing */,
 				D119C0472928313700E83142 /* ImagePicker.swift */,
+				5939D38829132D8500866FA5 /* FirebaseDB.swift */,
 				5939D36129132D7200866FA5 /* Assets.xcassets */,
 				5939D36329132D7200866FA5 /* SH4RE.entitlements */,
 			);
@@ -208,6 +213,15 @@
 				9D080593292FE9F400094169 /* AccountView.swift */,
 			);
 			path = Account;
+			sourceTree = "<group>";
+		};
+		9D080599292FF48200094169 /* ViewListing */ = {
+			isa = PBXGroup;
+			children = (
+				9D080597292FF44200094169 /* ViewListing.swift */,
+				9D080595292FF43800094169 /* ViewListingView.swift */,
+			);
+			path = ViewListing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -348,6 +362,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D119C04029281B0500E83142 /* CreatingListing.swift in Sources */,
+				9D080598292FF44200094169 /* ViewListing.swift in Sources */,
 				9D080590292FE9D900094169 /* Account.swift in Sources */,
 				9D080583292FE62200094169 /* SearchView.swift in Sources */,
 				5939D38929132D8500866FA5 /* FirebaseDB.swift in Sources */,
@@ -357,6 +372,7 @@
 				5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */,
 				9D080587292FE84D00094169 /* Messages.swift in Sources */,
 				D119C0482928313700E83142 /* ImagePicker.swift in Sources */,
+				9D080596292FF43800094169 /* ViewListingView.swift in Sources */,
 				9D080589292FE85900094169 /* MessagesView.swift in Sources */,
 				9D080585292FE63C00094169 /* Search.swift in Sources */,
 				D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */,

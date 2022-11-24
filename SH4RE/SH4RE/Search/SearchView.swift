@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct SearchView: View {
+    let screenSize: CGRect = UIScreen.main.bounds
+
+    
     var body: some View {
         ZStack {
             Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
-            VStack {
-                Text("Search View")
+            NavigationView {
+                VStack {
+                    NavigationLink(destination: ViewListingView()) {
+                        Text("View Listing")
+                    }
+                }
             }
         }
     }
