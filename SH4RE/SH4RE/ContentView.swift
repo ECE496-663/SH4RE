@@ -19,6 +19,10 @@ struct ContentView: View {
                     .tabItem {
                         Label("Home", systemImage: "house.fill")
                     }
+                SearchView()
+                    .tabItem {
+                        Label("Search", systemImage: "safari.fill")
+                    }
                 CreateListingView()
                     .tabItem {
                         Label("Post", systemImage: "plus.square.fill")
