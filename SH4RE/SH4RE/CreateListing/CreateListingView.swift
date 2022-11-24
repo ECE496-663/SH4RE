@@ -23,7 +23,7 @@ struct CreateListingView: View {
     
     var body: some View {
         ZStack {
-            Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
+            Color("BackgroundGrey").ignoresSafeArea()
             VStack {
                 Text("Create a new listing")
                 
@@ -61,10 +61,10 @@ struct CreateListingView: View {
                     VStack{
                         HStack{
                             Text(drop_down_selection.isEmpty ? drop_down_placeholder : drop_down_selection)
-                                .foregroundColor(drop_down_selection.isEmpty ? Color.init(UIColor(named: "TextFieldInputDefault")!) : .black)
+                                .foregroundColor(drop_down_selection.isEmpty ? Color("TextGrey") : Color("Black"))
                             Spacer()
                             Image(systemName: "arrowtriangle.left.fill")
-                                .foregroundColor(Color.init(UIColor(named: "DarkGrey")!))
+                                .foregroundColor(Color("TextGrey"))
                         }
                         .frame(width: screenSize.width * 0.9, height: 30)
                         .background(.white)

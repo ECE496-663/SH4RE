@@ -11,7 +11,7 @@ import SwiftUI
 struct HomeView: View {
     var body: some View {
         ZStack {
-            Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
+            Color("BackgroundGrey").ignoresSafeArea()
             VStack {
                 Text("Home View")
             }

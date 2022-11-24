@@ -10,7 +10,7 @@ import SwiftUI
 struct MessagesView: View {
     var body: some View {
         ZStack {
-            Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
+            Color("BackgroundGrey").ignoresSafeArea()
             VStack {
                 Text("Messages View")
             }

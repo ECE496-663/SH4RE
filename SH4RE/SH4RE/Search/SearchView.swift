@@ -14,7 +14,7 @@ struct SearchView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
+                Color("BackgroundGrey").ignoresSafeArea()
                 VStack {
                     Text("Search View")
                     NavigationLink(destination: ViewListingView()) {
