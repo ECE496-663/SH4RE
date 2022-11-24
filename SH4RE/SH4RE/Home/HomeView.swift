@@ -13,7 +13,7 @@ struct HomeView: View {
         ZStack {
             Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
             VStack {
-                Text("Placeholder")
+                Text("Home View")
             }
         }
     }

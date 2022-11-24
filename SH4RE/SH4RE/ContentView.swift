@@ -27,11 +27,11 @@ struct ContentView: View {
                     .tabItem {
                         Label("Post", systemImage: "plus.square.fill")
                     }
-                HomeView()
+                MessagesView()
                     .tabItem {
                         Label("Messages", systemImage: "message.fill")
                     }
-                HomeView()
+                AccountView()
                     .tabItem {
                         Label("Account", systemImage: "person.crop.circle.fill")
                     }
