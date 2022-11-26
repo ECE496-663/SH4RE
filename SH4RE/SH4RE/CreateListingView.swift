@@ -20,7 +20,7 @@ struct CreateListingView: View {
     @State private var description: String = ""
     @State var cost = ""
     let screenSize: CGRect = UIScreen.main.bounds
-    
+    var storageManager = StorageManager()
     var body: some View {
         ZStack {
             Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
@@ -87,7 +87,13 @@ struct CreateListingView: View {
                     .padding()
                 
                 Button(action: {
-                    print("Post tapped!")
+                    var listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection]
+                    let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
+                    //TODO : increment images when we add ability to upload multiple
+                    let image_path = "listingimages/" + document_id + "/1.jpg"
+                    storageManager.upload(image: image, path: image_path)
+                    //setting image path of just uploaded image
+                    documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : image_path])
                 }) {
                     Text("Post")
                         .fontWeight(.semibold)
