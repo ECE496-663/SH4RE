@@ -148,6 +148,7 @@
 			children = (
 				5939D35D29132D7000866FA5 /* SH4REApp.swift */,
 				5939D35F29132D7000866FA5 /* ContentView.swift */,
+				12AA3C2F2933FAB500F7F8E3 /* ListingViewModel.swift */,
 				9D08058E292FE9CD00094169 /* Account */,
 				9D08058D292FE9B900094169 /* Search */,
 				9D08058C292FE98000094169 /* Messages */,

@@ -56,6 +56,20 @@ struct SearchView: View {
                 
             })
         }
+        .onAppear(){
+            self.listingsView.fetchListings(completion: { success in
+                if success{
+                    self.listingsView.fetchProductImages(completion: { success in
+                        if !success {
+                            print("Failed to load images")
+                        }
+                    })
+                } else {
+                    print("Failed to query database")
+                }
+                
+            })
+        }
     }
 }
 
