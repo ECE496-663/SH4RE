@@ -9,9 +9,18 @@ import SwiftUI
 import Firebase
 import FirebaseStorage
 
+//Stuff to know for database
+//ViewListing is passed a listing struct define in ListingViewModel
+//We map the fields from the listing struct to class variable in .OnAppear
+//View listing is passed and image which is set as the classes image variable being displayed
+//if you need to create more variables create filler class variable and we will connect to database in later commit
+
 struct ViewListingView: View {
+    
+    //parameters passed in from search nav link
     var listing : Listing
-    @State var image1 = UIImage()
+    var image:UIImage
+    
     let screenSize: CGRect = UIScreen.main.bounds
     var numberOfStars = 4
     var hasHalfStar = true
@@ -36,11 +45,6 @@ struct ViewListingView: View {
             "stars": 4
         ]
     ]
-    //var hardcoded_listing_id = "MNizNurWGrjm1sXNpl15"
-    
-    
-    
-    
     
     var body: some View {
         
@@ -49,7 +53,7 @@ struct ViewListingView: View {
             
             VStack(alignment: .leading) {
                 
-                Image(uiImage: self.image1)
+                Image(uiImage: self.image)
                     .resizable()
                     .scaledToFit()
                     .cornerRadius(10)
@@ -128,16 +132,9 @@ struct ViewListingView: View {
             }
         }
         .onAppear(){
+            //mapping listing variables from database to class variable for front end
             self.description = listing.description
             self.title = listing.title
-            let storageRef = Storage.storage().reference().child(listing.imagepath)
-            storageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
-                if error != nil {
-                    print("Error: Image could not download!")
-                } else {
-                    self.image1 = UIImage(data: data!)!
-                }
-            }
         }
     }
 }
