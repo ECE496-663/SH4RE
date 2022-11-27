@@ -10,9 +10,10 @@ import Firebase
 
 class ViewListing: ObservableObject {
 
+    var test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", title:"Test Listing", description: "Test Description", imagepath : "path")
     var body: some Scene {
         WindowGroup {
-            ViewListingView()
+            ViewListingView(listing : test_listing)
         }
     }
 }

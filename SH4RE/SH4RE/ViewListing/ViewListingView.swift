@@ -6,15 +6,19 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseStorage
 
 struct ViewListingView: View {
-    let image1 = UIImage(named: "Placeholder")!
+    var listing : Listing
+    @State var image1 = UIImage()
     let screenSize: CGRect = UIScreen.main.bounds
     var numberOfStars = 4
     var hasHalfStar = true
     var numberOfReviews = 3
-    var description = "Nullam leo felis, tincidunt non erat eu, feugiat porta augue. Sed efficitur nulla id risus elementum, a bibendum nulla porta.  Nunc dui magna, tristique eget orci quis, faucibus congue mauris."
-        
+    @State var description:String = ""
+    @State var title:String = ""
+    
     var reviewers = [
         [
             "name": "Melissa Lim",
@@ -32,6 +36,11 @@ struct ViewListingView: View {
             "stars": 4
         ]
     ]
+    //var hardcoded_listing_id = "MNizNurWGrjm1sXNpl15"
+    
+    
+    
+    
     
     var body: some View {
         
@@ -49,7 +58,7 @@ struct ViewListingView: View {
                     .border(.black)
                     .padding()
                 
-                Text("Rachel's Camera")
+                Text(self.title)
                     .font(.title)
                     .padding()
                 
@@ -76,6 +85,7 @@ struct ViewListingView: View {
                 Text(self.description)
                     .font(.body)
                     .padding()
+                        
                 
                 Button(action: {
                     print("Check Availability button clicked")
@@ -117,11 +127,23 @@ struct ViewListingView: View {
 //                }
             }
         }
+        .onAppear(){
+            self.description = listing.description
+            self.title = listing.title
+            let storageRef = Storage.storage().reference().child(listing.imagepath)
+            storageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+                if error != nil {
+                    print("Error: Image could not download!")
+                } else {
+                    self.image1 = UIImage(data: data!)!
+                }
+            }
+        }
     }
 }
 
-struct ViewListingView_Previews: PreviewProvider {
-    static var previews: some View {
-        ViewListingView()
-    }
-}
+//struct ViewListingView_Previews: PreviewProvider {
+    //static var previews: some View {
+        //ViewListingView()
+    //}
+//}

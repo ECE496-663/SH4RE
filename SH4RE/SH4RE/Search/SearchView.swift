@@ -6,22 +6,30 @@
 //
 
 import SwiftUI
+import FirebaseStorage
 
 struct SearchView: View {
     let screenSize: CGRect = UIScreen.main.bounds
 
+    @ObservedObject private var listingsView = ListingViewModel()
     
     var body: some View {
         NavigationView {
+            
             ZStack {
                 Color("BackgroundGrey").ignoresSafeArea()
-                VStack {
-                    Text("Search View")
-                    NavigationLink(destination: ViewListingView()) {
-                        Text("See Listing")
+                List(listingsView.listings) { listing in
+                    VStack(alignment: .leading){
+                        NavigationLink(destination: ViewListingView(listing : listing)) {
+                            Text(listing.title)
+                        }
                     }
+                    
                 }
             }
+        }
+        .onAppear(){
+            self.listingsView.fetchListings()
         }
     }
 }
