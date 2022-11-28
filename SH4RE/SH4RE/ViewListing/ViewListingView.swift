@@ -27,6 +27,7 @@ struct ViewListingView: View {
     var numberOfReviews = 3
     @State var description:String = ""
     @State var title:String = ""
+    @State var price:String = ""
     
     var reviewers = [
         [
@@ -51,90 +52,147 @@ struct ViewListingView: View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
             
-            VStack(alignment: .leading) {
-                
-                Image(uiImage: self.image)
-                    .resizable()
-                    .scaledToFit()
-                    .cornerRadius(10)
-                    .frame(width: screenSize.width * 0.9, height: 250)
-                    .aspectRatio(contentMode: .fill)
-                    .border(.black)
-                    .padding()
-                
-                Text(self.title)
-                    .font(.title)
-                    .padding()
-                
-                HStack {
-                    ForEach(0 ..< self.numberOfStars, id: \.self) { idx in
-                        Label("star\(idx)", systemImage: "star.fill")
-                            .labelStyle(.iconOnly)
-                            .foregroundColor(Color("Yellow"))
-                            .font(.system(size: 12))
-                    }
+            ScrollView {
+                VStack(alignment: .leading) {
                     
-                    if (self.hasHalfStar) {
-                        Label("half-star", systemImage: "star.fill.left")
-                            .labelStyle(.iconOnly)
-                            .foregroundColor(Color(UIColor(named: "Yellow")!))
-                            .font(.system(size: 12))
-                    }
+                    Image(uiImage: self.image)
+                        .resizable()
+                        .scaledToFit()
+                        .cornerRadius(10)
+                        .frame(width: screenSize.width * 0.9, height: 250)
+                        .aspectRatio(contentMode: .fill)
+                        .border(Color("TextGrey"))
+                        .padding()
                     
-                    Text("(\(self.numberOfReviews) reviews)")
-                        .font(.caption)
-                }
-                .padding()
-                
-                Text(self.description)
-                    .font(.body)
-                    .padding()
-                        
-                
-                Button(action: {
-                    print("Check Availability button clicked")
-                }) {
+                    Text(self.title)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding([.horizontal])
+                    
                     HStack {
-                        Text("Check Availability")
-                        .font(.body)
-                        .foregroundColor(Color("PrimaryDark"))
+                        ForEach(0 ..< self.numberOfStars, id: \.self) { idx in
+                            Label("star\(idx)", systemImage: "star.fill")
+                                .labelStyle(.iconOnly)
+                                .foregroundColor(Color("Yellow"))
+                                .font(.system(size: 12))
+                        }
                         
-                        Image(systemName: "calendar")
-                            .foregroundColor(Color("PrimaryDark"))
+                        if (self.hasHalfStar) {
+                            Label("half-star", systemImage: "star.fill.left")
+                                .labelStyle(.iconOnly)
+                                .foregroundColor(Color(UIColor(named: "Yellow")!))
+                                .font(.system(size: 12))
+                        }
+                        
+                        Text("(\(self.numberOfReviews) reviews)")
+                            .font(.caption)
+                            .foregroundColor(Color("TextGrey"))
                     }
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 40)
-                            .stroke(Color("PrimaryDark"))
-                    )
-                    .padding()
+                    .padding([.horizontal])
                     
+                    Text(self.description)
+                        .font(.body)
+                        .padding([.horizontal])
+                        .padding([.top], 10)
+                        
+                    
+                    
+                    Button(action: {
+                        print("Check Availability button clicked")
+                    }) {
+                        HStack {
+                            Text("Check Availability")
+                                .font(.body)
+                                .foregroundColor(Color("PrimaryDark"))
+                            
+                            Image(systemName: "calendar")
+                                .foregroundColor(Color("PrimaryDark"))
+                        }
+                        .padding([.horizontal, .vertical], 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 40)
+                                .stroke(Color("PrimaryDark"))
+                        )
+                        .padding()
+                        
+                    }
+                    
+                    Text("Reviews (\(self.numberOfReviews))")
+                        .font(.headline)
+                        .padding()
+                    
+                    //                ForEach(reviewers, id: \.self) { reviewer in
+                    //
+                    //                    HStack {
+                    //                        Image(uiImage: reviewer.profilePhoto)
+                    //                            .resizable()
+                    //                            .aspectRatio(contentMode: .fit)
+                    //                            .clipShape(Circle())
+                    //
+                    //                        VStack {
+                    //                            Text(reviewer.name)
+                    //                                .font(.body)
+                    //                        }
+                    //                    }
+                    //                }
                 }
-                
-                Text("Reviews (\(self.numberOfReviews))")
-                    .font(.title3)
-                    .padding()
-                
-//                ForEach(reviewers, id: \.self) { reviewer in
-//
-//                    HStack {
-//                        Image(uiImage: reviewer.profilePhoto)
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fit)
-//                            .clipShape(Circle())
-//
-//                        VStack {
-//                            Text(reviewer.name)
-//                                .font(.body)
-//                        }
-//                    }
-//                }
             }
         }
         .onAppear(){
             //mapping listing variables from database to class variable for front end
             self.description = listing.description
             self.title = listing.title
+        }
+        
+        ZStack(alignment: .bottom) {
+            HStack {
+                VStack {
+                    if (self.price.isEmpty) {
+                        Text("Message user for more pricing info")
+                            .foregroundColor(Color("TextGrey"))
+                            .font(.caption)
+                    }
+                    else {
+                        Text("Price")
+                            .font(.callout)
+                            .fontWeight(.bold)
+                            .foregroundColor(Color("TextGrey"))
+                            .frame(alignment: .leading)
+                        HStack {
+                                Text("\(self.price)")
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                                Text("/day")
+                                    .font(.caption)
+                                    .foregroundColor(Color("TextGrey"))
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Button(action: {
+                    print("Message user about \(self.price)")
+                }) {
+                    HStack {
+                        Text("Message")
+                            .font(.body)
+                            .foregroundColor(Color("White"))
+                        
+                        Image(systemName: "message")
+                            .foregroundColor(Color("White"))
+                    }
+                }
+                .frame(alignment: .trailing)
+                .padding()
+                .background(Color("PrimaryDark"))
+                .cornerRadius(40)
+                .padding()
+            }
+        }
+        .padding([.horizontal])
+        .frame(alignment: .bottom)
+        .onAppear(){
+            self.price = listing.price
         }
     }
 }
