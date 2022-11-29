@@ -11,6 +11,8 @@ import Combine
 
 struct CreateListingView: View {
     @State private var image = UIImage(named: "CreateListingBkgPic")!
+    @State private var pictures:[UIImage] = []
+    @State private var num_of_images = 1
     @State private var showSheet = false
     @State private var title: String = ""
     @State var drop_down_selection = ""
@@ -27,17 +29,40 @@ struct CreateListingView: View {
             VStack {
                 Text("Create a new listing")
                 
+                // image picker
                 HStack {
-                    Image(uiImage: self.image)
-                        .resizable()
-                        .scaledToFit()
-                        .cornerRadius(10)
-                        .frame(width: screenSize.width * 0.9, height: 250)
-                        .aspectRatio(contentMode: .fill)
-                        .onTapGesture {
-                            showSheet = true
+                    GeometryReader { geometry in
+                        ImageCarouselView(numberOfImages: self.num_of_images) {
+                            ForEach(0..<pictures.count, id:\.self) { imageIdx in
+                               Image(uiImage: pictures[imageIdx])
+                               .resizable()
+                               .scaledToFit()
+                               .frame(width: geometry.size.width, height: 250)
+                               .aspectRatio(contentMode: .fill)
+                            }
+                            if (self.num_of_images < 6) {
+                                Image("CreateListingBkgPic")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: geometry.size.width, height: 250)
+                                    .aspectRatio(contentMode: .fill)
+                                    .onTapGesture {
+                                        showSheet = true
+                                        if (!showSheet) {
+                                            pictures.append(self.image)
+                                        }
+                                    }
+                                    .onChange(of: self.image) { newItem in
+                                        Task {
+                                            pictures.append(self.image)
+                                        }
+                                        self.num_of_images += 1
+                                    }
+                            }
                         }
+                     }
                 }
+                // this just opens the sheet to select a photo from library
                 .sheet(isPresented: $showSheet) {
                     // Pick an image from the photo library:
                     ImagePicker(sourceType: .photoLibrary, selectedImage: self.$image)
@@ -46,11 +71,13 @@ struct CreateListingView: View {
                     // ImagePicker(sourceType: .camera, selectedImage: self.$image)
                 }
                 
+                // title entry
                 TextField("Title", text: $title)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: screenSize.width * 0.9, height: 20)
                     .padding()
                 
+                // category entry
                 Menu {
                     ForEach(drop_down_list, id: \.self){ client in
                         Button(client) {
@@ -72,8 +99,10 @@ struct CreateListingView: View {
                     }
                 }
                 
+                // description entry
                 TextEditorWithPlaceholder(text: $description)
                 
+                // cost per day entry
                 TextField("Cost per day", text: $cost)
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.numberPad)
@@ -86,14 +115,17 @@ struct CreateListingView: View {
                     .frame(width: screenSize.width * 0.9, height: 20)
                     .padding()
                 
+                // POST
                 Button(action: {
-                    var listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection]
+                    let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection]
                     let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
                     //TODO : increment images when we add ability to upload multiple
                     let image_path = "listingimages/" + document_id + "/1.jpg"
                     storageManager.upload(image: image, path: image_path)
                     //setting image path of just uploaded image
-                    documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : image_path])
+                    if (!documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : image_path])) {
+                        NSLog("error");
+                    }
                 }) {
                     Text("Post")
                         .fontWeight(.semibold)
@@ -131,6 +163,63 @@ struct TextEditorWithPlaceholder: View {
                     .opacity(text.isEmpty ? 0.85 : 1)
                     .cornerRadius(5)
                     .padding()
+            }
+        }
+    }
+}
+
+struct ImageCarouselView<Content: View>: View {
+    private var numberOfImages: Int
+    private var content: Content
+    @State private var currentIndex: Int = 0
+    @State private var offset = CGSize.zero
+
+    init(numberOfImages: Int, @ViewBuilder content: () -> Content) {
+        self.numberOfImages = numberOfImages
+        self.content = content()
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack(alignment: .bottom) {
+                HStack(spacing: 0) {
+                    self.content
+                }
+                .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
+                .offset(x: CGFloat(self.currentIndex) * -geometry.size.width, y: 0)
+                .animation(.spring())
+                .gesture(
+                    DragGesture()
+                        .onChanged { gesture in
+                            offset = gesture.translation
+                        }
+                        .onEnded { _ in
+                            if offset.width > 20 {
+                                if self.currentIndex > 0 {
+                                    self.currentIndex -= 1
+                                }
+                            }
+                            else if offset.width < 20 {
+                                if self.currentIndex < numberOfImages - 1 && self.currentIndex < 4 {
+                                    self.currentIndex += 1
+                                }
+                            }
+                            else {
+                                offset = .zero
+                            }
+                        }
+                )
+                HStack(spacing: 3) {
+                    let scroll_offset = (numberOfImages == 6) ? 1 : 0
+                    ForEach(0..<self.numberOfImages - scroll_offset, id: \.self) { index in
+                        Capsule()
+                            .frame(width: index == self.currentIndex ? 50 : 10, height: 10)
+                            .foregroundColor(index == self.currentIndex ? Color.init(UIColor(named: "PrimaryDark")!) : .white)
+                            .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
+                            .padding(.bottom, 8)
+                            .animation(.spring())
+                    }
+                }
             }
         }
     }
