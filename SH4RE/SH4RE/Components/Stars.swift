@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Stars: View {
+struct StarsView: View {
     private var numberOfStars: Int
     private var hasHalfStar: Bool
     
@@ -35,6 +35,6 @@ struct Stars: View {
 
 struct Stars_Previews: PreviewProvider {
     static var previews: some View {
-        Stars(numberOfStars: 3, hasHalfStar: false)
+        StarsView(numberOfStars: 3, hasHalfStar: false)
     }
 }

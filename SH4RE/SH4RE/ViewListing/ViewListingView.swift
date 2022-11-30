@@ -54,7 +54,7 @@ struct ViewListingView: View {
                     .padding([.horizontal])
                 
                 HStack {
-                    Stars(numberOfStars: self.numberOfStars, hasHalfStar: self.hasHalfStar)
+                    StarsView(numberOfStars: self.numberOfStars, hasHalfStar: self.hasHalfStar)
                     
                     Text("(\(self.numberOfReviews) reviews)")
                         .font(.caption)
@@ -113,7 +113,7 @@ struct ViewListingView: View {
                             .foregroundColor(Color("TextGrey"))
                             .frame(alignment: .leading)
                         HStack {
-                                Text("\(self.price)")
+                                Text("$\(self.price)")
                                     .font(.headline)
                                     .fontWeight(.bold)
                                 Text("/day")
