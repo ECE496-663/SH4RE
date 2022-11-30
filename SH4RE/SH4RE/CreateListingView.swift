@@ -188,13 +188,26 @@ struct CreateListingView: View {
 
                     // POST
                     Button(action: {
-                        let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection]
+                        var cal_avail = ""
+                        if (show_cal) {
+                            var string_dates = ""
+                            for date in dates {
+                                var res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
+                                string_dates += res + ","
+                            }
+                            cal_avail = String(string_dates.dropLast())
+                        }
+                        else {
+                            cal_avail = availability_dropdown_selection
+                        }
+                        let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection, "Availability": cal_avail]
                         let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
+
                         //TODO : increment images when we add ability to upload multiple
                         let image_path = "listingimages/" + document_id + "/1.jpg"
                         storageManager.upload(image: image, path: image_path)
                         //setting image path of just uploaded image
-                        if (!documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : image_path])) {
+                        if (documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : image_path])) {
                             NSLog("error");
                         }
                     }) {
