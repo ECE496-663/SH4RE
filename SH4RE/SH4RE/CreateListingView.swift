@@ -188,11 +188,12 @@ struct CreateListingView: View {
 
                     // POST
                     Button(action: {
+                        // upload data fields
                         var cal_avail = ""
                         if (show_cal) {
                             var string_dates = ""
                             for date in dates {
-                                var res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
+                                let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
                                 string_dates += res + ","
                             }
                             cal_avail = String(string_dates.dropLast())
@@ -203,13 +204,29 @@ struct CreateListingView: View {
                         let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection, "Availability": cal_avail]
                         let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
 
-                        //TODO : increment images when we add ability to upload multiple
-                        let image_path = "listingimages/" + document_id + "/1.jpg"
-                        storageManager.upload(image: image, path: image_path)
-                        //setting image path of just uploaded image
-                        if (documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : image_path])) {
+                        // upload images and add paths to data fields
+                        var i = 1
+                        var image_path = ""
+                        var arr_imgs:[String] = []
+                        for pic in pictures {
+                            image_path = "listingimages/" + document_id + "/" + String(i) + ".jpg"
+                            arr_imgs.append(image_path)
+                            storageManager.upload(image: pic, path: image_path)
+                            i += 1
+                        }
+                        if (documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : arr_imgs])) {
                             NSLog("error");
                         }
+
+                        //reset inputs
+                        self.pictures = []
+                        self.num_of_images = 1
+                        self.title = ""
+                        self.description = ""
+                        self.cost = ""
+                        self.drop_down_selection = ""
+                        self.availability_dropdown_selection = ""
+                        show_cal = false
                     }) {
                         Text("Post")
                             .fontWeight(.semibold)
