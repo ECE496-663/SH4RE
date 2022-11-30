@@ -16,28 +16,29 @@ struct ProductCard: View {
     var body: some View {
         
         ZStack (alignment: .bottom){
-            Image(uiImage: self.image)
-                .resizable()
-//                .frame(width: 180)
-//                .cornerRadius(20)
-//                .frame(width: 180)
-                .scaledToFill()
             
-                
-//                .padding()
-            VStack (alignment: .leading) {
-                // Todo: Add a max title length
-                Text(listing.title)
-                    .bold()
-                // Todo: Figure out how were doing pricing
-                Text("\(listing.price) per Day")
-                    .font(.caption)
+            VStack (spacing: 0){
+                Image(uiImage: self.image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 180 , height: 175)
+                    .clipped()
+            
+                VStack (alignment: .leading) {
+                    // Todo: Add a max title length
+                    Text(listing.title)
+                        .bold()
+                    // Todo: Figure out how were doing pricing
+                    Text("$\(listing.price) / Day")
+                        .font(.caption)
+                }
+                .padding()
+                .frame(width: 180, height: 75, alignment: .leading)
+                .background(.ultraThinMaterial)
             }
-            .padding()
-            .frame(width: 180, alignment: .leading)
-            .background(.ultraThinMaterial)
         }
         .frame(width: 180, height: 250)
+        .background(.white)
         .cornerRadius(20)
         .shadow(radius: 3)
 //        .border(Color("TextGrey"))
@@ -46,7 +47,7 @@ struct ProductCard: View {
 
 struct ProductCard_Previews: PreviewProvider {
     static var previews: some View {
-        let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", title:"Test Listing", description: "Test Description", imagepath : "path", price: "$20.00")
+        let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", title:"Test Listing", description: "Test Description", imagepath : "path", price: "20.00")
         ProductCard(listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
     }
 }
