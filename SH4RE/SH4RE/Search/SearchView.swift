@@ -19,16 +19,17 @@ struct SearchView: View {
 
     @ObservedObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 20)]
-    
+
     var body: some View {
         NavigationView {
             ScrollView {
-                LazyVGrid(columns: columns){
+                LazyVGrid(columns: columns, spacing: 20){
                     ForEach(listingsView.listings) { listing in
+                        let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                         NavigationLink(destination: {
-                            ViewListingView(listing : listing, image: listingsView.image_dict[listing.id] ?? UIImage())
+                            ViewListingView(listing: listing, image: productImage)
                         }, label: {
-                            ProductCard(listing: listing, image: listingsView.image_dict[listing.id] ?? UIImage())
+                            ProductCard(listing: listing, image: productImage)
                         })
                     }
                 }.padding()
