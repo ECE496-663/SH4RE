@@ -14,13 +14,31 @@ struct CreateListingView: View {
     @State private var pictures:[UIImage] = []
     @State private var num_of_images = 1
     @State private var showSheet = false
+    @State private var show_cal = false
     @State private var title: String = ""
     @State var drop_down_selection = ""
     var drop_down_placeholder = " Category"
     var drop_down_list = ["Tools", "Sporting Equipment", "Cameras", "Cooking"]
+    @State var availability_dropdown_selection = ""
+    var availability_dropdown_placeholder = " Availability"
+    var availability_dropdown = ["Everyday", "Weekdays", "Weekends"]
     @State private var description_placeholder: String = "Description"
     @State private var description: String = ""
     @State var cost = ""
+    @Environment(\.calendar) var calendar
+    @Environment(\.timeZone) var timeZone
+    @State private var dates: Set<DateComponents> = []
+    var bounds: PartialRangeFrom<Date> {
+            let start = calendar.date(
+                from: DateComponents(
+                    timeZone: timeZone,
+                    year: Calendar.current.component(.year, from: Date()),
+                    month: Calendar.current.component(.month, from: Date()),
+                    day: Calendar.current.component(.day, from: Date()))
+            )!
+            return start...
+        }
+
     let screenSize: CGRect = UIScreen.main.bounds
     var storageManager = StorageManager()
     var body: some View {
@@ -110,11 +128,63 @@ struct CreateListingView: View {
                         .onReceive(Just(cost)) { newValue in
                             let filtered = newValue.filter { "0123456789".contains($0) }
                             if filtered != newValue {
-                                self.cost = "$"+filtered
+                                self.cost = filtered
                             }
                         }
                         .frame(width: screenSize.width * 0.9, height: 20)
                         .padding()
+
+                    Text("Availability")
+                        .font(.system(size: 20, weight: .semibold))
+                        .frame(maxWidth: screenSize.width * 0.9, alignment: .leading)
+                        .padding(.bottom)
+
+                    // availability
+                    Menu {
+                        ForEach(availability_dropdown, id: \.self){ client in
+                            Button(client) {
+                                show_cal = false
+                                dates = []
+                                self.availability_dropdown_selection = " "+client
+                            }
+                        }
+                    } label: {
+                        VStack{
+                            HStack{
+                                Text(availability_dropdown_selection.isEmpty ? availability_dropdown_placeholder : availability_dropdown_selection)
+                                    .foregroundColor(availability_dropdown_selection.isEmpty ? Color.init(UIColor(named: "TextFieldInputDefault")!) : .black)
+                                Spacer()
+                                Image(systemName: "arrowtriangle.left.fill")
+                                    .foregroundColor(Color.init(UIColor(named: "DarkGrey")!))
+                            }
+                            .frame(width: screenSize.width * 0.9, height: 30)
+                            .background(.white)
+                            .cornerRadius(5)
+                        }
+                    }
+                    HStack {
+                        Text("or make a")
+                        Button(action: {
+                            show_cal = true
+                            availability_dropdown_selection = ""
+                        }) {
+                            Text("Custom Availability")
+                        }
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(Color.init(UIColor(named: "PrimaryBase")!))
+                    }
+                    .frame(maxWidth: screenSize.width * 0.85, alignment: .leading)
+
+                    // custom availability calendar
+                    if (show_cal) {
+                        MultiDatePicker(
+                            "Start Date",
+                            selection: $dates,
+                            in: bounds
+                        )
+                        .datePickerStyle(.graphical)
+                        .frame(maxWidth: screenSize.width * 0.9)
+                    }
 
                     // POST
                     Button(action: {
@@ -145,6 +215,8 @@ struct CreateListingView: View {
                         self.description = ""
                         self.cost = ""
                         self.drop_down_selection = ""
+                        self.availability_dropdown_selection = ""
+                        show_cal = false
                     }) {
                         Text("Cancel")
                             .fontWeight(.semibold)
