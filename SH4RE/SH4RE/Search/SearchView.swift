@@ -17,19 +17,26 @@ struct SearchView: View {
     let screenSize: CGRect = UIScreen.main.bounds
 
     @ObservedObject private var listingsView = ListingViewModel()
+    var columns = [GridItem(.adaptive(minimum: 160), spacing: 20)]
     
     var body: some View {
         NavigationView {
-            ZStack {
-                Color("BackgroundGrey").ignoresSafeArea()
-                List(listingsView.listings) { listing in
-                    VStack(alignment: .leading){
-                        NavigationLink(destination: ViewListingView(listing : listing, image: listingsView.image_dict[listing.id] ?? UIImage())) {
-                            Text(listing.title)
-                        }
+            ScrollView {
+                LazyVGrid(columns: columns){
+                    ForEach(listingsView.listings) { listing in
+                        NavigationLink(destination: {
+                            ViewListingView(listing : listing, image: listingsView.image_dict[listing.id] ?? UIImage())
+                        }, label: {
+                            ProductCard(listing: listing, image: listingsView.image_dict[listing.id] ?? UIImage())
+                        })
                     }
-                }
+                }.padding()
             }
+            .navigationTitle(Text("Search"))
+            .toolbar {
+                
+            }
+            Color("Black").ignoresSafeArea() // Currently this doesnt work to change the colour of the background
         }
         .onAppear(){
             self.listingsView.fetchListings(completion: { success in

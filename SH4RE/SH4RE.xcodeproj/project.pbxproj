@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		12AA3C1F292DB4FE00F7F8E3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C1E292DB4FE00F7F8E3 /* FirebaseFirestore */; };
-		12AA3C21292DB4FE00F7F8E3 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C20292DB4FE00F7F8E3 /* FirebaseFirestoreSwift */; };
-		12AA3C23292DB4FE00F7F8E3 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C22292DB4FE00F7F8E3 /* FirebaseStorage */; };
+		12AA3C262932D8CB00F7F8E3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C252932D8CB00F7F8E3 /* FirebaseFirestore */; };
+		12AA3C282932D8CB00F7F8E3 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C272932D8CB00F7F8E3 /* FirebaseFirestoreCombine-Community */; };
+		12AA3C2A2932D8CB00F7F8E3 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C292932D8CB00F7F8E3 /* FirebaseFirestoreSwift */; };
+		12AA3C2C2932D8CB00F7F8E3 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C2B2932D8CB00F7F8E3 /* FirebaseStorage */; };
+		12AA3C2E2933038800F7F8E3 /* ListingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AA3C2D2933038800F7F8E3 /* ListingViewModel.swift */; };
+		1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E29DDA82936B22F0089F703 /* ProductCard.swift */; };
 		5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D35D29132D7000866FA5 /* SH4REApp.swift */; };
 		5939D36029132D7000866FA5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D35F29132D7000866FA5 /* ContentView.swift */; };
 		5939D36229132D7200866FA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5939D36129132D7200866FA5 /* Assets.xcassets */; };
@@ -56,6 +59,7 @@
 
 /* Begin PBXFileReference section */
 		12AA3C2D2933038800F7F8E3 /* ListingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingViewModel.swift; sourceTree = "<group>"; };
+		1E29DDA82936B22F0089F703 /* ProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCard.swift; sourceTree = "<group>"; };
 		5939D35A29132D7000866FA5 /* SH4RE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SH4RE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5939D35D29132D7000866FA5 /* SH4REApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SH4REApp.swift; sourceTree = "<group>"; };
 		5939D35F29132D7000866FA5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -114,6 +118,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E29DDA72936B1F20089F703 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				1E29DDA82936B22F0089F703 /* ProductCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		5939D35129132D7000866FA5 = {
 			isa = PBXGroup;
 			children = (
@@ -211,6 +223,7 @@
 		9D08058D292FE9B900094169 /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				1E29DDA72936B1F20089F703 /* Components */,
 				9D080582292FE62200094169 /* SearchView.swift */,
 				9D080584292FE63C00094169 /* Search.swift */,
 			);
@@ -391,6 +404,7 @@
 				5939D38929132D8500866FA5 /* FirebaseDB.swift in Sources */,
 				9D95674B29380B70003F6B74 /* ListingViewModel.swift in Sources */,
 				9D95674D29381193003F6B74 /* Stars.swift in Sources */,
+				1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */,
 				9D080594292FE9F400094169 /* AccountView.swift in Sources */,
 				5939D36029132D7000866FA5 /* ContentView.swift in Sources */,
 				D119C04229281DBA00E83142 /* HomeView.swift in Sources */,
@@ -557,6 +571,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SH4RE/Preview Content\"";
+				DEVELOPMENT_TEAM = R5ATHRRBR9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -593,6 +608,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SH4RE/Preview Content\"";
+				DEVELOPMENT_TEAM = R5ATHRRBR9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
