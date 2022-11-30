@@ -18,124 +18,78 @@ import FirebaseStorage
 struct ViewListingView: View {
     
     //parameters passed in from search nav link
-    var listing : Listing
-    var image:UIImage
+    var listing: Listing
+    var image: UIImage
     
     let screenSize: CGRect = UIScreen.main.bounds
     var numberOfStars = 4
     var hasHalfStar = true
     var numberOfReviews = 3
+    var numberOfImages = 3 // should become images.length or something
     @State var description:String = ""
     @State var title:String = ""
     @State var price:String = ""
-    
-    var reviewers = [
-        [
-            "name": "Melissa Lim",
-            "profilePhoto": UIImage(named: "ProfilePhotoPlaceholder")!,
-            "stars": 5
-        ],
-        [
-            "name": "Carson Lander",
-            "profilePhoto": UIImage(named: "ProfilePhotoPlaceholder")!,
-            "stars": 4
-        ],
-        [
-            "name": "Tony Chan",
-            "profilePhoto": UIImage(named: "ProfilePhotoPlaceholder")!,
-            "stars": 4
-        ]
-    ]
     
     var body: some View {
         
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-            
-            ScrollView {
-                VStack(alignment: .leading) {
-                    
-                    Image(uiImage: self.image)
-                        .resizable()
-                        .scaledToFit()
-                        .cornerRadius(10)
-                        .frame(width: screenSize.width * 0.9, height: 250)
-                        .aspectRatio(contentMode: .fill)
-                        .border(Color("TextGrey"))
-                        .padding()
-                    
-                    Text(self.title)
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .padding([.horizontal])
-                    
-                    HStack {
-                        ForEach(0 ..< self.numberOfStars, id: \.self) { idx in
-                            Label("star\(idx)", systemImage: "star.fill")
-                                .labelStyle(.iconOnly)
-                                .foregroundColor(Color("Yellow"))
-                                .font(.system(size: 12))
+            VStack(alignment: .leading) {
+                
+                GeometryReader { geometry in
+                    ImageCarouselView(numberOfImages: self.numberOfImages) {
+                        ForEach([self.image, UIImage(named: "ProfilePhotoPlaceholder")!, UIImage(named: "ProfilePhotoPlaceholder")!], id:\.self) { image in
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: geometry.size.width, height: 250)
+                                .aspectRatio(contentMode: .fill)
                         }
-                        
-                        if (self.hasHalfStar) {
-                            Label("half-star", systemImage: "star.fill.left")
-                                .labelStyle(.iconOnly)
-                                .foregroundColor(Color(UIColor(named: "Yellow")!))
-                                .font(.system(size: 12))
-                        }
-                        
-                        Text("(\(self.numberOfReviews) reviews)")
-                            .font(.caption)
-                            .foregroundColor(Color("TextGrey"))
                     }
-                    .padding([.horizontal])
-                    
-                    Text(self.description)
-                        .font(.body)
-                        .padding([.horizontal])
-                        .padding([.top], 10)
-                        
-                    
-                    
-                    Button(action: {
-                        print("Check Availability button clicked")
-                    }) {
-                        HStack {
-                            Text("Check Availability")
-                                .font(.body)
-                                .foregroundColor(Color("PrimaryDark"))
-                            
-                            Image(systemName: "calendar")
-                                .foregroundColor(Color("PrimaryDark"))
-                        }
-                        .padding([.horizontal, .vertical], 10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 40)
-                                .stroke(Color("PrimaryDark"))
-                        )
-                        .padding()
-                        
-                    }
-                    
-                    Text("Reviews (\(self.numberOfReviews))")
-                        .font(.headline)
-                        .padding()
-                    
-                    //                ForEach(reviewers, id: \.self) { reviewer in
-                    //
-                    //                    HStack {
-                    //                        Image(uiImage: reviewer.profilePhoto)
-                    //                            .resizable()
-                    //                            .aspectRatio(contentMode: .fit)
-                    //                            .clipShape(Circle())
-                    //
-                    //                        VStack {
-                    //                            Text(reviewer.name)
-                    //                                .font(.body)
-                    //                        }
-                    //                    }
-                    //                }
                 }
+                
+                Text(self.title)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding([.horizontal])
+                
+                HStack {
+                    Stars(numberOfStars: self.numberOfStars, hasHalfStar: self.hasHalfStar)
+                    
+                    Text("(\(self.numberOfReviews) reviews)")
+                        .font(.caption)
+                        .foregroundColor(Color("TextGrey"))
+                }
+                .padding([.horizontal])
+                
+                Text(self.description)
+                    .font(.body)
+                    .padding([.horizontal])
+                    .padding([.top], 10)
+                
+                Button(action: {
+                    print("Check Availability button clicked")
+                }) {
+                    HStack {
+                        Text("Check Availability")
+                            .font(.body)
+                            .foregroundColor(Color("PrimaryDark"))
+                        
+                        Image(systemName: "calendar")
+                            .foregroundColor(Color("PrimaryDark"))
+                    }
+                    .padding([.horizontal, .vertical], 10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 40)
+                            .stroke(Color("PrimaryDark"))
+                    )
+                    .padding()
+                    
+                }
+                
+                Text("Reviews (\(self.numberOfReviews))")
+                    .font(.headline)
+                    .padding()
             }
         }
         .onAppear(){
