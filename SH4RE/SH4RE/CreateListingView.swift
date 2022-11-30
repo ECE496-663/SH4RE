@@ -315,6 +315,7 @@ struct ImageCarouselView<Content: View>: View {
                 .onChange(of: self.numberOfImages) { newItem in
                     Task {
                         self.currentIndex = (self.numberOfImages == 6) ? 0 : self.currentIndex
+                        self.currentIndex = (self.numberOfImages - self.currentIndex != 1) ? 0 : self.currentIndex
                     }
                 }
                 .gesture(
