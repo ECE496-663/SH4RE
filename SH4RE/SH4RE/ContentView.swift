@@ -8,19 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-        }
-        .padding()
+    init() {
+        UITabBar.appearance().backgroundColor = UIColor.white
     }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+    
+    var body: some View {
+        ZStack {            
+            TabView {
+                HomeView()
+                    .tabItem {
+                        Label("Home", systemImage: "house.fill")
+                    }
+                CreateListingView()
+                    .tabItem {
+                        Label("Post", systemImage: "plus.square.fill")
+                    }
+                HomeView()
+                    .tabItem {
+                        Label("Messages", systemImage: "message.fill")
+                    }
+                HomeView()
+                    .tabItem {
+                        Label("Account", systemImage: "person.crop.circle.fill")
+                    }
+                
+            }
+            .accentColor(Color.init(UIColor(named: "PrimaryDark")!))
+        }
     }
 }
