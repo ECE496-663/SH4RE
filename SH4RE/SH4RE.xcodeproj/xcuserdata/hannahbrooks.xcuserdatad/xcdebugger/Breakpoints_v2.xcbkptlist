@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "F3E5DAA0-89A5-454E-A6D2-5D4468FCFEF6"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "395482BF-B54B-4734-ADD7-D7F9B434B93F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SH4RE/Account/Account.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "10"
+            endingLineNumber = "10"
+            landmarkName = "unknown"
+            landmarkType = "0">
+            <Locations>
+               <Location
+                  uuid = "395482BF-B54B-4734-ADD7-D7F9B434B93F - 593fb7ed95d7ca26"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SH4RE.Account.deinit"
+                  moduleName = "SH4RE"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hannahbrooks/SH4RE/SH4RE/SH4RE/Account/Account.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "11"
+                  endingLineNumber = "11"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "395482BF-B54B-4734-ADD7-D7F9B434B93F - 3e7cfb30d4aec262"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SH4RE.Account.__deallocating_deinit"
+                  moduleName = "SH4RE"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hannahbrooks/SH4RE/SH4RE/SH4RE/Account/Account.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  uuid = "395482BF-B54B-4734-ADD7-D7F9B434B93F - 3964d7b7909e3fa4"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SH4RE.Account.__allocating_init() -&gt; SH4RE.Account"
+                  moduleName = "SH4RE"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hannahbrooks/SH4RE/SH4RE/SH4RE/Account/Account.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "395482BF-B54B-4734-ADD7-D7F9B434B93F - 39c25fce079bf563"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SH4RE.Account.init() -&gt; SH4RE.Account"
+                  moduleName = "SH4RE"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hannahbrooks/SH4RE/SH4RE/SH4RE/Account/Account.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "11"
+                  endingLineNumber = "11"
+                  offsetFromSymbolStart = "19">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
