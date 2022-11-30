@@ -15,6 +15,7 @@ import FirebaseStorage
 
 struct SearchView: View {
     let screenSize: CGRect = UIScreen.main.bounds
+    @State private var searchQuery: String = ""
 
     @ObservedObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 20)]
@@ -32,9 +33,12 @@ struct SearchView: View {
                     }
                 }.padding()
             }
-            .navigationTitle(Text("Search"))
+//            .navigationTitle(Text("Search"))
             .toolbar {
-                
+                TextField("Search", text: $searchQuery)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: screenSize.width * 0.9, height: 20)
+                    .padding()
             }
             Color("Black").ignoresSafeArea() // Currently this doesnt work to change the colour of the background
         }
