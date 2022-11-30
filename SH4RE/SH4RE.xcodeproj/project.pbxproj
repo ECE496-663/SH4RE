@@ -69,7 +69,6 @@
 		5939D37B29132D7200866FA5 /* SH4REUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SH4REUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		5939D38829132D8500866FA5 /* FirebaseDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDB.swift; sourceTree = "<group>"; };
 		59BB153929204E8D00EA4AF6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-<<<<<<< HEAD
 		9D080582292FE62200094169 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		9D080584292FE63C00094169 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		9D080586292FE84D00094169 /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
@@ -80,8 +79,6 @@
 		9D080597292FF44200094169 /* ViewListing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewListing.swift; sourceTree = "<group>"; };
 		9D95674929380897003F6B74 /* ImageCarousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCarousel.swift; sourceTree = "<group>"; };
 		9D95674C29381193003F6B74 /* Stars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stars.swift; sourceTree = "<group>"; };
-=======
->>>>>>> 1cd2f44d9e8ccf3a62bb93f2656117be59ad9d9c
 		D119C03D29280D0600E83142 /* CreateListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
 		D119C03F29281B0400E83142 /* CreatingListing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingListing.swift; sourceTree = "<group>"; };
 		D119C04129281DBA00E83142 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
