@@ -27,40 +27,36 @@ struct CreateListingView: View {
         ZStack {
             Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
             VStack {
-                Text("Create a new listing")
-                
                 // image picker
-                HStack {
-                    GeometryReader { geometry in
-                        ImageCarouselView(numberOfImages: self.num_of_images) {
-                            ForEach(0..<pictures.count, id:\.self) { imageIdx in
-                               Image(uiImage: pictures[imageIdx])
-                               .resizable()
-                               .scaledToFit()
-                               .frame(width: geometry.size.width, height: 250)
-                               .aspectRatio(contentMode: .fill)
-                            }
-                            if (self.num_of_images < 6) {
-                                Image("CreateListingBkgPic")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: geometry.size.width, height: 250)
-                                    .aspectRatio(contentMode: .fill)
-                                    .onTapGesture {
-                                        showSheet = true
-                                        if (!showSheet) {
-                                            pictures.append(self.image)
-                                        }
-                                    }
-                                    .onChange(of: self.image) { newItem in
-                                        Task {
-                                            pictures.append(self.image)
-                                        }
-                                        self.num_of_images += 1
-                                    }
-                            }
+                GeometryReader { geometry in
+                    ImageCarouselView(numberOfImages: self.num_of_images) {
+                        ForEach(0..<pictures.count, id:\.self) { imageIdx in
+                            Image(uiImage: pictures[imageIdx])
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: geometry.size.width, height: 250)
+                                .aspectRatio(contentMode: .fill)
                         }
-                     }
+                        if (self.num_of_images < 6) {
+                            Image("CreateListingBkgPic")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: geometry.size.width, height: 250)
+                                .aspectRatio(contentMode: .fill)
+                                .onTapGesture {
+                                    showSheet = true
+                                    if (!showSheet) {
+                                        pictures.append(self.image)
+                                    }
+                                }
+                                .onChange(of: self.image) { newItem in
+                                    Task {
+                                        pictures.append(self.image)
+                                    }
+                                    self.num_of_images += 1
+                                }
+                        }
+                    }
                 }
                 // this just opens the sheet to select a photo from library
                 .sheet(isPresented: $showSheet) {
@@ -70,89 +66,96 @@ struct CreateListingView: View {
                     //  If you wish to take a photo from camera instead:
                     // ImagePicker(sourceType: .camera, selectedImage: self.$image)
                 }
+                .frame(maxHeight: 300)
                 
-                // title entry
-                TextField("Title", text: $title)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: screenSize.width * 0.9, height: 20)
-                    .padding()
+                //divider
+                Color.gray.frame(width: screenSize.width * 0.95, height: 1 / UIScreen.main.scale)
                 
-                // category entry
-                Menu {
-                    ForEach(drop_down_list, id: \.self){ client in
-                        Button(client) {
-                            self.drop_down_selection = " "+client
-                        }
-                    }
-                } label: {
-                    VStack{
-                        HStack{
-                            Text(drop_down_selection.isEmpty ? drop_down_placeholder : drop_down_selection)
-                                .foregroundColor(drop_down_selection.isEmpty ? Color.init(UIColor(named: "TextFieldInputDefault")!) : .black)
-                            Spacer()
-                            Image(systemName: "arrowtriangle.left.fill")
-                                .foregroundColor(Color.init(UIColor(named: "DarkGrey")!))
-                        }
-                        .frame(width: screenSize.width * 0.9, height: 30)
-                        .background(.white)
-                        .cornerRadius(5)
-                    }
-                }
-                
-                // description entry
-                TextEditorWithPlaceholder(text: $description)
-                
-                // cost per day entry
-                TextField("Cost per day", text: $cost)
-                    .textFieldStyle(.roundedBorder)
-                    .keyboardType(.numberPad)
-                    .onReceive(Just(cost)) { newValue in
-                        let filtered = newValue.filter { "0123456789".contains($0) }
-                        if filtered != newValue {
-                            self.cost = "$"+filtered
-                        }
-                    }
-                    .frame(width: screenSize.width * 0.9, height: 20)
-                    .padding()
-                
-                // POST
-                Button(action: {
-                    let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection]
-                    let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
-                    //TODO : increment images when we add ability to upload multiple
-                    let image_path = "listingimages/" + document_id + "/1.jpg"
-                    storageManager.upload(image: image, path: image_path)
-                    //setting image path of just uploaded image
-                    if (!documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : image_path])) {
-                        NSLog("error");
-                    }
-                }) {
-                    Text("Post")
-                        .fontWeight(.semibold)
+                ScrollView([.vertical]) {
+                    // title entry
+                    TextField("Title", text: $title)
+                        .textFieldStyle(.roundedBorder)
                         .frame(width: screenSize.width * 0.9, height: 20)
                         .padding()
-                        .foregroundColor(.white)
-                        .background(Color.init(UIColor(named: "PrimaryDark")!))
-                        .cornerRadius(40)
-                }
 
-                // Cancel
-                Button(action: {
-                    self.pictures = []
-                    self.num_of_images = 1
-                    self.title = ""
-                    self.description = ""
-                    self.cost = ""
-                    self.drop_down_selection = ""
-                }) {
-                    Text("Cancel")
-                        .fontWeight(.semibold)
-                        .frame(width: screenSize.width * 0.9, height: 10)
+                    // category entry
+                    Menu {
+                        ForEach(drop_down_list, id: \.self){ client in
+                            Button(client) {
+                                self.drop_down_selection = " "+client
+                            }
+                        }
+                    } label: {
+                        VStack{
+                            HStack{
+                                Text(drop_down_selection.isEmpty ? drop_down_placeholder : drop_down_selection)
+                                    .foregroundColor(drop_down_selection.isEmpty ? Color.init(UIColor(named: "TextFieldInputDefault")!) : .black)
+                                Spacer()
+                                Image(systemName: "arrowtriangle.left.fill")
+                                    .foregroundColor(Color.init(UIColor(named: "DarkGrey")!))
+                            }
+                            .frame(width: screenSize.width * 0.9, height: 30)
+                            .background(.white)
+                            .cornerRadius(5)
+                        }
+                    }
+
+                    // description entry
+                    TextEditorWithPlaceholder(text: $description)
+
+                    // cost per day entry
+                    TextField("Cost per day", text: $cost)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.numberPad)
+                        .onReceive(Just(cost)) { newValue in
+                            let filtered = newValue.filter { "0123456789".contains($0) }
+                            if filtered != newValue {
+                                self.cost = "$"+filtered
+                            }
+                        }
+                        .frame(width: screenSize.width * 0.9, height: 20)
                         .padding()
-                        .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
-                        .background(.white)
-                        .cornerRadius(40)
-                        .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
+
+                    // POST
+                    Button(action: {
+                        let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection]
+                        let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
+                        //TODO : increment images when we add ability to upload multiple
+                        let image_path = "listingimages/" + document_id + "/1.jpg"
+                        storageManager.upload(image: image, path: image_path)
+                        //setting image path of just uploaded image
+                        if (!documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : image_path])) {
+                            NSLog("error");
+                        }
+                    }) {
+                        Text("Post")
+                            .fontWeight(.semibold)
+                            .frame(width: screenSize.width * 0.9, height: 20)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.init(UIColor(named: "PrimaryDark")!))
+                            .cornerRadius(40)
+                    }
+
+                    // Cancel
+                    Button(action: {
+                        self.pictures = []
+                        self.num_of_images = 1
+                        self.title = ""
+                        self.description = ""
+                        self.cost = ""
+                        self.drop_down_selection = ""
+                    }) {
+                        Text("Cancel")
+                            .fontWeight(.semibold)
+                            .frame(width: screenSize.width * 0.9, height: 10)
+                            .padding()
+                            .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
+                            .background(.white)
+                            .cornerRadius(40)
+                            .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
+                    }
+                    .padding(.bottom)
                 }
             }
         }
@@ -204,7 +207,7 @@ struct ImageCarouselView<Content: View>: View {
                 HStack(spacing: 0) {
                     self.content
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
+                .frame(width: geometry.size.width, height: 300, alignment: .leading)
                 .offset(x: CGFloat(self.currentIndex) * -geometry.size.width, y: 0)
                 .animation(.spring())
                 .onChange(of: self.numberOfImages) { newItem in
@@ -246,5 +249,6 @@ struct ImageCarouselView<Content: View>: View {
                 }
             }
         }
+        .frame(maxHeight: 300)
     }
 }
