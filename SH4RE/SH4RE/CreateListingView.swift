@@ -135,6 +135,25 @@ struct CreateListingView: View {
                         .background(Color.init(UIColor(named: "PrimaryDark")!))
                         .cornerRadius(40)
                 }
+
+                // Cancel
+                Button(action: {
+                    self.pictures = []
+                    self.num_of_images = 1
+                    self.title = ""
+                    self.description = ""
+                    self.cost = ""
+                    self.drop_down_selection = ""
+                }) {
+                    Text("Cancel")
+                        .fontWeight(.semibold)
+                        .frame(width: screenSize.width * 0.9, height: 10)
+                        .padding()
+                        .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
+                        .background(.white)
+                        .cornerRadius(40)
+                        .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
+                }
             }
         }
     }
@@ -188,6 +207,11 @@ struct ImageCarouselView<Content: View>: View {
                 .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
                 .offset(x: CGFloat(self.currentIndex) * -geometry.size.width, y: 0)
                 .animation(.spring())
+                .onChange(of: self.numberOfImages) { newItem in
+                    Task {
+                        self.currentIndex = (self.numberOfImages == 6) ? 0 : self.currentIndex
+                    }
+                }
                 .gesture(
                     DragGesture()
                         .onChanged { gesture in
