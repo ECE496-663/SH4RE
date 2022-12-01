@@ -22,7 +22,7 @@ struct ViewListingView: View {
     var image: UIImage
     
     let screenSize: CGRect = UIScreen.main.bounds
-    var numberOfStars = 4
+    var numberOfStars: Float = 4
     var hasHalfStar = true
     var numberOfReviews = 3
     var numberOfImages = 3 // should become images.length or something
@@ -54,7 +54,7 @@ struct ViewListingView: View {
                     .padding([.horizontal])
                 
                 HStack {
-                    StarsView(numberOfStars: self.numberOfStars, hasHalfStar: self.hasHalfStar)
+                    StarsView(numberOfStars: self.numberOfStars)
                     
                     Text("(\(self.numberOfReviews) reviews)")
                         .font(.caption)
@@ -98,7 +98,7 @@ struct ViewListingView: View {
             self.title = listing.title
         }
         
-        ZStack(alignment: .bottom) {
+        ZStack {
             HStack {
                 VStack {
                     if (self.price.isEmpty) {

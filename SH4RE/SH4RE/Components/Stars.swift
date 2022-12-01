@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct StarsView: View {
-    private var numberOfStars: Int
+    private var numberOfStars: Float
     private var hasHalfStar: Bool
     
-    init(numberOfStars: Int, hasHalfStar: Bool) {
+    init(numberOfStars: Float) {
         self.numberOfStars = numberOfStars
-        self.hasHalfStar = hasHalfStar
+        self.hasHalfStar = round(numberOfStars.truncatingRemainder(dividingBy: 1)) == 1 ? true : false
     }
     
     var body: some View {
-        ForEach(0 ..< self.numberOfStars, id: \.self) { idx in
+        ForEach(0 ..< Int(numberOfStars), id: \.self) { idx in
             Label("star\(idx)", systemImage: "star.fill")
                 .labelStyle(.iconOnly)
                 .foregroundColor(Color("Yellow"))
@@ -35,6 +35,6 @@ struct StarsView: View {
 
 struct Stars_Previews: PreviewProvider {
     static var previews: some View {
-        StarsView(numberOfStars: 3, hasHalfStar: false)
+        StarsView(numberOfStars: 3)
     }
 }
