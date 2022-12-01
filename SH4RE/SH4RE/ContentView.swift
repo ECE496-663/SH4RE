@@ -19,15 +19,19 @@ struct ContentView: View {
                     .tabItem {
                         Label("Home", systemImage: "house.fill")
                     }
+                SearchView()
+                    .tabItem {
+                        Label("Search", systemImage: "safari.fill")
+                    }
                 CreateListingView()
                     .tabItem {
                         Label("Post", systemImage: "plus.square.fill")
                     }
-                HomeView()
+                MessagesView()
                     .tabItem {
                         Label("Messages", systemImage: "message.fill")
                     }
-                HomeView()
+                AccountView()
                     .tabItem {
                         Label("Account", systemImage: "person.crop.circle.fill")
                     }

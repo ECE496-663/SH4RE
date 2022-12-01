@@ -43,13 +43,12 @@ struct CreateListingView: View {
     var storageManager = StorageManager()
     var body: some View {
         ZStack {
-            Color.init(UIColor(named: "Grey")!).ignoresSafeArea()
+            Color("BackgroundGrey").ignoresSafeArea()
             VStack {
-                // image picker
                 GeometryReader { geometry in
                     ImageCarouselView(numberOfImages: self.num_of_images) {
-                        ForEach(0..<pictures.count, id:\.self) { imageIdx in
-                            Image(uiImage: pictures[imageIdx])
+                        ForEach(pictures, id:\.self) { picture in
+                            Image(uiImage: picture)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: geometry.size.width, height: 250)
@@ -107,10 +106,10 @@ struct CreateListingView: View {
                         VStack{
                             HStack{
                                 Text(drop_down_selection.isEmpty ? drop_down_placeholder : drop_down_selection)
-                                    .foregroundColor(drop_down_selection.isEmpty ? Color.init(UIColor(named: "TextFieldInputDefault")!) : .black)
+                                    .foregroundColor(drop_down_selection.isEmpty ? Color("TextGrey") : .black)
                                 Spacer()
                                 Image(systemName: "arrowtriangle.left.fill")
-                                    .foregroundColor(Color.init(UIColor(named: "DarkGrey")!))
+                                    .foregroundColor(Color.init(UIColor(named: "TextGrey")!))
                             }
                             .frame(width: screenSize.width * 0.9, height: 30)
                             .background(.white)
@@ -152,10 +151,10 @@ struct CreateListingView: View {
                         VStack{
                             HStack{
                                 Text(availability_dropdown_selection.isEmpty ? availability_dropdown_placeholder : availability_dropdown_selection)
-                                    .foregroundColor(availability_dropdown_selection.isEmpty ? Color.init(UIColor(named: "TextFieldInputDefault")!) : .black)
+                                    .foregroundColor(availability_dropdown_selection.isEmpty ? Color("TextGrey") : Color("Black"))
                                 Spacer()
                                 Image(systemName: "arrowtriangle.left.fill")
-                                    .foregroundColor(Color.init(UIColor(named: "DarkGrey")!))
+                                    .foregroundColor(Color("TextGrey"))
                             }
                             .frame(width: screenSize.width * 0.9, height: 30)
                             .background(.white)
@@ -289,69 +288,5 @@ struct TextEditorWithPlaceholder: View {
                     .padding()
             }
         }
-    }
-}
-
-struct ImageCarouselView<Content: View>: View {
-    private var numberOfImages: Int
-    private var content: Content
-    @State private var currentIndex: Int = 0
-    @State private var offset = CGSize.zero
-
-    init(numberOfImages: Int, @ViewBuilder content: () -> Content) {
-        self.numberOfImages = numberOfImages
-        self.content = content()
-    }
-
-    var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .bottom) {
-                HStack(spacing: 0) {
-                    self.content
-                }
-                .frame(width: geometry.size.width, height: 300, alignment: .leading)
-                .offset(x: CGFloat(self.currentIndex) * -geometry.size.width, y: 0)
-                .animation(.spring())
-                .onChange(of: self.numberOfImages) { newItem in
-                    Task {
-                        self.currentIndex = (self.numberOfImages == 6) ? 0 : self.currentIndex
-                        self.currentIndex = (self.numberOfImages - self.currentIndex != 1) ? 0 : self.currentIndex
-                    }
-                }
-                .gesture(
-                    DragGesture()
-                        .onChanged { gesture in
-                            offset = gesture.translation
-                        }
-                        .onEnded { _ in
-                            if offset.width > 20 {
-                                if self.currentIndex > 0 {
-                                    self.currentIndex -= 1
-                                }
-                            }
-                            else if offset.width < 20 {
-                                if self.currentIndex < numberOfImages - 1 && self.currentIndex < 4 {
-                                    self.currentIndex += 1
-                                }
-                            }
-                            else {
-                                offset = .zero
-                            }
-                        }
-                )
-                HStack(spacing: 3) {
-                    let scroll_offset = (numberOfImages == 6) ? 1 : 0
-                    ForEach(0..<self.numberOfImages - scroll_offset, id: \.self) { index in
-                        Capsule()
-                            .frame(width: index == self.currentIndex ? 50 : 10, height: 10)
-                            .foregroundColor(index == self.currentIndex ? Color.init(UIColor(named: "PrimaryDark")!) : .white)
-                            .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
-                            .padding(.bottom, 8)
-                            .animation(.spring())
-                    }
-                }
-            }
-        }
-        .frame(maxHeight: 300)
     }
 }

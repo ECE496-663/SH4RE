@@ -4,7 +4,6 @@
 //
 //  Created by October on 2022-11-02.
 //
-
 import Foundation
 import Firebase
 import FirebaseStorage
@@ -76,18 +75,19 @@ func documentDelete(collectionPath : String, documentID : String, data:Dictionar
     return deleteSucess
 }
 
-func documentRead(collectionPath : String, documentID : String, completion: @escaping ((DocumentSnapshot)?)->Void){
+func documentRead(collectionPath : String, documentID : String, ret_doc: @escaping(Dictionary<String, String>)  -> Void) {
     let db = Firestore.firestore()
-    db.collection(collectionPath).document(documentID).addSnapshotListener { (docSnapshot, error) in
-        if let error = error {
-            print("Error reading document: \(error)")
-            completion(nil)
-        }else{
-            print("Document sucessfully read")
-            completion(docSnapshot)
+    let docRef = db.collection(collectionPath).document(documentID)
+    
+    docRef.getDocument{ (document, error) in
+        guard error == nil else{
+            print("Error reading document:", error ?? "")
+            return
+        }
+        if let document = document, document.exists {
+            ret_doc((document.data() as? Dictionary<String, String>)!)
         }
     }
-    return
 }
 
 func collectionRead(collectionPath : String, completion: @escaping ((QuerySnapshot)?)->Void){
