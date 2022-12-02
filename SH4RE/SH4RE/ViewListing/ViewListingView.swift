@@ -19,29 +19,34 @@ struct ViewListingView: View {
     
     //parameters passed in from search nav link
     var listing: Listing
-    var image: UIImage
+    @State var listingPaths: [String] = []
+    @State var images : [UIImage?] = []
     
     let screenSize: CGRect = UIScreen.main.bounds
     var numberOfStars: Float = 4
     var hasHalfStar = true
     var numberOfReviews = 3
-    var numberOfImages = 3
+    @State var numberOfImages = 0// should become images.length or something
+    @State var description:String = ""
+    @State var title:String = ""
+    @State var price:String = ""
+
     
     var body: some View {
         
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
+
             ScrollView {
                 VStack(alignment: .leading) {
-                    
                     GeometryReader { geometry in
-                        ImageCarouselView(numberOfImages: numberOfImages) {
-                            ForEach([image, UIImage(named: "ProfilePhotoPlaceholder")!, UIImage(named: "ProfilePhotoPlaceholder")!], id:\.self) { image in
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: geometry.size.width, height: 250)
-                                    .aspectRatio(contentMode: .fill)
+                        ImageCarouselView(numberOfImages: self.numberOfImages) {
+                        ForEach(images, id:\.self) { image in
+                            Image(uiImage: image ?? (UIImage(named:"placeholder") ?? UIImage()))
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: geometry.size.width, height: 250)
+                                .aspectRatio(contentMode: .fill)
                             }
                         }
                     }
@@ -140,11 +145,29 @@ struct ViewListingView: View {
         }
         .padding([.horizontal])
         .frame(alignment: .bottom)
+        .onAppear(){
+            price = listing.price
+            numberOfImages = listing.imagepath.count
+            for path in listing.imagepath{
+                let storageRef = Storage.storage().reference(withPath: path)
+                //Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
+                storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                    if let error = error {
+                        print (error)
+                    } else {
+                        //Image Returned Successfully:
+                        let image = UIImage(data: data!)
+                        images.append(image)
+                    }
+                }
+            }
+        }
     }
+
 }
 
 struct ViewListingView_Previews: PreviewProvider {
     static var previews: some View {
-        ViewListingView(listing:Listing(title:"test title", description: "test description", imagepath: "testimagepath", price:"20.00"), image: UIImage())
+        ViewListingView(listing:Listing(title:"test title", description: "test description", imagepath: ["listingimages/3rWyQLjIYsIA7wlrQ37r/1.jpg"], price:"20.00"))
     }
 }

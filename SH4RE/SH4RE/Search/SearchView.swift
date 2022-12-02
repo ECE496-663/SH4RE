@@ -28,7 +28,7 @@ struct SearchView: View {
                         // If theres no image for a listing, just use the placeholder
                         let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                         NavigationLink(destination: {
-                            ViewListingView(listing: listing, image: productImage)
+                            ViewListingView(listing: listing)
                         }, label: {
                             ProductCard(listing: listing, image: productImage)
                         })
@@ -46,7 +46,7 @@ struct SearchView: View {
         .onAppear(){
             self.listingsView.fetchListings(completion: { success in
                 if success{
-                    self.listingsView.fetchProductImages(completion: { success in
+                    self.listingsView.fetchProductMainImage( completion: { success in
                         if !success {
                             print("Failed to load images")
                         }
@@ -65,3 +65,4 @@ struct SearchView_Previews: PreviewProvider {
         SearchView()
     }
 }
+
