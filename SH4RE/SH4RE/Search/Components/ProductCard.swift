@@ -15,7 +15,7 @@ struct ProductCard: View {
     
     var body: some View {
         
-        ZStack (alignment: .bottom){
+        ZStack (){
             
             VStack (spacing: 0){
                 Image(uiImage: self.image)
