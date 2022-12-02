@@ -34,62 +34,66 @@ struct ViewListingView: View {
         
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-            VStack(alignment: .leading) {
-                
-                GeometryReader { geometry in
-                    ImageCarouselView(numberOfImages: self.numberOfImages) {
-                        ForEach([self.image, UIImage(named: "ProfilePhotoPlaceholder")!, UIImage(named: "ProfilePhotoPlaceholder")!], id:\.self) { image in
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: geometry.size.width, height: 250)
-                                .aspectRatio(contentMode: .fill)
+            ScrollView {
+                VStack(alignment: .leading) {
+                    
+                    GeometryReader { geometry in
+                        ImageCarouselView(numberOfImages: self.numberOfImages) {
+                            ForEach([self.image, UIImage(named: "ProfilePhotoPlaceholder")!, UIImage(named: "ProfilePhotoPlaceholder")!], id:\.self) { image in
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: geometry.size.width, height: 250)
+                                    .aspectRatio(contentMode: .fill)
+                            }
                         }
                     }
-                }
-                
-                Text(self.title)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding([.horizontal])
-                
-                HStack {
-                    StarsView(numberOfStars: self.numberOfStars)
                     
-                    Text("(\(self.numberOfReviews) reviews)")
-                        .font(.caption)
-                        .foregroundColor(Color("TextGrey"))
-                }
-                .padding([.horizontal])
-                
-                Text(self.description)
-                    .font(.body)
-                    .padding([.horizontal])
-                    .padding([.top], 10)
-                
-                Button(action: {
-                    print("Check Availability button clicked")
-                }) {
+                    Color.white.frame(width: screenSize.width, height: 275).opacity(0)
+                    
+                    Text(self.title)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding([.horizontal])
+                    
                     HStack {
-                        Text("Check Availability")
-                            .font(.body)
-                            .foregroundColor(Color("PrimaryDark"))
+                        StarsView(numberOfStars: self.numberOfStars)
                         
-                        Image(systemName: "calendar")
-                            .foregroundColor(Color("PrimaryDark"))
+                        Text("(\(self.numberOfReviews) reviews)")
+                            .font(.caption)
+                            .foregroundColor(Color("TextGrey"))
                     }
-                    .padding([.horizontal, .vertical], 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 40)
-                            .stroke(Color("PrimaryDark"))
-                    )
-                    .padding()
+                    .padding([.horizontal])
                     
+                    Text(self.description)
+                        .font(.body)
+                        .padding([.horizontal])
+                        .padding([.top], 10)
+                    
+                    Button(action: {
+                        print("Check Availability button clicked")
+                    }) {
+                        HStack {
+                            Text("Check Availability")
+                                .font(.body)
+                                .foregroundColor(Color("PrimaryDark"))
+                            
+                            Image(systemName: "calendar")
+                                .foregroundColor(Color("PrimaryDark"))
+                        }
+                        .padding([.horizontal, .vertical], 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 40)
+                                .stroke(Color("PrimaryDark"))
+                        )
+                        .padding()
+                        
+                    }
+                    
+                    Text("Reviews (\(self.numberOfReviews))")
+                        .font(.headline)
+                        .padding()
                 }
-                
-                Text("Reviews (\(self.numberOfReviews))")
-                    .font(.headline)
-                    .padding()
             }
         }
         .onAppear(){
