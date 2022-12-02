@@ -16,6 +16,7 @@ struct CreateListingView: View {
     @State private var showSheet = false
     @State private var show_cal = false
     @State private var title: String = ""
+    @State private var postal_code: String = ""
     @State var drop_down_selection = ""
     var drop_down_placeholder = " Category"
     var drop_down_list = ["Tools", "Sporting Equipment", "Cameras", "Cooking"]
@@ -106,10 +107,10 @@ struct CreateListingView: View {
                         VStack{
                             HStack{
                                 Text(drop_down_selection.isEmpty ? drop_down_placeholder : drop_down_selection)
-                                    .foregroundColor(drop_down_selection.isEmpty ? Color("TextGrey") : .black)
+                                    .foregroundColor(drop_down_selection.isEmpty ? Color("TextFieldInputDefault") : .black)
                                 Spacer()
                                 Image(systemName: "arrowtriangle.left.fill")
-                                    .foregroundColor(Color.init(UIColor(named: "TextGrey")!))
+                                    .foregroundColor(Color.init(UIColor(named: "TextFieldInputDefault")!))
                             }
                             .frame(width: screenSize.width * 0.9, height: 30)
                             .background(.white)
@@ -133,6 +134,12 @@ struct CreateListingView: View {
                         .frame(width: screenSize.width * 0.9, height: 20)
                         .padding()
 
+                    // postal code entry
+                    TextField("Postal Code e.g. A1A 1A1", text: $postal_code)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: screenSize.width * 0.9, height: 20)
+                        .padding()
+
                     Text("Availability")
                         .font(.system(size: 20, weight: .semibold))
                         .frame(maxWidth: screenSize.width * 0.9, alignment: .leading)
@@ -151,10 +158,10 @@ struct CreateListingView: View {
                         VStack{
                             HStack{
                                 Text(availability_dropdown_selection.isEmpty ? availability_dropdown_placeholder : availability_dropdown_selection)
-                                    .foregroundColor(availability_dropdown_selection.isEmpty ? Color("TextGrey") : Color("Black"))
+                                    .foregroundColor(availability_dropdown_selection.isEmpty ? Color("TextFieldInputDefault") : Color("Black"))
                                 Spacer()
                                 Image(systemName: "arrowtriangle.left.fill")
-                                    .foregroundColor(Color("TextGrey"))
+                                    .foregroundColor(Color("TextFieldInputDefault"))
                             }
                             .frame(width: screenSize.width * 0.9, height: 30)
                             .background(.white)
@@ -184,79 +191,82 @@ struct CreateListingView: View {
                         .datePickerStyle(.graphical)
                         .frame(maxWidth: screenSize.width * 0.9)
                     }
-
-                    // POST
-                    Button(action: {
-                        // upload data fields
-                        var cal_avail = ""
-                        if (show_cal) {
-                            var string_dates = ""
-                            for date in dates {
-                                let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
-                                string_dates += res + ","
+                    Group {
+                        // POST
+                        Button(action: {
+                            // upload data fields
+                            var cal_avail = ""
+                            if (show_cal) {
+                                var string_dates = ""
+                                for date in dates {
+                                    let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
+                                    string_dates += res + ","
+                                }
+                                cal_avail = String(string_dates.dropLast())
                             }
-                            cal_avail = String(string_dates.dropLast())
+                            else {
+                                cal_avail = availability_dropdown_selection
+                            }
+                            let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection, "Availability": cal_avail, "Address": postal_code]
+                            let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
+                            
+                            // upload images and add paths to data fields
+                            var i = 1
+                            var image_path = ""
+                            var arr_imgs:[String] = []
+                            for pic in pictures {
+                                image_path = "listingimages/" + document_id + "/" + String(i) + ".jpg"
+                                arr_imgs.append(image_path)
+                                storageManager.upload(image: pic, path: image_path)
+                                i += 1
+                            }
+                            if (documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : arr_imgs])) {
+                                NSLog("error");
+                            }
+                            
+                            //reset inputs
+                            self.pictures = []
+                            self.num_of_images = 1
+                            self.title = ""
+                            self.description = ""
+                            self.cost = ""
+                            self.postal_code = ""
+                            self.drop_down_selection = ""
+                            self.availability_dropdown_selection = ""
+                            show_cal = false
+                        }) {
+                            Text("Post")
+                                .fontWeight(.semibold)
+                                .frame(width: screenSize.width * 0.9, height: 20)
+                                .padding()
+                                .foregroundColor(.white)
+                                .background(Color.init(UIColor(named: "PrimaryDark")!))
+                                .cornerRadius(40)
                         }
-                        else {
-                            cal_avail = availability_dropdown_selection
+                        
+                        // Cancel
+                        Button(action: {
+                            self.pictures = []
+                            self.num_of_images = 1
+                            self.title = ""
+                            self.description = ""
+                            self.cost = ""
+                            self.postal_code = ""
+                            self.drop_down_selection = ""
+                            self.availability_dropdown_selection = ""
+                            show_cal = false
+                        }) {
+                            Text("Cancel")
+                                .fontWeight(.semibold)
+                                .frame(width: screenSize.width * 0.9, height: 10)
+                                .padding()
+                                .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
+                                .background(.white)
+                                .cornerRadius(40)
+                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
                         }
-                        let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection, "Availability": cal_avail]
-                        let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
-
-                        // upload images and add paths to data fields
-                        var i = 1
-                        var image_path = ""
-                        var arr_imgs:[String] = []
-                        for pic in pictures {
-                            image_path = "listingimages/" + document_id + "/" + String(i) + ".jpg"
-                            arr_imgs.append(image_path)
-                            storageManager.upload(image: pic, path: image_path)
-                            i += 1
-                        }
-                        if (documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : arr_imgs])) {
-                            NSLog("error");
-                        }
-
-                        //reset inputs
-                        self.pictures = []
-                        self.num_of_images = 1
-                        self.title = ""
-                        self.description = ""
-                        self.cost = ""
-                        self.drop_down_selection = ""
-                        self.availability_dropdown_selection = ""
-                        show_cal = false
-                    }) {
-                        Text("Post")
-                            .fontWeight(.semibold)
-                            .frame(width: screenSize.width * 0.9, height: 20)
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.init(UIColor(named: "PrimaryDark")!))
-                            .cornerRadius(40)
+                        .padding(.bottom)
                     }
-
-                    // Cancel
-                    Button(action: {
-                        self.pictures = []
-                        self.num_of_images = 1
-                        self.title = ""
-                        self.description = ""
-                        self.cost = ""
-                        self.drop_down_selection = ""
-                        self.availability_dropdown_selection = ""
-                        show_cal = false
-                    }) {
-                        Text("Cancel")
-                            .fontWeight(.semibold)
-                            .frame(width: screenSize.width * 0.9, height: 10)
-                            .padding()
-                            .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
-                            .background(.white)
-                            .cornerRadius(40)
-                            .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
-                    }
-                    .padding(.bottom)
                 }
             }
         }
