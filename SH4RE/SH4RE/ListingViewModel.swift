@@ -17,8 +17,9 @@ struct Listing : Identifiable{
     var id :String =  UUID().uuidString
     var title:String
     var description:String
-    var imagepath:String
+    var imagepath = [String]()
     var price:String
+    var imageDict = UIImage()
 }
 
 class ListingViewModel : ObservableObject{
@@ -39,7 +40,7 @@ class ListingViewModel : ObservableObject{
                 let id = QueryDocumentSnapshot.documentID
                 let title = data["Title"] as? String ?? ""
                 let description = data["Description"] as? String ?? ""
-                let imagepath = data["image_path"] as? String ?? ""
+                let imagepath = data["image_path"] as? [String] ?? []
                 let price = data["Price"] as? String ?? ""
                 return Listing(id:id, title:title, description:description, imagepath:imagepath, price:price)
             }
@@ -51,36 +52,41 @@ class ListingViewModel : ObservableObject{
         }
         
     }
-public func fetchProductImages(completion: @escaping (Bool) -> Void) {
+    public func fetchProductMainImage(completion: @escaping (Bool) -> Void) {
         
-    //Clear Image Array:
-    image_dict.removeAll()
-    print("fetching images")
-    for listing in self.listings {
-        print(listing.imagepath)
-            //Access to Image inside a Collection:
-        let storageRef = Storage.storage().reference(withPath: listing.imagepath)
-            
-            //Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
-            storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
-                
-                if let error = error {
-                    //Error:
-                    print (error)
-                    
-                } else {
-                    
-                    //Image Returned Successfully:
-                    let image = UIImage(data: data!)
+        //Clear Image Array:
+        image_dict.removeAll()
 
-                    //Add Images to the Array:
-                    self.image_dict[listing.id] = image
+        //Access to Image inside a Collection:
+        for listing in self.listings{
+            
+            if(listing.imagepath != []){
+                let storageRef = Storage.storage().reference(withPath: listing.imagepath[0])
+                
+                //Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
+                storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
                     
-                    if(self.image_dict.count == listings.count){
-                        completion (true)
+                    if let error = error {
+                        //Error:
+                        print (error)
+                        
+                    } else {
+                        
+                        //Image Returned Successfully:
+                        let image = UIImage(data: data!)
+                        
+                        //Add Images to the Array:
+                        self.image_dict[listing.id] = image
+                        
+                        
+                        if(self.image_dict.count == listings.count){
+                            completion (true)
+                        }
                     }
                 }
             }
         }
     }
+    
+    
 }
