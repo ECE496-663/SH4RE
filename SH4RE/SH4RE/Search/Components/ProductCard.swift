@@ -34,14 +34,12 @@ struct ProductCard: View {
                 }
                 .padding()
                 .frame(width: 180, height: 75, alignment: .leading)
-                .background(.ultraThinMaterial)
+                .background(.white)
             }
         }
         .frame(width: 180, height: 250)
         .background(.white)
         .cornerRadius(20)
-        .shadow(radius: 3)
-//        .border(Color("TextGrey"))
     }
 }
 

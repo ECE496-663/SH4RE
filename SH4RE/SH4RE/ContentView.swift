@@ -9,11 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     init() {
-        UITabBar.appearance().backgroundColor = UIColor.white
+        UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
     }
     
     var body: some View {
-        ZStack {            
+        ZStack {
             TabView {
                 HomeView()
                     .tabItem {
@@ -35,7 +35,6 @@ struct ContentView: View {
                     .tabItem {
                         Label("Account", systemImage: "person.crop.circle.fill")
                     }
-                
             }
             .accentColor(Color.init(UIColor(named: "PrimaryDark")!))
         }

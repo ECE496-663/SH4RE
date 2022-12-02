@@ -25,6 +25,7 @@ struct SearchView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20){
                     ForEach(listingsView.listings) { listing in
+                        // If theres no image for a listing, just use the placeholder
                         let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                         NavigationLink(destination: {
                             ViewListingView(listing: listing, image: productImage)
@@ -34,14 +35,13 @@ struct SearchView: View {
                     }
                 }.padding()
             }
-//            .navigationTitle(Text("Search"))
+            .background(Color("BackgroundGrey"))
             .toolbar {
                 TextField("Search", text: $searchQuery)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: screenSize.width * 0.9, height: 20)
                     .padding()
             }
-            Color("Black").ignoresSafeArea() // Currently this doesnt work to change the colour of the background
         }
         .onAppear(){
             self.listingsView.fetchListings(completion: { success in
