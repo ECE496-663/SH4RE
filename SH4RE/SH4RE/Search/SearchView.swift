@@ -15,20 +15,32 @@ import FirebaseStorage
 
 struct SearchView: View {
     let screenSize: CGRect = UIScreen.main.bounds
+    @State private var searchQuery: String = ""
 
     @ObservedObject private var listingsView = ListingViewModel()
-    
+    var columns = [GridItem(.adaptive(minimum: 160), spacing: 20)]
+
     var body: some View {
         NavigationView {
-            ZStack {
-                Color("BackgroundGrey").ignoresSafeArea()
-                List(listingsView.listings) { listing in
-                    VStack(alignment: .leading){
-                        NavigationLink(destination: ViewListingView(listing : listing)) {
-                            Text(listing.title)
-                        }
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 20){
+                    ForEach(listingsView.listings) { listing in
+                        // If theres no image for a listing, just use the placeholder
+                        let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
+                        NavigationLink(destination: {
+                            ViewListingView(listing: listing)
+                        }, label: {
+                            ProductCard(listing: listing, image: productImage)
+                        })
                     }
-                }
+                }.padding()
+            }
+            .background(Color("BackgroundGrey"))
+            .toolbar {
+                TextField("Search", text: $searchQuery)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: screenSize.width * 0.9, height: 20)
+                    .padding()
             }
         }
         .onAppear(){
