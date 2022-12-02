@@ -30,79 +30,78 @@ struct ViewListingView: View {
     @State var description:String = ""
     @State var title:String = ""
     @State var price:String = ""
+
     
     var body: some View {
         
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-            VStack(alignment: .leading) {
-                
-                GeometryReader { geometry in
-                    ImageCarouselView(numberOfImages: self.numberOfImages) {
+
+            ScrollView {
+                VStack(alignment: .leading) {
+                    GeometryReader { geometry in
+                        ImageCarouselView(numberOfImages: self.numberOfImages) {
                         ForEach(images, id:\.self) { image in
                             Image(uiImage: image ?? UIImage())
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: geometry.size.width, height: 250)
                                 .aspectRatio(contentMode: .fill)
+                            }
                         }
                     }
-                }
-                
-                Text(self.title)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding([.horizontal])
-                
-                HStack {
-                    StarsView(numberOfStars: self.numberOfStars)
+                    .frame(height: 300)
+                                        
+                    Text(listing.title)
+                        .font(.title)
+                        .bold()
+                        .padding([.horizontal])
                     
-                    Text("(\(self.numberOfReviews) reviews)")
-                        .font(.caption)
-                        .foregroundColor(Color("TextGrey"))
-                }
-                .padding([.horizontal])
-                
-                Text(self.description)
-                    .font(.body)
-                    .padding([.horizontal])
-                    .padding([.top], 10)
-                
-                Button(action: {
-                    print("Check Availability button clicked")
-                }) {
                     HStack {
-                        Text("Check Availability")
-                            .font(.body)
-                            .foregroundColor(Color("PrimaryDark"))
+                        StarsView(numberOfStars: numberOfStars)
                         
-                        Image(systemName: "calendar")
-                            .foregroundColor(Color("PrimaryDark"))
+                        Text("(\(numberOfReviews) reviews)")
+                            .font(.caption)
+                            .foregroundColor(Color("TextGrey"))
                     }
-                    .padding([.horizontal, .vertical], 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 40)
-                            .stroke(Color("PrimaryDark"))
-                    )
-                    .padding()
+                    .padding([.horizontal])
                     
+                    Text(listing.description)
+                        .font(.body)
+                        .padding([.horizontal])
+                        .padding([.top], 10)
+                    
+                    Button(action: {
+                        print("Check Availability button clicked")
+                    }) {
+                        HStack {
+                            Text("Check Availability")
+                                .font(.body)
+                                .foregroundColor(Color("PrimaryDark"))
+                            
+                            Image(systemName: "calendar")
+                                .foregroundColor(Color("PrimaryDark"))
+                        }
+                        .padding([.horizontal, .vertical], 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 40)
+                                .stroke(Color("PrimaryDark"))
+                        )
+                        .padding()
+                        
+                    }
+                    
+                    Text("Reviews (\(numberOfReviews))")
+                        .font(.headline)
+                        .padding()
                 }
-                
-                Text("Reviews (\(self.numberOfReviews))")
-                    .font(.headline)
-                    .padding()
             }
-        }
-        .onAppear(){
-            //mapping listing variables from database to class variable for front end
-            self.description = listing.description
-            self.title = listing.title
         }
         
         ZStack {
             HStack {
                 VStack {
-                    if (self.price.isEmpty) {
+                    if (listing.price.isEmpty) {
                         Text("Message user for more pricing info")
                             .foregroundColor(Color("TextGrey"))
                             .font(.caption)
@@ -110,13 +109,13 @@ struct ViewListingView: View {
                     else {
                         Text("Price")
                             .font(.callout)
-                            .fontWeight(.bold)
+                            .bold()
                             .foregroundColor(Color("TextGrey"))
                             .frame(alignment: .leading)
                         HStack {
-                                Text("$\(self.price)")
+                                Text("$\(listing.price)")
                                     .font(.headline)
-                                    .fontWeight(.bold)
+                                    .bold()
                                 Text("/day")
                                     .font(.caption)
                                     .foregroundColor(Color("TextGrey"))
@@ -126,7 +125,7 @@ struct ViewListingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Button(action: {
-                    print("Message user about \(self.price)")
+                    print("Message user about \(listing.price)")
                 }) {
                     HStack {
                         Text("Message")
