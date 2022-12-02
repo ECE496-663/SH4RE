@@ -42,7 +42,7 @@ struct ViewListingView: View {
                     GeometryReader { geometry in
                         ImageCarouselView(numberOfImages: self.numberOfImages) {
                         ForEach(images, id:\.self) { image in
-                            Image(uiImage: image ?? UIImage())
+                            Image(uiImage: image ?? (UIImage(named:"placeholder") ?? UIImage()))
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: geometry.size.width, height: 250)
@@ -146,8 +146,8 @@ struct ViewListingView: View {
         .padding([.horizontal])
         .frame(alignment: .bottom)
         .onAppear(){
-            self.price = listing.price
-            self.numberOfImages = listing.imagepath.count
+            price = listing.price
+            numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
                 let storageRef = Storage.storage().reference(withPath: path)
                 //Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
@@ -157,7 +157,7 @@ struct ViewListingView: View {
                     } else {
                         //Image Returned Successfully:
                         let image = UIImage(data: data!)
-                        self.images.append(image)
+                        images.append(image)
                     }
                 }
             }
@@ -168,6 +168,6 @@ struct ViewListingView: View {
 
 struct ViewListingView_Previews: PreviewProvider {
     static var previews: some View {
-        ViewListingView(listing:Listing(title:"test title", description: "test description", imagepath: ["testimagepath"], price:"20.00"))
+        ViewListingView(listing:Listing(title:"test title", description: "test description", imagepath: ["listingimages/3rWyQLjIYsIA7wlrQ37r/1.jpg"], price:"20.00"))
     }
 }
