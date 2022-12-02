@@ -24,7 +24,7 @@ struct SearchView: View {
                 Color("BackgroundGrey").ignoresSafeArea()
                 List(listingsView.listings) { listing in
                     VStack(alignment: .leading){
-                        NavigationLink(destination: ViewListingView(listing : listing, image: listingsView.image_dict[listing.id] ?? UIImage())) {
+                        NavigationLink(destination: ViewListingView(listing : listing)) {
                             Text(listing.title)
                         }
                     }
@@ -34,7 +34,7 @@ struct SearchView: View {
         .onAppear(){
             self.listingsView.fetchListings(completion: { success in
                 if success{
-                    self.listingsView.fetchProductImages(completion: { success in
+                    self.listingsView.fetchProductMainImage( completion: { success in
                         if !success {
                             print("Failed to load images")
                         }
@@ -53,3 +53,4 @@ struct SearchView_Previews: PreviewProvider {
         SearchView()
     }
 }
+
