@@ -25,10 +25,7 @@ struct ViewListingView: View {
     var numberOfStars: Float = 4
     var hasHalfStar = true
     var numberOfReviews = 3
-    var numberOfImages = 3 // should become images.length or something
-    @State var description:String = ""
-    @State var title:String = ""
-    @State var price:String = ""
+    var numberOfImages = 3
     
     var body: some View {
         
@@ -38,8 +35,8 @@ struct ViewListingView: View {
                 VStack(alignment: .leading) {
                     
                     GeometryReader { geometry in
-                        ImageCarouselView(numberOfImages: self.numberOfImages) {
-                            ForEach([self.image, UIImage(named: "ProfilePhotoPlaceholder")!, UIImage(named: "ProfilePhotoPlaceholder")!], id:\.self) { image in
+                        ImageCarouselView(numberOfImages: numberOfImages) {
+                            ForEach([image, UIImage(named: "ProfilePhotoPlaceholder")!, UIImage(named: "ProfilePhotoPlaceholder")!], id:\.self) { image in
                                 Image(uiImage: image)
                                     .resizable()
                                     .scaledToFit()
@@ -48,24 +45,23 @@ struct ViewListingView: View {
                             }
                         }
                     }
-                    
-                    Color.white.frame(width: screenSize.width, height: 275).opacity(0)
-                    
-                    Text(self.title)
+                    .frame(height: 300)
+                                        
+                    Text(listing.title)
                         .font(.title)
-                        .fontWeight(.bold)
+                        .bold()
                         .padding([.horizontal])
                     
                     HStack {
-                        StarsView(numberOfStars: self.numberOfStars)
+                        StarsView(numberOfStars: numberOfStars)
                         
-                        Text("(\(self.numberOfReviews) reviews)")
+                        Text("(\(numberOfReviews) reviews)")
                             .font(.caption)
                             .foregroundColor(Color("TextGrey"))
                     }
                     .padding([.horizontal])
                     
-                    Text(self.description)
+                    Text(listing.description)
                         .font(.body)
                         .padding([.horizontal])
                         .padding([.top], 10)
@@ -90,22 +86,17 @@ struct ViewListingView: View {
                         
                     }
                     
-                    Text("Reviews (\(self.numberOfReviews))")
+                    Text("Reviews (\(numberOfReviews))")
                         .font(.headline)
                         .padding()
                 }
             }
         }
-        .onAppear(){
-            //mapping listing variables from database to class variable for front end
-            self.description = listing.description
-            self.title = listing.title
-        }
         
         ZStack {
             HStack {
                 VStack {
-                    if (self.price.isEmpty) {
+                    if (listing.price.isEmpty) {
                         Text("Message user for more pricing info")
                             .foregroundColor(Color("TextGrey"))
                             .font(.caption)
@@ -113,13 +104,13 @@ struct ViewListingView: View {
                     else {
                         Text("Price")
                             .font(.callout)
-                            .fontWeight(.bold)
+                            .bold()
                             .foregroundColor(Color("TextGrey"))
                             .frame(alignment: .leading)
                         HStack {
-                                Text("$\(self.price)")
+                                Text("$\(listing.price)")
                                     .font(.headline)
-                                    .fontWeight(.bold)
+                                    .bold()
                                 Text("/day")
                                     .font(.caption)
                                     .foregroundColor(Color("TextGrey"))
@@ -129,7 +120,7 @@ struct ViewListingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Button(action: {
-                    print("Message user about \(self.price)")
+                    print("Message user about \(listing.price)")
                 }) {
                     HStack {
                         Text("Message")
@@ -149,9 +140,6 @@ struct ViewListingView: View {
         }
         .padding([.horizontal])
         .frame(alignment: .bottom)
-        .onAppear(){
-            self.price = listing.price
-        }
     }
 }
 
