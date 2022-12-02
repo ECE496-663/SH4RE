@@ -143,8 +143,8 @@ struct ViewListingView: View {
     }
 }
 
-//struct ViewListingView_Previews: PreviewProvider {
-    //static var previews: some View {
-        //ViewListingView()
-    //}
-//}
+struct ViewListingView_Previews: PreviewProvider {
+    static var previews: some View {
+        ViewListingView(listing:Listing(title:"test title", description: "test description", imagepath: "testimagepath", price:"20.00"), image: UIImage())
+    }
+}
