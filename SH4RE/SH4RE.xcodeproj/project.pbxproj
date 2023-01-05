@@ -37,6 +37,10 @@
 		D119C04429281DC600E83142 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C04329281DC600E83142 /* Home.swift */; };
 		D119C0482928313700E83142 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C0472928313700E83142 /* ImagePicker.swift */; };
 		D120FAB12965428500CCD7A5 /* AlertX in Frameworks */ = {isa = PBXBuildFile; productRef = D120FAB02965428500CCD7A5 /* AlertX */; };
+		D120FAB42966533800CCD7A5 /* LandingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB32966533800CCD7A5 /* LandingScreen.swift */; };
+		D120FAB6296658A100CCD7A5 /* Tutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB5296658A100CCD7A5 /* Tutorial.swift */; };
+		D120FAB8296675FA00CCD7A5 /* LoginFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB7296675FA00CCD7A5 /* LoginFlow.swift */; };
+		D120FABA29668A7000CCD7A5 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB929668A7000CCD7A5 /* LoginPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +91,10 @@
 		D119C04129281DBA00E83142 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		D119C04329281DC600E83142 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		D119C0472928313700E83142 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		D120FAB32966533800CCD7A5 /* LandingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingScreen.swift; sourceTree = "<group>"; };
+		D120FAB5296658A100CCD7A5 /* Tutorial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tutorial.swift; sourceTree = "<group>"; };
+		D120FAB7296675FA00CCD7A5 /* LoginFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlow.swift; sourceTree = "<group>"; };
+		D120FAB929668A7000CCD7A5 /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +158,7 @@
 		5939D35C29132D7000866FA5 /* SH4RE */ = {
 			isa = PBXGroup;
 			children = (
+				D120FAB22966530700CCD7A5 /* Login */,
 				9D95674829380837003F6B74 /* Components */,
 				5939D35D29132D7000866FA5 /* SH4REApp.swift */,
 				5939D35F29132D7000866FA5 /* ContentView.swift */,
@@ -256,6 +265,17 @@
 				9D95674C29381193003F6B74 /* Stars.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		D120FAB22966530700CCD7A5 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				D120FAB32966533800CCD7A5 /* LandingScreen.swift */,
+				D120FAB5296658A100CCD7A5 /* Tutorial.swift */,
+				D120FAB7296675FA00CCD7A5 /* LoginFlow.swift */,
+				D120FAB929668A7000CCD7A5 /* LoginPage.swift */,
+			);
+			path = Login;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -410,15 +430,19 @@
 				9D080594292FE9F400094169 /* AccountView.swift in Sources */,
 				5939D36029132D7000866FA5 /* ContentView.swift in Sources */,
 				D119C04229281DBA00E83142 /* HomeView.swift in Sources */,
+				D120FAB42966533800CCD7A5 /* LandingScreen.swift in Sources */,
 				5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */,
 				9D080587292FE84D00094169 /* Messages.swift in Sources */,
 				D119C0482928313700E83142 /* ImagePicker.swift in Sources */,
+				D120FAB6296658A100CCD7A5 /* Tutorial.swift in Sources */,
+				D120FABA29668A7000CCD7A5 /* LoginPage.swift in Sources */,
 				9D080596292FF43800094169 /* ViewListingView.swift in Sources */,
 				9D080589292FE85900094169 /* MessagesView.swift in Sources */,
 				9D080585292FE63C00094169 /* Search.swift in Sources */,
 				D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */,
 				9D95674A29380897003F6B74 /* ImageCarousel.swift in Sources */,
 				D119C04429281DC600E83142 /* Home.swift in Sources */,
+				D120FAB8296675FA00CCD7A5 /* LoginFlow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
