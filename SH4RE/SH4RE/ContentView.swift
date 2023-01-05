@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    @AppStorage("isLoggedIn") var is_logged_in: Bool = false
+    @AppStorage("isLoggedIn") var is_logged_in: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
 
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
-        UserDefaults.standard.set(false, forKey: "isLoggedIn")
     }
     
     var body: some View {
