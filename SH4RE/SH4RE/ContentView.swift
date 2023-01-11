@@ -7,7 +7,10 @@
 
 import SwiftUI
 
+var screenSize: CGRect = UIScreen.main.bounds
+
 struct ContentView: View {
+    
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
     }

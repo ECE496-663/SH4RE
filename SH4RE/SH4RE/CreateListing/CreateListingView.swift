@@ -28,7 +28,6 @@ struct CreateListingView: View {
     @State var cost = ""
     @State private var dates: Set<DateComponents> = []
 
-    let screenSize: CGRect = UIScreen.main.bounds
     var storageManager = StorageManager()
     var body: some View {
         ZStack {
