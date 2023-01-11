@@ -10,9 +10,7 @@ import SwiftUI
 struct ProductCard: View {
     var listing: Listing;
     var image:UIImage
-    
-    let screenSize: CGRect = UIScreen.main.bounds
-    
+        
     var body: some View {
         
         ZStack (){

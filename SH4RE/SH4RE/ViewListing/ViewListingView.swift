@@ -22,7 +22,6 @@ struct ViewListingView: View {
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     
-    let screenSize: CGRect = UIScreen.main.bounds
     var numberOfStars: Float = 4
     var hasHalfStar = true
     var numberOfReviews = 3

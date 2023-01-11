@@ -7,36 +7,45 @@
 
 import SwiftUI
 
+let screenSize: CGRect = UIScreen.main.bounds
+
 struct ContentView: View {
+    @AppStorage("isLoggedIn") var is_logged_in: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
+    
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
     }
     
     var body: some View {
         ZStack {
-            TabView {
-                HomeView()
-                    .tabItem {
-                        Label("Home", systemImage: "house.fill")
-                    }
-                SearchView()
-                    .tabItem {
-                        Label("Search", systemImage: "safari.fill")
-                    }
-                CreateListingView()
-                    .tabItem {
-                        Label("Post", systemImage: "plus.square.fill")
-                    }
-                MessagesView()
-                    .tabItem {
-                        Label("Messages", systemImage: "message.fill")
-                    }
-                AccountView()
-                    .tabItem {
-                        Label("Account", systemImage: "person.crop.circle.fill")
-                    }
+            if (is_logged_in) {
+                TabView {
+                    HomeView()
+                        .tabItem {
+                            Label("Home", systemImage: "house.fill")
+                        }
+                    SearchView()
+                        .tabItem {
+                            Label("Search", systemImage: "safari.fill")
+                        }
+                    CreateListingView()
+                        .tabItem {
+                            Label("Post", systemImage: "plus.square.fill")
+                        }
+                    MessagesView()
+                        .tabItem {
+                            Label("Messages", systemImage: "message.fill")
+                        }
+                    AccountView()
+                        .tabItem {
+                            Label("Account", systemImage: "person.crop.circle.fill")
+                        }
+                }
+                .accentColor(Color.init(UIColor(named: "PrimaryDark")!))
             }
-            .accentColor(Color.init(UIColor(named: "PrimaryDark")!))
+            else {
+                LoginFlow()
+            }
         }
     }
 }

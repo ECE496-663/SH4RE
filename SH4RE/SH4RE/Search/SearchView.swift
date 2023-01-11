@@ -14,7 +14,6 @@ import FirebaseStorage
 //needed this separate for now because of sychronous queries
 
 struct SearchView: View {
-    let screenSize: CGRect = UIScreen.main.bounds
     @State private var searchQuery: String = ""
 
     @ObservedObject private var listingsView = ListingViewModel()
