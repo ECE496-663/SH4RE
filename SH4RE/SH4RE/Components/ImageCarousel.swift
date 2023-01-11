@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ImageCarouselView<Content: View>: View {
+    @Environment(\.deleteImage) var deleteImage
     private var numberOfImages: Int
     private var content: Content
     @State private var currentIndex: Int = 0
@@ -19,6 +20,22 @@ struct ImageCarouselView<Content: View>: View {
     }
 
     var body: some View {
+        if (currentIndex != numberOfImages - 1) {
+            Button(action: {
+                self.deleteImage!(currentIndex)
+            }) {
+                ZStack {
+                    Circle()
+                        .fill(Color.init(UIColor(named: "PrimaryDark")!))
+                        .frame(width: 25, height: 25)
+                    Image(systemName: "xmark")
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                }
+                .padding(8)
+                .contentShape(Circle())
+            }
+        }
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
                 HStack(spacing: 0) {
@@ -26,7 +43,7 @@ struct ImageCarouselView<Content: View>: View {
                 }
                 .frame(width: geometry.size.width, height: 300, alignment: .leading)
                 .offset(x: CGFloat(self.currentIndex) * -geometry.size.width, y: 0)
-                .animation(.spring())
+                .animation(.spring(), value: UUID())
                 .onChange(of: self.numberOfImages) { newItem in
                     Task {
                         self.currentIndex = (self.numberOfImages == 6) ? 0 : self.currentIndex
@@ -62,10 +79,11 @@ struct ImageCarouselView<Content: View>: View {
                             .foregroundColor(index == self.currentIndex ? Color.init(UIColor(named: "PrimaryDark")!) : .white)
                             .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
                             .padding(.bottom, 8)
-                            .animation(.spring())
+                            .animation(.spring(), value: UUID())
                     }
                 }
             }
+            .padding(.top)
         }
         .frame(maxHeight: 300)
     }

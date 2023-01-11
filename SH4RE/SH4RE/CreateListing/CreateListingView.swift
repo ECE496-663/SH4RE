@@ -8,6 +8,17 @@
 import Foundation
 import SwiftUI
 import Combine
+import AlertX
+
+struct ParentFunctionKey: EnvironmentKey {
+    static let defaultValue: ((Int) -> Void)? = nil
+}
+extension EnvironmentValues {
+    var deleteImage: ((Int) -> Void)? {
+        get { self[ParentFunctionKey.self] }
+        set { self[ParentFunctionKey.self] = newValue }
+    }
+}
 
 struct CreateListingView: View {
     @State private var image = UIImage(named: "CreateListingBkgPic")!
@@ -30,18 +41,26 @@ struct CreateListingView: View {
     @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
     var bounds: PartialRangeFrom<Date> {
-            let start = calendar.date(
-                from: DateComponents(
-                    timeZone: timeZone,
-                    year: Calendar.current.component(.year, from: Date()),
-                    month: Calendar.current.component(.month, from: Date()),
-                    day: Calendar.current.component(.day, from: Date()))
-            )!
-            return start...
-        }
-
+        let start = calendar.date(
+            from: DateComponents(
+                timeZone: timeZone,
+                year: Calendar.current.component(.year, from: Date()),
+                month: Calendar.current.component(.month, from: Date()),
+                day: Calendar.current.component(.day, from: Date()))
+        )!
+        return start...
+    }
+    @State var showPostAlertX: Bool = false
+    @State var showCancelAlertX: Bool = false
+    @State var errorInField: Bool = false
     let screenSize: CGRect = UIScreen.main.bounds
     var storageManager = StorageManager()
+
+    func deleteImage (index: Int) {
+        num_of_images -= 1
+        pictures.remove(at: index)
+    }
+
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
@@ -76,6 +95,7 @@ struct CreateListingView: View {
                         }
                     }
                 }
+                .environment(\.deleteImage, deleteImage)
                 // this just opens the sheet to select a photo from library
                 .sheet(isPresented: $showSheet) {
                     // Pick an image from the photo library:
@@ -87,7 +107,9 @@ struct CreateListingView: View {
                 .frame(maxHeight: 300)
                 
                 //divider
-                Color.gray.frame(width: screenSize.width * 0.95, height: 1 / UIScreen.main.scale)
+                Color.gray
+                    .frame(width: screenSize.width * 0.95, height: 1 / UIScreen.main.scale)
+                    .padding(.top)
                 
                 ScrollView([.vertical]) {
                     // title entry
@@ -190,50 +212,60 @@ struct CreateListingView: View {
                         )
                         .datePickerStyle(.graphical)
                         .frame(maxWidth: screenSize.width * 0.9)
+                        .tint(Color.init(UIColor(named: "PrimaryBase")!))
                     }
                     Group {
                         // POST
                         Button(action: {
-                            // upload data fields
-                            var cal_avail = ""
-                            if (show_cal) {
-                                var string_dates = ""
-                                for date in dates {
-                                    let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
-                                    string_dates += res + ","
+                            // validate entries
+                            if (self.title.isEmpty || self.cost.isEmpty || self.postal_code.isEmpty ||
+                                self.pictures.isEmpty || self.drop_down_selection.isEmpty || self.description.isEmpty ||
+                                (self.availability_dropdown_selection.isEmpty && self.dates.isEmpty)) {
+                                self.errorInField = true
+                            }
+                            if (!self.errorInField) {
+                                // upload data fields
+                                var cal_avail = ""
+                                if (show_cal) {
+                                    var string_dates = ""
+                                    for date in dates {
+                                        let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
+                                        string_dates += res + ","
+                                    }
+                                    cal_avail = String(string_dates.dropLast())
                                 }
-                                cal_avail = String(string_dates.dropLast())
+                                else {
+                                    cal_avail = availability_dropdown_selection
+                                }
+                                let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection, "Availability": cal_avail, "Address": postal_code]
+                                let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
+
+                                // upload images and add paths to data fields
+                                var i = 1
+                                var image_path = ""
+                                var arr_imgs:[String] = []
+                                for pic in pictures {
+                                    image_path = "listingimages/" + document_id + "/" + String(i) + ".jpg"
+                                    arr_imgs.append(image_path)
+                                    storageManager.upload(image: pic, path: image_path)
+                                    i += 1
+                                }
+                                if (documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : arr_imgs])) {
+                                    NSLog("error");
+                                }
+
+                                //reset inputs
+                                self.pictures = []
+                                self.num_of_images = 1
+                                self.title = ""
+                                self.description = ""
+                                self.cost = ""
+                                self.postal_code = ""
+                                self.drop_down_selection = ""
+                                self.availability_dropdown_selection = ""
+                                show_cal = false
+                                self.showPostAlertX = true
                             }
-                            else {
-                                cal_avail = availability_dropdown_selection
-                            }
-                            let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection, "Availability": cal_avail, "Address": postal_code]
-                            let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
-                            
-                            // upload images and add paths to data fields
-                            var i = 1
-                            var image_path = ""
-                            var arr_imgs:[String] = []
-                            for pic in pictures {
-                                image_path = "listingimages/" + document_id + "/" + String(i) + ".jpg"
-                                arr_imgs.append(image_path)
-                                storageManager.upload(image: pic, path: image_path)
-                                i += 1
-                            }
-                            if (documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : arr_imgs])) {
-                                NSLog("error");
-                            }
-                            
-                            //reset inputs
-                            self.pictures = []
-                            self.num_of_images = 1
-                            self.title = ""
-                            self.description = ""
-                            self.cost = ""
-                            self.postal_code = ""
-                            self.drop_down_selection = ""
-                            self.availability_dropdown_selection = ""
-                            show_cal = false
                         }) {
                             Text("Post")
                                 .fontWeight(.semibold)
@@ -243,6 +275,38 @@ struct CreateListingView: View {
                                 .background(Color.init(UIColor(named: "PrimaryDark")!))
                                 .cornerRadius(40)
                         }
+                        .alertX(isPresented: $errorInField, content: {
+                            AlertX(
+                                title: Text("ERROR: Entries missing"),
+                                theme: AlertX.Theme.custom(
+                                    windowColor: Color.init(UIColor(named: "Error")!),
+                                    alertTextColor: .white,
+                                    enableShadow: true,
+                                    enableRoundedCorners: true,
+                                    enableTransparency: false,
+                                    cancelButtonColor: .white,
+                                    cancelButtonTextColor: .white,
+                                    defaultButtonColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                    defaultButtonTextColor: .white
+                                )
+                            )
+                        })
+                        .alertX(isPresented: $showPostAlertX, content: {
+                            AlertX(
+                                title: Text("Listing Posted!"),
+                                theme: AlertX.Theme.custom(
+                                    windowColor: .white,
+                                    alertTextColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                    enableShadow: true,
+                                    enableRoundedCorners: true,
+                                    enableTransparency: false,
+                                    cancelButtonColor: .white,
+                                    cancelButtonTextColor: .white,
+                                    defaultButtonColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                    defaultButtonTextColor: .white
+                                )
+                            )
+                        })
                         
                         // Cancel
                         Button(action: {
@@ -255,7 +319,9 @@ struct CreateListingView: View {
                             self.drop_down_selection = ""
                             self.availability_dropdown_selection = ""
                             show_cal = false
-                        }) {
+                            self.showCancelAlertX.toggle()
+                        })
+                        {
                             Text("Cancel")
                                 .fontWeight(.semibold)
                                 .frame(width: screenSize.width * 0.9, height: 10)
@@ -266,10 +332,27 @@ struct CreateListingView: View {
                                 .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
                         }
                         .padding(.bottom)
+                        .alertX(isPresented: $showCancelAlertX, content: {
+                            AlertX(
+                                title: Text("Listing Cleared"),
+                                theme: AlertX.Theme.custom(
+                                    windowColor: .white,
+                                    alertTextColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                    enableShadow: true,
+                                    enableRoundedCorners: true,
+                                    enableTransparency: false,
+                                    cancelButtonColor: .white,
+                                    cancelButtonTextColor: .white,
+                                    defaultButtonColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                    defaultButtonTextColor: .white
+                                )
+                            )
+                        })
                     }
                 }
             }
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 
@@ -293,7 +376,7 @@ struct TextEditorWithPlaceholder: View {
             VStack {
                 TextEditor(text: $text)
                     .frame(width: screenSize.width * 0.9, height: 100)
-                    .opacity(text.isEmpty ? 0.85 : 1)
+                    .opacity(text.isEmpty ? 0.8 : 1)
                     .cornerRadius(5)
                     .padding()
             }

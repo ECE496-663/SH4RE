@@ -36,6 +36,7 @@
 		D119C04229281DBA00E83142 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C04129281DBA00E83142 /* HomeView.swift */; };
 		D119C04429281DC600E83142 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C04329281DC600E83142 /* Home.swift */; };
 		D119C0482928313700E83142 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C0472928313700E83142 /* ImagePicker.swift */; };
+		D120FAB12965428500CCD7A5 /* AlertX in Frameworks */ = {isa = PBXBuildFile; productRef = D120FAB02965428500CCD7A5 /* AlertX */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 			files = (
 				1E8511692939BC060008D2CA /* FirebaseStorage in Frameworks */,
 				1E8511682939BC060008D2CA /* FirebaseFirestoreSwift in Frameworks */,
+				D120FAB12965428500CCD7A5 /* AlertX in Frameworks */,
 				1E8511672939BC060008D2CA /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,6 +278,7 @@
 				12AA3C1E292DB4FE00F7F8E3 /* FirebaseFirestore */,
 				12AA3C20292DB4FE00F7F8E3 /* FirebaseFirestoreSwift */,
 				12AA3C22292DB4FE00F7F8E3 /* FirebaseStorage */,
+				D120FAB02965428500CCD7A5 /* AlertX */,
 			);
 			productName = SH4RE;
 			productReference = 5939D35A29132D7000866FA5 /* SH4RE.app */;
@@ -351,6 +354,7 @@
 			mainGroup = 5939D35129132D7000866FA5;
 			packageReferences = (
 				12AA3C1D292DB4FE00F7F8E3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				D120FAAF2965428500CCD7A5 /* XCRemoteSwiftPackageReference "AlertX" */,
 			);
 			productRefGroup = 5939D35B29132D7000866FA5 /* Products */;
 			projectDirPath = "";
@@ -582,8 +586,8 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -619,8 +623,8 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -772,6 +776,14 @@
 				kind = branch;
 			};
 		};
+		D120FAAF2965428500CCD7A5 /* XCRemoteSwiftPackageReference "AlertX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/neel-makhecha/AlertX.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -789,6 +801,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 12AA3C1D292DB4FE00F7F8E3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		D120FAB02965428500CCD7A5 /* AlertX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D120FAAF2965428500CCD7A5 /* XCRemoteSwiftPackageReference "AlertX" */;
+			productName = AlertX;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
