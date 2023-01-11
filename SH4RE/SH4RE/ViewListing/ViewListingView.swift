@@ -16,6 +16,7 @@ import FirebaseStorage
 //if you need to create more variables create filler class variable and we will connect to database in later commit
 
 struct ViewListingView: View {
+    @Binding var tabSelection: Int
     
     //parameters passed in from search nav link
     var listing: Listing
@@ -127,17 +128,16 @@ struct ViewListingView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Button(action: {
-                    print("Message user about \(listing.price)")
-                }) {
-                    HStack {
-                        Text("Message")
-                            .font(.body)
-                            .foregroundColor(Color("White"))
-                        
-                        Image(systemName: "message")
-                            .foregroundColor(Color("White"))
+                NavigationLink(destination: MessagesView(tabSelection: $tabSelection)) {
+                    Button(action: { tabSelection = 4 }) {
+                        HStack {
+                            Text("Message")
+                                .font(.body)
+                                .foregroundColor(Color("White"))
+                            
+                            Image(systemName: "message")
+                                .foregroundColor(Color("White"))
+                        }
                     }
                 }
                 .frame(alignment: .trailing)
@@ -166,11 +166,5 @@ struct ViewListingView: View {
                 }
             }
         }
-    }
-}
-
-struct ViewListingView_Previews: PreviewProvider {
-    static var previews: some View {
-        ViewListingView(listing:Listing(title:"test title", description: "test description", imagepath: ["listingimages/3rWyQLjIYsIA7wlrQ37r/1.jpg"], price:"20.00"))
     }
 }

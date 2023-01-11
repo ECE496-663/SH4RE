@@ -10,6 +10,8 @@ import SwiftUI
 import Combine
 
 struct CreateListingView: View {
+    @Binding var tabSelection: Int
+
     @State private var image = UIImage(named: "CreateListingBkgPic")!
     @State private var pictures:[UIImage] = []
     @State private var num_of_images = 1

@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct HomeView: View {
+    @Binding var tabSelection: Int
+
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
