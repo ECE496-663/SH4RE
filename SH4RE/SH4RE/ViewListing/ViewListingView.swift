@@ -21,8 +21,9 @@ struct ViewListingView: View {
     var listing: Listing
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
+    @State private var showCal = false
+
     
-    let screenSize: CGRect = UIScreen.main.bounds
     var numberOfStars: Float = 4
     var hasHalfStar = true
     var numberOfReviews = 3
@@ -30,6 +31,7 @@ struct ViewListingView: View {
     @State var description:String = ""
     @State var title:String = ""
     @State var price:String = ""
+    @State private var dates: Set<DateComponents> = []
 
     
     var body: some View {
@@ -72,7 +74,7 @@ struct ViewListingView: View {
                         .padding([.top], 10)
                     
                     Button(action: {
-                        print("Check Availability button clicked")
+                        showCal.toggle()
                     }) {
                         HStack {
                             Text("Check Availability")
@@ -90,11 +92,13 @@ struct ViewListingView: View {
                         .padding()
                         
                     }
-                    
                     Text("Reviews (\(numberOfReviews))")
                         .font(.headline)
                         .padding()
                 }
+            }
+            PopUp(show: showCal) {
+                DatePicker(dates: dates)
             }
         }
         
@@ -145,7 +149,7 @@ struct ViewListingView: View {
         }
         .padding([.horizontal])
         .frame(alignment: .bottom)
-        .onAppear(){
+        .onAppear() {
             price = listing.price
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
@@ -163,7 +167,6 @@ struct ViewListingView: View {
             }
         }
     }
-
 }
 
 struct ViewListingView_Previews: PreviewProvider {

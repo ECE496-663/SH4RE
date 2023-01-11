@@ -11,7 +11,6 @@ import Combine
 
 struct DatePicker: View {
     @State private var dates: Set<DateComponents> = []
-    let screenSize: CGRect = UIScreen.main.bounds
 
     @Environment(\.calendar) var calendar
     @Environment(\.timeZone) var timeZone
@@ -32,13 +31,17 @@ struct DatePicker: View {
     }
     
     var body: some View {
+        
         MultiDatePicker(
             "Start Date",
             selection: $dates,
             in: bounds
         )
         .datePickerStyle(.graphical)
-        .frame(maxWidth: screenSize.width * 0.9)
+        .padding(20)
+        .background(Color("White"))
+        .cornerRadius(20)
+
     }
 }
 
