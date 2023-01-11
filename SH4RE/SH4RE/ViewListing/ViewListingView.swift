@@ -97,7 +97,7 @@ struct ViewListingView: View {
                         .padding()
                 }
             }
-            PopUp(show: showCal) {
+            PopUp(show: $showCal) {
                 DatePicker(dates: dates)
             }
         }
