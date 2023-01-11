@@ -41,6 +41,8 @@
 		D120FAB6296658A100CCD7A5 /* Tutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB5296658A100CCD7A5 /* Tutorial.swift */; };
 		D120FAB8296675FA00CCD7A5 /* LoginFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB7296675FA00CCD7A5 /* LoginFlow.swift */; };
 		D120FABA29668A7000CCD7A5 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB929668A7000CCD7A5 /* LoginPage.swift */; };
+		D120FABC2967B4B000CCD7A5 /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FABB2967B4B000CCD7A5 /* CreateAccount.swift */; };
+		D120FABE2968AD6F00CCD7A5 /* GuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FABD2968AD6F00CCD7A5 /* GuestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +97,8 @@
 		D120FAB5296658A100CCD7A5 /* Tutorial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tutorial.swift; sourceTree = "<group>"; };
 		D120FAB7296675FA00CCD7A5 /* LoginFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlow.swift; sourceTree = "<group>"; };
 		D120FAB929668A7000CCD7A5 /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
+		D120FABB2967B4B000CCD7A5 /* CreateAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccount.swift; sourceTree = "<group>"; };
+		D120FABD2968AD6F00CCD7A5 /* GuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -274,6 +278,8 @@
 				D120FAB5296658A100CCD7A5 /* Tutorial.swift */,
 				D120FAB7296675FA00CCD7A5 /* LoginFlow.swift */,
 				D120FAB929668A7000CCD7A5 /* LoginPage.swift */,
+				D120FABB2967B4B000CCD7A5 /* CreateAccount.swift */,
+				D120FABD2968AD6F00CCD7A5 /* GuestView.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -426,6 +432,7 @@
 				5939D38929132D8500866FA5 /* FirebaseDB.swift in Sources */,
 				9D95674B29380B70003F6B74 /* ListingViewModel.swift in Sources */,
 				9D95674D29381193003F6B74 /* Stars.swift in Sources */,
+				D120FABC2967B4B000CCD7A5 /* CreateAccount.swift in Sources */,
 				1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */,
 				9D080594292FE9F400094169 /* AccountView.swift in Sources */,
 				5939D36029132D7000866FA5 /* ContentView.swift in Sources */,
@@ -441,6 +448,7 @@
 				9D080585292FE63C00094169 /* Search.swift in Sources */,
 				D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */,
 				9D95674A29380897003F6B74 /* ImageCarousel.swift in Sources */,
+				D120FABE2968AD6F00CCD7A5 /* GuestView.swift in Sources */,
 				D119C04429281DC600E83142 /* Home.swift in Sources */,
 				D120FAB8296675FA00CCD7A5 /* LoginFlow.swift in Sources */,
 			);

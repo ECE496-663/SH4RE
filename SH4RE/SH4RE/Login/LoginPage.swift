@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct LoginPage: View {
+    @Environment(\.showCreateAccount) var showCreateAccount
     @State private var username: String = ""
     @State private var password: String = ""
 
     var body: some View {
-        let screenSize: CGRect = UIScreen.main.bounds
         ZStack {
             Color(UIColor(Color.init(UIColor(named: "PrimaryBase")!)))
                 .ignoresSafeArea()
@@ -62,6 +62,7 @@ struct LoginPage: View {
 
                     Button(action: {
                         UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                        UserDefaults.standard.set("test", forKey: "UID")
                     })
                     {
                         Text("Login")
@@ -78,7 +79,7 @@ struct LoginPage: View {
                             .font(.system(size: 15))
                             .foregroundColor(.gray)
                         Button(action: {
-                            
+                            self.showCreateAccount!()
                         })
                         {
                             Text("Create a new account")

@@ -9,8 +9,6 @@ import SwiftUI
 
 struct LandingScreen: View {
     var body: some View {
-        let screenSize: CGRect = UIScreen.main.bounds
-
         ZStack {
             Color(UIColor(Color.init(UIColor(named: "PrimaryBase")!)))
                 .ignoresSafeArea()

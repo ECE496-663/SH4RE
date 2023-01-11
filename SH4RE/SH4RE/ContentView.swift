@@ -7,9 +7,11 @@
 
 import SwiftUI
 
+let screenSize: CGRect = UIScreen.main.bounds
+
 struct ContentView: View {
     @AppStorage("isLoggedIn") var is_logged_in: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
-
+    
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
     }

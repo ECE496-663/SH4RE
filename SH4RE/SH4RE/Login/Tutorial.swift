@@ -30,7 +30,6 @@ struct Tutorial: View {
     }
 
     var body: some View {
-        let screenSize: CGRect = UIScreen.main.bounds
         VStack {
             HStack(spacing: 3) {
                 ForEach(0..<3, id: \.self) { index in

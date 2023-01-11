@@ -15,21 +15,34 @@ extension EnvironmentValues {
         get { self[ParentLoginKey.self] }
         set { self[ParentLoginKey.self] = newValue }
     }
+    
+    var showCreateAccount: (() -> Void)? {
+        get { self[ParentLoginKey.self] }
+        set { self[ParentLoginKey.self] = newValue }
+    }
 }
 
 struct LoginFlow: View {
     @State private var close_splash_screen = false
     @State private var close_tutorial_screen = false
     @State private var show_login = false
+    @State private var show_create_account = false
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     func showLoginScreen() {
+        if (self.show_create_account) {
+            self.show_create_account = false
+            self.show_login = true
+        }
         self.close_tutorial_screen = true
+    }
+    
+    func showCreateAccount() {
+        self.show_login = false
+        self.show_create_account = true
     }
 
     var body: some View {
-        let screenSize: CGRect = UIScreen.main.bounds
-
         ZStack {
             LandingScreen()
                 .position(x: screenSize.width * 0.5, y: (self.close_splash_screen) ? screenSize.height * -2 : screenSize.height * 0.452)
@@ -41,7 +54,12 @@ struct LoginFlow: View {
             }
             else {
                 LoginPage()
+                    .environment(\.showCreateAccount, showCreateAccount)
                     .position(x: screenSize.width * 0.5, y: (self.show_login) ? screenSize.height * 0.452 : screenSize.height * -2)
+                if (show_create_account) {
+                    CreateAccount()
+                        .environment(\.showLoginScreen, showLoginScreen)
+                }
             }
 
         }
@@ -56,7 +74,7 @@ struct LoginFlow: View {
             withAnimation(.default) {
                 self.close_splash_screen = false
                 self.close_tutorial_screen = true
-                self.timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
+                self.timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
             }
         })
     }
