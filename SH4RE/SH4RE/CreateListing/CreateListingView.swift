@@ -26,19 +26,7 @@ struct CreateListingView: View {
     @State private var description_placeholder: String = "Description"
     @State private var description: String = ""
     @State var cost = ""
-    @Environment(\.calendar) var calendar
-    @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
-    var bounds: PartialRangeFrom<Date> {
-            let start = calendar.date(
-                from: DateComponents(
-                    timeZone: timeZone,
-                    year: Calendar.current.component(.year, from: Date()),
-                    month: Calendar.current.component(.month, from: Date()),
-                    day: Calendar.current.component(.day, from: Date()))
-            )!
-            return start...
-        }
 
     let screenSize: CGRect = UIScreen.main.bounds
     var storageManager = StorageManager()
@@ -183,13 +171,7 @@ struct CreateListingView: View {
 
                     // custom availability calendar
                     if (show_cal) {
-                        MultiDatePicker(
-                            "Start Date",
-                            selection: $dates,
-                            in: bounds
-                        )
-                        .datePickerStyle(.graphical)
-                        .frame(maxWidth: screenSize.width * 0.9)
+                        DatePicker(dates: dates)
                     }
                     Group {
                         // POST
