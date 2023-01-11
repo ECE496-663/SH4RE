@@ -40,24 +40,6 @@ struct CreateListingView: View {
     @State private var description: String = ""
     @State var cost = ""
     @State private var dates: Set<DateComponents> = []
-<<<<<<< HEAD
-
-=======
-    var bounds: PartialRangeFrom<Date> {
-        let start = calendar.date(
-            from: DateComponents(
-                timeZone: timeZone,
-                year: Calendar.current.component(.year, from: Date()),
-                month: Calendar.current.component(.month, from: Date()),
-                day: Calendar.current.component(.day, from: Date()))
-        )!
-        return start...
-    }
-    @State var showPostAlertX: Bool = false
-    @State var showCancelAlertX: Bool = false
-    @State var errorInField: Bool = false
-    let screenSize: CGRect = UIScreen.main.bounds
->>>>>>> 974aca5a64ab53f926036b3bae84c71af53d6bd7
     var storageManager = StorageManager()
 
     func deleteImage (index: Int) {
@@ -209,18 +191,7 @@ struct CreateListingView: View {
 
                     // custom availability calendar
                     if (show_cal) {
-<<<<<<< HEAD
                         DatePicker(dates: dates)
-=======
-                        MultiDatePicker(
-                            "Start Date",
-                            selection: $dates,
-                            in: bounds
-                        )
-                        .datePickerStyle(.graphical)
-                        .frame(maxWidth: screenSize.width * 0.9)
-                        .tint(Color.init(UIColor(named: "PrimaryBase")!))
->>>>>>> 974aca5a64ab53f926036b3bae84c71af53d6bd7
                     }
                     Group {
                         // POST
