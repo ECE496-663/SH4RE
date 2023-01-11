@@ -41,6 +41,9 @@ struct CreateListingView: View {
     @State var cost = ""
     @State private var dates: Set<DateComponents> = []
     var storageManager = StorageManager()
+    @State var showPostAlertX: Bool = false
+    @State var showCancelAlertX: Bool = false
+    @State var errorInField: Bool = false
 
     func deleteImage (index: Int) {
         num_of_images -= 1
