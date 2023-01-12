@@ -21,6 +21,8 @@ extension EnvironmentValues {
 }
 
 struct CreateListingView: View {
+    @Binding var tabSelection: Int
+
     @State private var image = UIImage(named: "CreateListingBkgPic")!
     @State private var pictures:[UIImage] = []
     @State private var num_of_images = 1
@@ -37,24 +39,11 @@ struct CreateListingView: View {
     @State private var description_placeholder: String = "Description"
     @State private var description: String = ""
     @State var cost = ""
-    @Environment(\.calendar) var calendar
-    @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
-    var bounds: PartialRangeFrom<Date> {
-        let start = calendar.date(
-            from: DateComponents(
-                timeZone: timeZone,
-                year: Calendar.current.component(.year, from: Date()),
-                month: Calendar.current.component(.month, from: Date()),
-                day: Calendar.current.component(.day, from: Date()))
-        )!
-        return start...
-    }
+    var storageManager = StorageManager()
     @State var showPostAlertX: Bool = false
     @State var showCancelAlertX: Bool = false
     @State var errorInField: Bool = false
-    let screenSize: CGRect = UIScreen.main.bounds
-    var storageManager = StorageManager()
 
     func deleteImage (index: Int) {
         num_of_images -= 1
@@ -205,14 +194,7 @@ struct CreateListingView: View {
 
                     // custom availability calendar
                     if (show_cal) {
-                        MultiDatePicker(
-                            "Start Date",
-                            selection: $dates,
-                            in: bounds
-                        )
-                        .datePickerStyle(.graphical)
-                        .frame(maxWidth: screenSize.width * 0.9)
-                        .tint(Color.init(UIColor(named: "PrimaryBase")!))
+                        DatePicker(dates: dates)
                     }
                     Group {
                         // POST

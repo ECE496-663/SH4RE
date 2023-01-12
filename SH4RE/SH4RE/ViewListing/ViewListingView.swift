@@ -16,13 +16,15 @@ import FirebaseStorage
 //if you need to create more variables create filler class variable and we will connect to database in later commit
 
 struct ViewListingView: View {
+    @Binding var tabSelection: Int
     
     //parameters passed in from search nav link
     var listing: Listing
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
+    @State private var showCal = false
+
     
-    let screenSize: CGRect = UIScreen.main.bounds
     var numberOfStars: Float = 4
     var hasHalfStar = true
     var numberOfReviews = 3
@@ -30,6 +32,7 @@ struct ViewListingView: View {
     @State var description:String = ""
     @State var title:String = ""
     @State var price:String = ""
+    @State private var dates: Set<DateComponents> = []
 
     
     var body: some View {
@@ -72,7 +75,7 @@ struct ViewListingView: View {
                         .padding([.top], 10)
                     
                     Button(action: {
-                        print("Check Availability button clicked")
+                        showCal.toggle()
                     }) {
                         HStack {
                             Text("Check Availability")
@@ -90,11 +93,13 @@ struct ViewListingView: View {
                         .padding()
                         
                     }
-                    
                     Text("Reviews (\(numberOfReviews))")
                         .font(.headline)
                         .padding()
                 }
+            }
+            PopUp(show: $showCal) {
+                DatePicker(dates: dates)
             }
         }
         
@@ -123,17 +128,16 @@ struct ViewListingView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Button(action: {
-                    print("Message user about \(listing.price)")
-                }) {
-                    HStack {
-                        Text("Message")
-                            .font(.body)
-                            .foregroundColor(Color("White"))
-                        
-                        Image(systemName: "message")
-                            .foregroundColor(Color("White"))
+                NavigationLink(destination: MessagesView(tabSelection: $tabSelection)) {
+                    Button(action: { tabSelection = 4 }) {
+                        HStack {
+                            Text("Message")
+                                .font(.body)
+                                .foregroundColor(Color("White"))
+                            
+                            Image(systemName: "message")
+                                .foregroundColor(Color("White"))
+                        }
                     }
                 }
                 .frame(alignment: .trailing)
@@ -145,7 +149,7 @@ struct ViewListingView: View {
         }
         .padding([.horizontal])
         .frame(alignment: .bottom)
-        .onAppear(){
+        .onAppear() {
             price = listing.price
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
@@ -162,12 +166,5 @@ struct ViewListingView: View {
                 }
             }
         }
-    }
-
-}
-
-struct ViewListingView_Previews: PreviewProvider {
-    static var previews: some View {
-        ViewListingView(listing:Listing(title:"test title", description: "test description", imagepath: ["listingimages/3rWyQLjIYsIA7wlrQ37r/1.jpg"], price:"20.00"))
     }
 }
