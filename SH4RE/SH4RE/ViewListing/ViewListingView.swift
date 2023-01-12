@@ -45,7 +45,7 @@ struct ViewListingView: View {
                     GeometryReader { geometry in
                         ImageCarouselView(numberOfImages: self.numberOfImages) {
                         ForEach(images, id:\.self) { image in
-                            Image(uiImage: image ?? (UIImage(named:"placeholder") ?? UIImage()))
+                            Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: geometry.size.width, height: 250)
@@ -96,6 +96,25 @@ struct ViewListingView: View {
                     Text("Reviews (\(numberOfReviews))")
                         .font(.headline)
                         .padding()
+                    
+                    HStack(alignment: .top) {
+                        Image("placeholder")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .clipShape(Circle())
+                            .frame(width: 40, height: 40)
+                            
+                        VStack(alignment: .leading) {
+                            Text("Melissa Lim")
+                                .font(.body)
+                                
+                            StarsView(numberOfStars: 3.5)
+                            Text("Fusce non arcu non nunc ultrices hendrerit. In libero risus, auctor ac turpis in, venenatis tempus erat tincidunt et lorem ipsum.")
+                                .font(.footnote)
+                        }
+                        
+                    }.padding([.horizontal])
+                    
                 }
             }
             PopUp(show: $showCal) {
