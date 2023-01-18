@@ -7,13 +7,12 @@
 
 import SwiftUI
 import Firebase
+import FirebaseAuth
 
 class Account: ObservableObject {
-    @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
-    
     var body: some Scene {
         WindowGroup {
-            if (username.isEmpty) {
+            if (CurrentUser().isGuest()) {
                 GuestView()
             }
             else {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 var screenSize: CGRect = UIScreen.main.bounds
 
@@ -14,12 +15,14 @@ struct ContentView: View {
     @State private var tabSelection = 1
     @AppStorage("isLoggedIn") var is_logged_in: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
     
+    @ObservedObject var currentUser = CurrentUser()
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
     }
     
     var body: some View {
         ZStack {
+                        if (currentUser.hasLoggedIn) {
             TabView(selection: $tabSelection) {
                 HomeView(tabSelection: $tabSelection)
                     .tabItem {
@@ -46,6 +49,9 @@ struct ContentView: View {
                         Label("Account", systemImage: "person.crop.circle.fill")
                     }
                     .tag(5)
+            }
+            else {
+                LoginFlow().environmentObject(currentUser)
             }
         }
     }

@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct CreateAccount: View {
     @Environment(\.showLoginScreen) var showLoginScreen
+    @EnvironmentObject var currentUser : CurrentUser
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var confirm_password: String = ""
+    @State private var confirmPassword: String = ""
 
     var body: some View {
         ZStack {
@@ -49,7 +51,7 @@ struct CreateAccount: View {
                         Text("Confirm Password")
                             .font(.system(size: 18))
                             .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
-                        SecureField("Your password", text: $confirm_password)
+                        SecureField("Your password", text: $confirmPassword)
                             .disableAutocorrection(true)
                             .autocapitalization(.none)
                             .frame(width: screenSize.width * 0.8, height: 20)
@@ -62,8 +64,15 @@ struct CreateAccount: View {
                     
                     VStack {
                         Button(action: {
-                            UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                            UserDefaults.standard.set("test", forKey: "UID")
+                            Task{
+                                do  {
+                                  try await Auth.auth().createUser(withEmail: username, password: password)
+                                }
+                                catch {
+                                  print(error.localizedDescription)
+                                }
+                            }
+                            currentUser.hasLoggedIn = true
                         })
                         {
                             Text("Create Account")
@@ -86,7 +95,15 @@ struct CreateAccount: View {
                                 .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
                         }
                         Button(action: {
-                            UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                            Task{
+                                do  {
+                                  try await Auth.auth().signInAnonymously()
+                                }
+                                catch {
+                                  print(error.localizedDescription)
+                                }
+                            }
+                            currentUser.hasLoggedIn = true
                         })
                         {
                             Text("Continue as guest")

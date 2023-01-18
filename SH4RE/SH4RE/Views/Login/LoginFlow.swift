@@ -28,6 +28,7 @@ struct LoginFlow: View {
     @State private var show_login = false
     @State private var show_create_account = false
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @EnvironmentObject var currentUser : CurrentUser
 
     func showLoginScreen() {
         if (self.show_create_account) {
@@ -54,11 +55,11 @@ struct LoginFlow: View {
             }
             else {
                 LoginPage()
-                    .environment(\.showCreateAccount, showCreateAccount)
+                    .environment(\.showCreateAccount, showCreateAccount).environmentObject(currentUser)
                     .position(x: screenSize.width * 0.5, y: (self.show_login) ? screenSize.height * 0.452 : screenSize.height * -2)
                 if (show_create_account) {
                     CreateAccount()
-                        .environment(\.showLoginScreen, showLoginScreen)
+                        .environment(\.showLoginScreen, showLoginScreen).environmentObject(currentUser)
                 }
             }
 

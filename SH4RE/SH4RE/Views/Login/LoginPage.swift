@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct LoginPage: View {
     @Environment(\.showCreateAccount) var showCreateAccount
+    @EnvironmentObject var currentUser : CurrentUser
     @State private var username: String = ""
     @State private var password: String = ""
+    
 
     var body: some View {
         ZStack {
@@ -61,8 +64,15 @@ struct LoginPage: View {
                         .frame(height: screenSize.height * 0.25)
 
                     Button(action: {
-                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                        UserDefaults.standard.set("test", forKey: "UID")
+                        Task{
+                            do  {
+                              try await Auth.auth().signIn(withEmail: username, password: password)
+                            }
+                            catch {
+                              print(error.localizedDescription)
+                            }
+                        }
+                        currentUser.hasLoggedIn = true
                     })
                     {
                         Text("Login")

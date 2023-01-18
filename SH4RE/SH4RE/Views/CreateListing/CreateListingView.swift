@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import AlertX
+import FirebaseAuth
 
 struct ParentFunctionKey: EnvironmentKey {
     static let defaultValue: ((Int) -> Void)? = nil
@@ -42,7 +43,6 @@ struct CreateListingView: View {
     @State var cost = ""
  
     @State private var dates: Set<DateComponents> = []
-
     @State var showPostAlertX: Bool = false
     @State var showCancelAlertX: Bool = false
     @State var errorInField: Bool = false
@@ -56,8 +56,8 @@ struct CreateListingView: View {
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-            if (username.isEmpty) {
-                GuestView()
+            if (currentUser.isGuest()) {
+                GuestView().environmentObject(currentUser)
             }
             else {
                 VStack {
