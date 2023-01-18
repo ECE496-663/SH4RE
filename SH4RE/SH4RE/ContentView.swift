@@ -6,19 +6,19 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 let screenSize: CGRect = UIScreen.main.bounds
 
 struct ContentView: View {
-    @AppStorage("isLoggedIn") var is_logged_in: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
-    
+    @ObservedObject var currentUser = CurrentUser()
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
     }
     
     var body: some View {
         ZStack {
-            if (is_logged_in) {
+            if (currentUser.hasLoggedIn) {
                 TabView {
                     HomeView()
                         .tabItem {
@@ -28,15 +28,15 @@ struct ContentView: View {
                         .tabItem {
                             Label("Search", systemImage: "safari.fill")
                         }
-                    CreateListingView()
+                    CreateListingView().environmentObject(currentUser)
                         .tabItem {
                             Label("Post", systemImage: "plus.square.fill")
                         }
-                    MessagesView()
+                    MessagesView().environmentObject(currentUser)
                         .tabItem {
                             Label("Messages", systemImage: "message.fill")
                         }
-                    AccountView()
+                    AccountView().environmentObject(currentUser)
                         .tabItem {
                             Label("Account", systemImage: "person.crop.circle.fill")
                         }
@@ -44,7 +44,7 @@ struct ContentView: View {
                 .accentColor(Color.init(UIColor(named: "PrimaryDark")!))
             }
             else {
-                LoginFlow()
+                LoginFlow().environmentObject(currentUser)
             }
         }
     }

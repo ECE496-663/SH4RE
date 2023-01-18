@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import AlertX
+import FirebaseAuth
 
 struct ParentFunctionKey: EnvironmentKey {
     static let defaultValue: ((Int) -> Void)? = nil
@@ -21,8 +22,6 @@ extension EnvironmentValues {
 }
 
 struct CreateListingView: View {
-    @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
-    
     @State private var image = UIImage(named: "CreateListingBkgPic")!
     @State private var pictures:[UIImage] = []
     @State private var num_of_images = 1
@@ -42,6 +41,8 @@ struct CreateListingView: View {
     @Environment(\.calendar) var calendar
     @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
+    @EnvironmentObject var currentUser: CurrentUser
+    
     var bounds: PartialRangeFrom<Date> {
         let start = calendar.date(
             from: DateComponents(
@@ -65,8 +66,8 @@ struct CreateListingView: View {
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-            if (username.isEmpty) {
-                GuestView()
+            if (currentUser.isGuest()) {
+                GuestView().environmentObject(currentUser)
             }
             else {
                 VStack {

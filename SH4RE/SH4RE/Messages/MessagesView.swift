@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct MessagesView: View {
-    @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
-    
+    @EnvironmentObject var currentUser: CurrentUser
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-            if (username.isEmpty) {
-                GuestView()
+            if (currentUser.isGuest()) {
+                GuestView().environmentObject(currentUser)
             }
             else {
                 VStack {

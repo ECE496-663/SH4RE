@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct GuestView: View {
+    @EnvironmentObject var currentUser: CurrentUser
     var body: some View {
         VStack {
             Text("You are currently logged in as a Guest, to make requests to rent items or make your own listings please login in to your account")
@@ -18,8 +20,7 @@ struct GuestView: View {
                 .padding()
             
             Button(action: {
-                UserDefaults.standard.set(false, forKey: "isLoggedIn")
-                UserDefaults.standard.set("", forKey: "UID")
+                currentUser.hasLoggedIn = false
             })
             {
                 Text("Login to your account")
