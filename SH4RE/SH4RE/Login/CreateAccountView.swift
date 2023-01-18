@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct CreateAccountView: View {
     @Environment(\.showLoginScreen) var showLoginScreen
+    @EnvironmentObject var currentUser : CurrentUser
+    @State private var name: String = ""
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
@@ -28,6 +31,13 @@ struct CreateAccountView: View {
                         .frame(height: screenSize.height * 0.05)
                     
                     VStack {
+                        Text("Name")
+                            .font(.system(size: 18))
+                            .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
+                        TextField("Your Name", text: $name)
+                            .frame(width: screenSize.width * 0.8, height: 20)
+                            .textFieldStyle(.roundedBorder)
+                            .padding()
                         Text("Email Address")
                             .font(.system(size: 18))
                             .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
@@ -60,12 +70,21 @@ struct CreateAccountView: View {
                     }
 
                     Spacer()
-                        .frame(height: screenSize.height * 0.25)
+                        .frame(height: screenSize.height * 0.1)
                     
                     VStack {
                         Button(action: {
-                            UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                            UserDefaults.standard.set("test", forKey: "UID")
+                            Task{
+                                do  {
+                                    try await Auth.auth().createUser(withEmail: username, password: password)
+                                    currentUser.hasLoggedIn = true
+                                    documentWrite(collectionPath: "User Info", uid: Auth.auth().currentUser!.uid, data: ["name": name,"email": username])
+                                }
+                                catch {
+                                    print(error.localizedDescription)
+                                }
+                            }
+                            currentUser.hasLoggedIn = true
                         })
                         {
                             Text("Create Account")
@@ -85,8 +104,24 @@ struct CreateAccountView: View {
                                 .foregroundColor(.primaryDark)
                                 .background(.white)
                                 .cornerRadius(40)
-                                .overlay(RoundedRectangle(cornerRadius: 40)
-                                    .stroke(Color.primaryDark, lineWidth: 2))
+                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.primaryDark, lineWidth: 2))
+                        }
+                        Button(action: {
+                            Task{
+                                do  {
+                                  try await Auth.auth().signInAnonymously()
+                                }
+                                catch {
+                                  print(error.localizedDescription)
+                                }
+                            }
+                            currentUser.hasLoggedIn = true
+                        })
+                        {
+                            Text("Continue as guest")
+                                .font(.system(size: 15))
+                                .frame(alignment: .trailing)
+                                .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
                         }
                     }
                     Spacer()

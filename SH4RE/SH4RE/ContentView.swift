@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 let screenSize: CGRect = UIScreen.main.bounds
 
@@ -22,16 +23,15 @@ extension Color {
 }
 
 struct ContentView: View {
-    @AppStorage("isLoggedIn") var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
     @State private var tabSelection = 1
-    
+    @ObservedObject var currentUser = CurrentUser()
     init() {
         UITabBar.appearance().backgroundColor = UIColor(.backgroundGrey)
     }
     
     var body: some View {
         ZStack {
-            if (isLoggedIn) {
+            if (currentUser.hasLoggedIn) {
                 TabView(selection: $tabSelection) {
                     HomeView(tabSelection: $tabSelection)
                         .tabItem {
@@ -43,17 +43,17 @@ struct ContentView: View {
                             Label("Search", systemImage: "safari.fill")
                         }
                         .tag(2)
-                    CreateListingView(tabSelection: $tabSelection)
+                    CreateListingView(tabSelection: $tabSelection).environmentObject(currentUser)
                         .tabItem {
                             Label("Post", systemImage: "plus.square.fill")
                         }
                         .tag(3)
-                    MessagesView(tabSelection: $tabSelection)
+                    MessagesView(tabSelection: $tabSelection).environmentObject(currentUser)
                         .tabItem {
                             Label("Messages", systemImage: "message.fill")
                         }
                         .tag(4)
-                    AccountView(tabSelection: $tabSelection)
+                    AccountView(tabSelection: $tabSelection).environmentObject(currentUser)
                         .tabItem {
                             Label("Account", systemImage: "person.crop.circle.fill")
                         }
@@ -62,7 +62,7 @@ struct ContentView: View {
                 .accentColor(.primaryDark)
             }
             else {
-                LoginControlView()
+                LoginControlView().environmentObject(currentUser)
             }
         }
     }

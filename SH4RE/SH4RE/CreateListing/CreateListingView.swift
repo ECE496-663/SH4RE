@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import AlertX
+import FirebaseAuth
 
 struct ParentFunctionKey: EnvironmentKey {
     static let defaultValue: ((Int) -> Void)? = nil
@@ -21,11 +22,8 @@ extension EnvironmentValues {
 }
 
 struct CreateListingView: View {
-    @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
     var storageManager = StorageManager()
     @Binding var tabSelection: Int
-
-    // image entry
     @State private var image = UIImage(named: "CreateListingBkgPic")!
     @State private var pictures:[UIImage] = []
     @State private var imagesCount = 1
@@ -54,6 +52,8 @@ struct CreateListingView: View {
     @Environment(\.calendar) var calendar
     @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
+    @EnvironmentObject var currentUser: CurrentUser
+    
     var bounds: PartialRangeFrom<Date> {
         let start = calendar.date(
             from: DateComponents(
@@ -73,8 +73,8 @@ struct CreateListingView: View {
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-            if (username.isEmpty) {
-                GuestView(tabSelection: $tabSelection)
+            if (currentUser.isGuest()) {
+                GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
             else {
                 VStack {
@@ -250,7 +250,7 @@ struct CreateListingView: View {
                                     else {
                                         calAvail = availabilitySelection
                                     }
-                                    let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode]
+                                    let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()]
                                     let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
                                     
                                     // upload images and add paths to data fields
