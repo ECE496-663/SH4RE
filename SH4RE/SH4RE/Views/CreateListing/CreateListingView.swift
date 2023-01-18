@@ -22,7 +22,6 @@ extension EnvironmentValues {
 
 struct CreateListingView: View {
     @Binding var tabSelection: Int
-
     @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
     
     @State private var image = UIImage(named: "CreateListingBkgPic")!
@@ -41,8 +40,9 @@ struct CreateListingView: View {
     @State private var description_placeholder: String = "Description"
     @State private var description: String = ""
     @State var cost = ""
+ 
     @State private var dates: Set<DateComponents> = []
-    var storageManager = StorageManager()
+
     @State var showPostAlertX: Bool = false
     @State var showCancelAlertX: Bool = false
     @State var errorInField: Bool = false
@@ -201,50 +201,27 @@ struct CreateListingView: View {
                         
                         // custom availability calendar
                         if (show_cal) {
-                            MultiDatePicker(
-                                "Start Date",
-                                selection: $dates,
-                                in: bounds
-                            )
-                            .datePickerStyle(.graphical)
-                            .frame(maxWidth: screenSize.width * 0.9)
-                            .tint(Color.init(UIColor(named: "PrimaryBase")!))
+                            DatePicker(dates: dates)
                         }
-                    }
-                    HStack {
-                        Text("or make a")
-                        Button(action: {
-                            show_cal = true
-                            availability_dropdown_selection = ""
-                        }) {
-                            Text("Custom Availability")
-                        }
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(Color.init(UIColor(named: "PrimaryBase")!))
-                    }
-                    .frame(maxWidth: screenSize.width * 0.85, alignment: .leading)
-
-                    // custom availability calendar
-                    if (show_cal) {
-                        DatePicker(dates: dates)
-                    }
-                    Group {
-                        // POST
-                        Button(action: {
-                            // validate entries
-                            if (self.title.isEmpty || self.cost.isEmpty || self.postal_code.isEmpty ||
-                                self.pictures.isEmpty || self.drop_down_selection.isEmpty || self.description.isEmpty ||
-                                (self.availability_dropdown_selection.isEmpty && self.dates.isEmpty)) {
-                                self.errorInField = true
-                            }
-                            if (!self.errorInField) {
-                                // upload data fields
-                                var cal_avail = ""
-                                if (show_cal) {
-                                    var string_dates = ""
-                                    for date in dates {
-                                        let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
-                                        string_dates += res + ","
+                        Group {
+                            // POST
+                            Button(action: {
+                                // validate entries
+                                if (self.title.isEmpty || self.cost.isEmpty || self.postal_code.isEmpty ||
+                                    self.pictures.isEmpty || self.drop_down_selection.isEmpty || self.description.isEmpty ||
+                                    (self.availability_dropdown_selection.isEmpty && self.dates.isEmpty)) {
+                                    self.errorInField = true
+                                }
+                                if (!self.errorInField) {
+                                    // upload data fields
+                                    var cal_avail = ""
+                                    if (show_cal) {
+                                        var string_dates = ""
+                                        for date in dates {
+                                            let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
+                                            string_dates += res + ","
+                                        }
+                                        cal_avail = String(string_dates.dropLast())
                                     }
                                     else {
                                         cal_avail = availability_dropdown_selection

@@ -154,20 +154,13 @@
 		5939D35C29132D7000866FA5 /* SH4RE */ = {
 			isa = PBXGroup;
 			children = (
-				D120FAB22966530700CCD7A5 /* Login */,
-				9D95674829380837003F6B74 /* Components */,
 				5939D35D29132D7000866FA5 /* SH4REApp.swift */,
 				5939D35F29132D7000866FA5 /* ContentView.swift */,
-				9D08058E292FE9CD00094169 /* Account */,
-				9D08058D292FE9B900094169 /* Search */,
-				9D08058C292FE98000094169 /* Messages */,
-				9D08058A292FE94100094169 /* Home */,
-				9D08058B292FE96A00094169 /* CreateListing */,
+				9D40362C2977760500121FF0 /* Views */,
+				9D40362A2977755400121FF0 /* Models */,
 				5939D36429132D7200866FA5 /* Preview Content */,
-				9D080599292FF48200094169 /* ViewListing */,
 				5939D38829132D8500866FA5 /* FirebaseDB.swift */,
 				5939D36129132D7200866FA5 /* Assets.xcassets */,
-				12AA3C2D2933038800F7F8E3 /* ListingViewModel.swift */,
 				5939D36329132D7200866FA5 /* SH4RE.entitlements */,
 			);
 			path = SH4RE;
@@ -245,6 +238,29 @@
 				9D080595292FF43800094169 /* ViewListingView.swift */,
 			);
 			path = ViewListing;
+			sourceTree = "<group>";
+		};
+		9D40362A2977755400121FF0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				12AA3C2D2933038800F7F8E3 /* ListingViewModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9D40362C2977760500121FF0 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9D95674829380837003F6B74 /* Components */,
+				9D080599292FF48200094169 /* ViewListing */,
+				9D08058E292FE9CD00094169 /* Account */,
+				9D08058D292FE9B900094169 /* Search */,
+				9D08058C292FE98000094169 /* Messages */,
+				9D08058A292FE94100094169 /* Home */,
+				9D08058B292FE96A00094169 /* CreateListing */,
+				D120FAB22966530700CCD7A5 /* Login */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		9D95674829380837003F6B74 /* Components */ = {
@@ -434,7 +450,6 @@
 				D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */,
 				9D95674A29380897003F6B74 /* ImageCarousel.swift in Sources */,
 				D120FABE2968AD6F00CCD7A5 /* GuestView.swift in Sources */,
-				D119C04429281DC600E83142 /* Home.swift in Sources */,
 				D120FAB8296675FA00CCD7A5 /* LoginFlow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
