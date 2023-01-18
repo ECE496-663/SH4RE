@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct LoginPage: View {
-    @Environment(\.showCreateAccount) var showCreateAccount
+    @Environment(\.showCreateAccountScreen) var showCreateAccountScreen
     @State private var username: String = ""
     @State private var password: String = ""
 
     var body: some View {
         ZStack {
-            Color(UIColor(Color.init(UIColor(named: "PrimaryBase")!)))
+            Color(UIColor(customColours["primaryBase"]!))
                 .ignoresSafeArea()
             Text("Login")
                 .foregroundColor(.white)
@@ -52,7 +52,7 @@ struct LoginPage: View {
                             Text("Forgot Password?\t\t")
                                 .font(.system(size: 15))
                                 .frame(alignment: .trailing)
-                                .foregroundColor(Color.init(UIColor(named: "PrimaryBase")!))
+                                .foregroundColor(customColours["primaryBase"]!)
                             
                         }
                     }
@@ -70,7 +70,7 @@ struct LoginPage: View {
                             .frame(width: screenSize.width * 0.8, height: 40)
                             .padding()
                             .foregroundColor(.white)
-                            .background(Color.init(UIColor(named: "PrimaryDark")!))
+                            .background(customColours["primaryDark"]!)
                             .cornerRadius(40)
                             .padding(.bottom)
                     }
@@ -79,19 +79,19 @@ struct LoginPage: View {
                             .font(.system(size: 15))
                             .foregroundColor(.gray)
                         Button(action: {
-                            self.showCreateAccount!()
+                            showCreateAccountScreen!()
                         })
                         {
                             Text("Create a new account")
                                 .font(.system(size: 15))
                                 .frame(alignment: .trailing)
-                                .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
+                                .foregroundColor(customColours["primaryDark"]!)
                         }
                     }
                     Spacer()
                 }
                 .frame(maxWidth: screenSize.width, maxHeight: screenSize.height)
-                .background(Color.init(UIColor(named: "Grey")!))
+                .background(customColours["grey"]!)
                 .cornerRadius(50)
             }
             .offset(x: 0, y: screenSize.height * 0.15)

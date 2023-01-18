@@ -10,8 +10,6 @@ import Firebase
 
 @main
 struct SH4REApp: App {
-    @StateObject var create_listing = CreateListing()
-    @StateObject var home = Home()
     init(){
         FirebaseApp.configure()
     }

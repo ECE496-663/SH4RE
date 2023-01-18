@@ -22,23 +22,34 @@ extension EnvironmentValues {
 
 struct CreateListingView: View {
     @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
-    
+    var storageManager = StorageManager()
+
+    // image entry
     @State private var image = UIImage(named: "CreateListingBkgPic")!
     @State private var pictures:[UIImage] = []
-    @State private var num_of_images = 1
+    @State private var imagesCount = 1
     @State private var showSheet = false
-    @State private var show_cal = false
+    func deleteImage (index: Int) {
+        imagesCount -= 1
+        pictures.remove(at: index)
+    }
+    
+    // text fields
     @State private var title: String = ""
-    @State private var postal_code: String = ""
-    @State var drop_down_selection = ""
-    var drop_down_placeholder = " Category"
-    var drop_down_list = ["Tools", "Sporting Equipment", "Cameras", "Cooking"]
-    @State var availability_dropdown_selection = ""
-    var availability_dropdown_placeholder = " Availability"
-    var availability_dropdown = ["Everyday", "Weekdays", "Weekends"]
-    @State private var description_placeholder: String = "Description"
-    @State private var description: String = ""
+    @State private var postalCode: String = ""
     @State var cost = ""
+    @State private var description: String = ""
+
+    // drop down fields
+    @State var categorySelection = ""
+    var categoryPlaceholder = " Category"
+    var categoryList = ["Tools", "Sporting Equipment", "Cameras", "Cooking"]
+    @State var availabilitySelection = ""
+    var availabilityPlaceholder = " Availability"
+    var availabilityList = ["Everyday", "Weekdays", "Weekends"]
+    
+    // calendar entry
+    @State private var showCal = false
     @Environment(\.calendar) var calendar
     @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
@@ -52,16 +63,12 @@ struct CreateListingView: View {
         )!
         return start...
     }
+    
+    // popups
     @State var showPostAlertX: Bool = false
     @State var showCancelAlertX: Bool = false
     @State var errorInField: Bool = false
-    var storageManager = StorageManager()
-
-    func deleteImage (index: Int) {
-        num_of_images -= 1
-        pictures.remove(at: index)
-    }
-
+    
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
@@ -71,7 +78,7 @@ struct CreateListingView: View {
             else {
                 VStack {
                     GeometryReader { geometry in
-                        ImageCarouselView(numberOfImages: self.num_of_images) {
+                        ImageCarouselView(numberOfImages: imagesCount) {
                             ForEach(pictures, id:\.self) { picture in
                                 Image(uiImage: picture)
                                     .resizable()
@@ -79,7 +86,7 @@ struct CreateListingView: View {
                                     .frame(width: geometry.size.width, height: 250)
                                     .aspectRatio(contentMode: .fill)
                             }
-                            if (self.num_of_images < 6) {
+                            if (imagesCount < 6) {
                                 Image("CreateListingBkgPic")
                                     .resizable()
                                     .scaledToFit()
@@ -88,14 +95,14 @@ struct CreateListingView: View {
                                     .onTapGesture {
                                         showSheet = true
                                         if (!showSheet) {
-                                            pictures.append(self.image)
+                                            pictures.append(image)
                                         }
                                     }
-                                    .onChange(of: self.image) { newItem in
+                                    .onChange(of: image) { newItem in
                                         Task {
-                                            pictures.append(self.image)
+                                            pictures.append(image)
                                         }
-                                        self.num_of_images += 1
+                                        imagesCount += 1
                                     }
                             }
                         }
@@ -104,7 +111,7 @@ struct CreateListingView: View {
                     // this just opens the sheet to select a photo from library
                     .sheet(isPresented: $showSheet) {
                         // Pick an image from the photo library:
-                        ImagePicker(sourceType: .photoLibrary, selectedImage: self.$image)
+                        ImagePicker(sourceType: .photoLibrary, selectedImage: $image)
                         
                         //  If you wish to take a photo from camera instead:
                         // ImagePicker(sourceType: .camera, selectedImage: self.$image)
@@ -125,19 +132,19 @@ struct CreateListingView: View {
                         
                         // category entry
                         Menu {
-                            ForEach(drop_down_list, id: \.self){ client in
-                                Button(client) {
-                                    self.drop_down_selection = " "+client
+                            ForEach(categoryList, id: \.self){ selection in
+                                Button(selection) {
+                                    categorySelection = " " + selection
                                 }
                             }
                         } label: {
                             VStack{
                                 HStack{
-                                    Text(drop_down_selection.isEmpty ? drop_down_placeholder : drop_down_selection)
-                                        .foregroundColor(drop_down_selection.isEmpty ? Color("TextFieldInputDefault") : .black)
+                                    Text(categorySelection.isEmpty ? categoryPlaceholder : categorySelection)
+                                        .foregroundColor(categorySelection.isEmpty ? customColours["textfield"]! : .black)
                                     Spacer()
                                     Image(systemName: "arrowtriangle.left.fill")
-                                        .foregroundColor(Color.init(UIColor(named: "TextFieldInputDefault")!))
+                                        .foregroundColor(customColours["textfield"]!)
                                 }
                                 .frame(width: screenSize.width * 0.9, height: 30)
                                 .background(.white)
@@ -155,14 +162,14 @@ struct CreateListingView: View {
                             .onReceive(Just(cost)) { newValue in
                                 let filtered = newValue.filter { "0123456789".contains($0) }
                                 if filtered != newValue {
-                                    self.cost = filtered
+                                    cost = filtered
                                 }
                             }
                             .frame(width: screenSize.width * 0.9, height: 20)
                             .padding()
                         
                         // postal code entry
-                        TextField("Postal Code e.g. A1A 1A1", text: $postal_code)
+                        TextField("Postal Code e.g. A1A 1A1", text: $postalCode)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: screenSize.width * 0.9, height: 20)
                             .padding()
@@ -174,18 +181,18 @@ struct CreateListingView: View {
                         
                         // availability
                         Menu {
-                            ForEach(availability_dropdown, id: \.self){ client in
-                                Button(client) {
-                                    show_cal = false
+                            ForEach(availabilityList, id: \.self){ selection in
+                                Button(selection) {
+                                    showCal = false
                                     dates = []
-                                    self.availability_dropdown_selection = " "+client
+                                    availabilitySelection = " " + selection
                                 }
                             }
                         } label: {
                             VStack{
                                 HStack{
-                                    Text(availability_dropdown_selection.isEmpty ? availability_dropdown_placeholder : availability_dropdown_selection)
-                                        .foregroundColor(availability_dropdown_selection.isEmpty ? Color("TextFieldInputDefault") : Color("Black"))
+                                    Text(availabilitySelection.isEmpty ? availabilityPlaceholder : availabilitySelection)
+                                        .foregroundColor(availabilitySelection.isEmpty ? Color("TextFieldInputDefault") : Color("Black"))
                                     Spacer()
                                     Image(systemName: "arrowtriangle.left.fill")
                                         .foregroundColor(Color("TextFieldInputDefault"))
@@ -198,18 +205,18 @@ struct CreateListingView: View {
                         HStack {
                             Text("or make a")
                             Button(action: {
-                                show_cal = true
-                                availability_dropdown_selection = ""
+                                showCal = true
+                                availabilitySelection = ""
                             }) {
                                 Text("Custom Availability")
                             }
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(Color.init(UIColor(named: "PrimaryBase")!))
+                            .foregroundColor(customColours["primaryBase"]!)
                         }
                         .frame(maxWidth: screenSize.width * 0.85, alignment: .leading)
                         
                         // custom availability calendar
-                        if (show_cal) {
+                        if (showCal) {
                             MultiDatePicker(
                                 "Start Date",
                                 selection: $dates,
@@ -217,59 +224,59 @@ struct CreateListingView: View {
                             )
                             .datePickerStyle(.graphical)
                             .frame(maxWidth: screenSize.width * 0.9)
-                            .tint(Color.init(UIColor(named: "PrimaryBase")!))
+                            .tint(customColours["primaryBase"]!)
                         }
                         Group {
                             // POST
                             Button(action: {
                                 // validate entries
-                                if (self.title.isEmpty || self.cost.isEmpty || self.postal_code.isEmpty ||
-                                    self.pictures.isEmpty || self.drop_down_selection.isEmpty || self.description.isEmpty ||
-                                    (self.availability_dropdown_selection.isEmpty && self.dates.isEmpty)) {
-                                    self.errorInField = true
+                                if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
+                                    pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
+                                    (availabilitySelection.isEmpty && dates.isEmpty)) {
+                                    errorInField = true
                                 }
-                                if (!self.errorInField) {
+                                if (!errorInField) {
                                     // upload data fields
-                                    var cal_avail = ""
-                                    if (show_cal) {
-                                        var string_dates = ""
+                                    var calAvail = ""
+                                    if (showCal) {
+                                        var stringDates = ""
                                         for date in dates {
                                             let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
-                                            string_dates += res + ","
+                                            stringDates += res + ","
                                         }
-                                        cal_avail = String(string_dates.dropLast())
+                                        calAvail = String(stringDates.dropLast())
                                     }
                                     else {
-                                        cal_avail = availability_dropdown_selection
+                                        calAvail = availabilitySelection
                                     }
-                                    let listing_fields = ["Title": title, "Description" : description, "Price" : cost, "Category" : drop_down_selection, "Availability": cal_avail, "Address": postal_code]
-                                    let document_id = documentWrite(collectionPath: "Listings",data:listing_fields)
+                                    let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode]
+                                    let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
                                     
                                     // upload images and add paths to data fields
-                                    var i = 1
-                                    var image_path = ""
-                                    var arr_imgs:[String] = []
+                                    var index = 1
+                                    var imgPath = ""
+                                    var arrayImgs:[String] = []
                                     for pic in pictures {
-                                        image_path = "listingimages/" + document_id + "/" + String(i) + ".jpg"
-                                        arr_imgs.append(image_path)
-                                        storageManager.upload(image: pic, path: image_path)
-                                        i += 1
+                                        imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
+                                        arrayImgs.append(imgPath)
+                                        storageManager.upload(image: pic, path: imgPath)
+                                        index += 1
                                     }
-                                    if (documentUpdate(collectionPath: "Listings", documentID: document_id, data: ["image_path" : arr_imgs])) {
+                                    if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
                                         NSLog("error");
                                     }
                                     
                                     //reset inputs
-                                    self.pictures = []
-                                    self.num_of_images = 1
-                                    self.title = ""
-                                    self.description = ""
-                                    self.cost = ""
-                                    self.postal_code = ""
-                                    self.drop_down_selection = ""
-                                    self.availability_dropdown_selection = ""
-                                    show_cal = false
-                                    self.showPostAlertX = true
+                                    pictures = []
+                                    imagesCount = 1
+                                    title = ""
+                                    description = ""
+                                    cost = ""
+                                    postalCode = ""
+                                    categorySelection = ""
+                                    availabilitySelection = ""
+                                    showCal = false
+                                    showPostAlertX = true
                                 }
                             }) {
                                 Text("Post")
@@ -277,21 +284,21 @@ struct CreateListingView: View {
                                     .frame(width: screenSize.width * 0.9, height: 20)
                                     .padding()
                                     .foregroundColor(.white)
-                                    .background(Color.init(UIColor(named: "PrimaryDark")!))
+                                    .background(customColours["primaryDark"]!)
                                     .cornerRadius(40)
                             }
                             .alertX(isPresented: $errorInField, content: {
                                 AlertX(
                                     title: Text("ERROR: Entries missing"),
                                     theme: AlertX.Theme.custom(
-                                        windowColor: Color.init(UIColor(named: "Error")!),
+                                        windowColor: customColours["error"]!,
                                         alertTextColor: .white,
                                         enableShadow: true,
                                         enableRoundedCorners: true,
                                         enableTransparency: false,
                                         cancelButtonColor: .white,
                                         cancelButtonTextColor: .white,
-                                        defaultButtonColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                        defaultButtonColor: customColours["primaryDark"]!,
                                         defaultButtonTextColor: .white
                                     )
                                 )
@@ -301,13 +308,13 @@ struct CreateListingView: View {
                                     title: Text("Listing Posted!"),
                                     theme: AlertX.Theme.custom(
                                         windowColor: .white,
-                                        alertTextColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                        alertTextColor: customColours["primaryDark"]!,
                                         enableShadow: true,
                                         enableRoundedCorners: true,
                                         enableTransparency: false,
                                         cancelButtonColor: .white,
                                         cancelButtonTextColor: .white,
-                                        defaultButtonColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                        defaultButtonColor: customColours["primaryDark"]!,
                                         defaultButtonTextColor: .white
                                     )
                                 )
@@ -315,26 +322,26 @@ struct CreateListingView: View {
                             
                             // Cancel
                             Button(action: {
-                                self.pictures = []
-                                self.num_of_images = 1
-                                self.title = ""
-                                self.description = ""
-                                self.cost = ""
-                                self.postal_code = ""
-                                self.drop_down_selection = ""
-                                self.availability_dropdown_selection = ""
-                                show_cal = false
-                                self.showCancelAlertX.toggle()
+                                pictures = []
+                                imagesCount = 1
+                                title = ""
+                                description = ""
+                                cost = ""
+                                postalCode = ""
+                                categorySelection = ""
+                                availabilitySelection = ""
+                                showCal = false
+                                showCancelAlertX.toggle()
                             })
                             {
                                 Text("Cancel")
                                     .fontWeight(.semibold)
                                     .frame(width: screenSize.width * 0.9, height: 10)
                                     .padding()
-                                    .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
+                                    .foregroundColor(customColours["primaryDark"]!)
                                     .background(.white)
                                     .cornerRadius(40)
-                                    .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
+                                    .overlay(RoundedRectangle(cornerRadius: 40) .stroke(customColours["primaryDark"]!, lineWidth: 2))
                             }
                             .padding(.bottom)
                             .alertX(isPresented: $showCancelAlertX, content: {
@@ -342,13 +349,13 @@ struct CreateListingView: View {
                                     title: Text("Listing Cleared"),
                                     theme: AlertX.Theme.custom(
                                         windowColor: .white,
-                                        alertTextColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                        alertTextColor: customColours["primaryDark"]!,
                                         enableShadow: true,
                                         enableRoundedCorners: true,
                                         enableTransparency: false,
                                         cancelButtonColor: .white,
                                         cancelButtonTextColor: .white,
-                                        defaultButtonColor: Color.init(UIColor(named: "PrimaryDark")!),
+                                        defaultButtonColor: customColours["primaryDark"]!,
                                         defaultButtonTextColor: .white
                                     )
                                 )

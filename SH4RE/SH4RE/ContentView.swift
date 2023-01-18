@@ -8,9 +8,18 @@
 import SwiftUI
 
 let screenSize: CGRect = UIScreen.main.bounds
+let customColours = [
+    "primaryBase": Color.init(UIColor(named: "PrimaryBase")!),
+    "primaryDark": Color.init(UIColor(named: "PrimaryDark")!),
+    "primaryLight": Color.init(UIColor(named: "PrimaryLight")!),
+    "grey": Color.init(UIColor(named: "Grey")!),
+    "darkGrey": Color.init(UIColor(named: "DarkGrey")!),
+    "textfield": Color.init(UIColor(named: "TextFieldInputDefault")!),
+    "error": Color.init(UIColor(named: "Error")!)
+]
 
 struct ContentView: View {
-    @AppStorage("isLoggedIn") var is_logged_in: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
+    @AppStorage("isLoggedIn") var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
     
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
@@ -18,7 +27,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            if (is_logged_in) {
+            if (isLoggedIn) {
                 TabView {
                     HomeView()
                         .tabItem {
@@ -41,7 +50,7 @@ struct ContentView: View {
                             Label("Account", systemImage: "person.crop.circle.fill")
                         }
                 }
-                .accentColor(Color.init(UIColor(named: "PrimaryDark")!))
+                .accentColor(customColours["primaryDark"])
             }
             else {
                 LoginFlow()

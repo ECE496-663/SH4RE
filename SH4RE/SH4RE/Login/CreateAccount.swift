@@ -11,11 +11,11 @@ struct CreateAccount: View {
     @Environment(\.showLoginScreen) var showLoginScreen
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var confirm_password: String = ""
+    @State private var confirmPassword: String = ""
 
     var body: some View {
         ZStack {
-            Color(UIColor(Color.init(UIColor(named: "PrimaryBase")!)))
+            Color(UIColor(customColours["primaryBase"]!))
                 .ignoresSafeArea()
             Text("Create Account")
                 .foregroundColor(.white)
@@ -49,7 +49,7 @@ struct CreateAccount: View {
                         Text("Confirm Password")
                             .font(.system(size: 18))
                             .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
-                        SecureField("Your password", text: $confirm_password)
+                        SecureField("Your password", text: $confirmPassword)
                             .disableAutocorrection(true)
                             .autocapitalization(.none)
                             .frame(width: screenSize.width * 0.8, height: 20)
@@ -70,20 +70,20 @@ struct CreateAccount: View {
                                 .fontWeight(.bold)
                                 .frame(width: screenSize.width * 0.8, height: 40)
                                 .foregroundColor(.white)
-                                .background(Color.init(UIColor(named: "PrimaryDark")!))
+                                .background(customColours["primaryDark"]!)
                                 .cornerRadius(40)
                         }
                         Button(action: {
-                            self.showLoginScreen!()
+                            showLoginScreen!()
                         })
                         {
                             Text("Cancel")
                                 .fontWeight(.semibold)
                                 .frame(width: screenSize.width * 0.8, height: 40)
-                                .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
+                                .foregroundColor(customColours["primaryDark"]!)
                                 .background(.white)
                                 .cornerRadius(40)
-                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
+                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(customColours["primaryDark"]!, lineWidth: 2))
                         }
                         Button(action: {
                             UserDefaults.standard.set(true, forKey: "isLoggedIn")
@@ -92,13 +92,13 @@ struct CreateAccount: View {
                             Text("Continue as guest")
                                 .font(.system(size: 15))
                                 .frame(alignment: .trailing)
-                                .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
+                                .foregroundColor(customColours["primaryDark"]!)
                         }
                     }
                     Spacer()
                 }
                 .frame(maxWidth: screenSize.width, maxHeight: screenSize.height)
-                .background(Color.init(UIColor(named: "Grey")!))
+                .background(customColours["grey"]!)
                 .cornerRadius(50)
             }
             .offset(x: 0, y: screenSize.height * 0.15)

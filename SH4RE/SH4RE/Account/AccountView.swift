@@ -26,10 +26,10 @@ struct AccountView: View {
                         Text("Logout")
                             .fontWeight(.semibold)
                             .frame(width: screenSize.width * 0.8, height: 40)
-                            .foregroundColor(Color.init(UIColor(named: "PrimaryDark")!))
+                            .foregroundColor(customColours["primaryDark"]!)
                             .background(.white)
                             .cornerRadius(40)
-                            .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.init(UIColor(named: "PrimaryDark")!), lineWidth: 2))
+                            .overlay(RoundedRectangle(cornerRadius: 40) .stroke(customColours["primaryDark"]!, lineWidth: 2))
                     }
                 }
             }

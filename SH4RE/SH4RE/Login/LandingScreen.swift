@@ -10,7 +10,7 @@ import SwiftUI
 struct LandingScreen: View {
     var body: some View {
         ZStack {
-            Color(UIColor(Color.init(UIColor(named: "PrimaryBase")!)))
+            Color(UIColor(customColours["primaryBase"]!))
                 .ignoresSafeArea()
             Text("SH4RE")
                 .foregroundColor(.white)
