@@ -46,7 +46,7 @@ struct ContentView: View {
                     }
                     .tag(5)
             }
-            .accentColor(Color.init(UIColor(named: "PrimaryDark")!))
+            .accentColor(Color("PrimaryDark"))
         }
     }
 }

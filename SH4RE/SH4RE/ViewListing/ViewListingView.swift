@@ -23,7 +23,7 @@ struct ViewListingView: View {
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     @State private var showCal = false
-
+    
     
     var numberOfStars: Float = 4
     var hasHalfStar = true
@@ -33,28 +33,28 @@ struct ViewListingView: View {
     @State var title:String = ""
     @State var price:String = ""
     @State private var dates: Set<DateComponents> = []
-
+    
     
     var body: some View {
         
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-
+            
             ScrollView {
                 VStack(alignment: .leading) {
                     GeometryReader { geometry in
                         ImageCarouselView(numberOfImages: self.numberOfImages) {
-                        ForEach(images, id:\.self) { image in
-                            Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: geometry.size.width, height: 250)
-                                .aspectRatio(contentMode: .fill)
+                            ForEach(images, id:\.self) { image in
+                                Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: geometry.size.width, height: 250)
+                                    .aspectRatio(contentMode: .fill)
                             }
                         }
                     }
                     .frame(height: 300)
-                                        
+                    
                     Text(listing.title)
                         .font(.title)
                         .bold()
@@ -103,11 +103,11 @@ struct ViewListingView: View {
                             .aspectRatio(contentMode: .fit)
                             .clipShape(Circle())
                             .frame(width: 40, height: 40)
-                            
+                        
                         VStack(alignment: .leading) {
                             Text("Melissa Lim")
                                 .font(.body)
-                                
+                            
                             StarsView(numberOfStars: 3.5)
                             Text("Fusce non arcu non nunc ultrices hendrerit. In libero risus, auctor ac turpis in, venenatis tempus erat tincidunt et lorem ipsum.")
                                 .font(.footnote)
@@ -137,12 +137,12 @@ struct ViewListingView: View {
                             .foregroundColor(Color("TextGrey"))
                             .frame(alignment: .leading)
                         HStack {
-                                Text("$\(listing.price)")
-                                    .font(.headline)
-                                    .bold()
-                                Text("/day")
-                                    .font(.caption)
-                                    .foregroundColor(Color("TextGrey"))
+                            Text("$\(listing.price)")
+                                .font(.headline)
+                                .bold()
+                            Text("/day")
+                                .font(.caption)
+                                .foregroundColor(Color("TextGrey"))
                         }
                     }
                 }
@@ -187,3 +187,11 @@ struct ViewListingView: View {
         }
     }
 }
+
+//struct ViewListingView_Previews: PreviewProvider {
+//    var listing: Listing = Listing(id: "1", title: "title", description: "description", imagepath: [], price: "1", imageDict: UIImage())
+//
+//    static var previews: some View {
+//        ViewListingView(tabSelection: .constant(1), listing: listing)
+//    }
+//}

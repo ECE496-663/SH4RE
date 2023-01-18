@@ -22,7 +22,6 @@ struct PopUp<Content: View>: View {
                 Color.black.opacity(show ? 0.3 : 0).edgesIgnoringSafeArea(.all)
             }
             .onTapGesture {
-                print("heyyy")
                 show = false
             }
             

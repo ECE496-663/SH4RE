@@ -25,21 +25,21 @@ struct StarsView: View {
                 Label("star\(idx)", systemImage: "star.fill")
                     .labelStyle(.iconOnly)
                     .foregroundColor(Color("Yellow"))
-                    .font(.system(size: 12))
+                    .font(.caption)
             }
             
             if (self.hasHalfStar) {
                 Label("half-star", systemImage: "star.fill.left")
                     .labelStyle(.iconOnly)
-                    .foregroundColor(Color(UIColor(named: "Yellow")!))
-                    .font(.system(size: 12))
+                    .foregroundColor(Color("Yellow"))
+                    .font(.caption)
             }
             
             ForEach(0 ..< remainingStars, id: \.self) { idx in
                 Label("star\(idx)", systemImage: "star")
                     .labelStyle(.iconOnly)
                     .foregroundColor(Color("Yellow"))
-                    .font(.system(size: 12))
+                    .font(.caption)
             }
         }
     }
