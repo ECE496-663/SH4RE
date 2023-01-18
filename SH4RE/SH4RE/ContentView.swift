@@ -12,6 +12,7 @@ var screenSize: CGRect = UIScreen.main.bounds
 struct ContentView: View {
     
     @State private var tabSelection = 1
+    @AppStorage("isLoggedIn") var is_logged_in: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
     
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
@@ -46,7 +47,6 @@ struct ContentView: View {
                     }
                     .tag(5)
             }
-            .accentColor(Color.init(UIColor(named: "PrimaryDark")!))
         }
     }
 }
