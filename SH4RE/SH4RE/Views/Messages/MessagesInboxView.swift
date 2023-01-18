@@ -18,10 +18,10 @@ struct MessagesInboxView: View {
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-            if (username.isEmpty) {
-                GuestView()
-            }
-            else {
+//            if (username.isEmpty) {
+//                GuestView()
+//            }
+//            else {
                 NavigationView {
                     VStack {
                         customNavBar
@@ -30,7 +30,7 @@ struct MessagesInboxView: View {
                     .navigationBarHidden(true)
                 }
             }
-        }
+//        }
     }
     
     private var customNavBar: some View {
@@ -55,26 +55,32 @@ struct MessagesInboxView: View {
         ScrollView {
             ForEach(0..<10, id: \.self) { num in
                 VStack {
-                    HStack(spacing: 16) {
-                        Image("placeholder")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .clipShape(Circle())
-                            .frame(width: 40, height: 40)
-                            .border(.black)
-                        
-                        
-                        VStack(alignment: .leading) {
-                            Text("Username")
-                                .font(.body)
-                            Text("Message sent to user")
+                    NavigationLink {
+                        MessagesChat()
+                    } label: {
+                        HStack(spacing: 16) {
+                            Image("placeholder")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .clipShape(Circle())
+                                .frame(width: 40, height: 40)
+                                .border(.black)
+                            
+                            
+                            VStack(alignment: .leading) {
+                                Text("Username")
+                                    .font(.body)
+                                    .foregroundColor(Color("Black"))
+                                Text("Message sent to user")
+                                    .font(.callout)
+                                    .foregroundColor(Color("TextGrey"))
+                            }
+                            Spacer()
+                            
+                            Text("22d")
                                 .font(.callout)
-                                .foregroundColor(Color("TextGrey"))
+                                .foregroundColor(Color("Black"))
                         }
-                        Spacer()
-                        
-                        Text("22d")
-                            .font(.callout)
                     }
                     Divider()
                         .padding(.vertical, 8)
