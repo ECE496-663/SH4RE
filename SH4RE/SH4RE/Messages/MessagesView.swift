@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MessagesView: View {
+    @Binding var tabSelection: Int
+
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
@@ -20,6 +22,6 @@ struct MessagesView: View {
 
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesView()
+        MessagesView(tabSelection: .constant(1))
     }
 }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AccountView: View {
+    @Binding var tabSelection: Int
+
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
@@ -20,6 +22,6 @@ struct AccountView: View {
 
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountView()
+        AccountView(tabSelection: .constant(1))
     }
 }
