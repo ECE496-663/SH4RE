@@ -85,15 +85,6 @@ struct CreateAccount: View {
                                 .cornerRadius(40)
                                 .overlay(RoundedRectangle(cornerRadius: 40) .stroke(customColours["primaryDark"]!, lineWidth: 2))
                         }
-                        Button(action: {
-                            UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                        })
-                        {
-                            Text("Continue as guest")
-                                .font(.system(size: 15))
-                                .frame(alignment: .trailing)
-                                .foregroundColor(customColours["primaryDark"]!)
-                        }
                     }
                     Spacer()
                 }

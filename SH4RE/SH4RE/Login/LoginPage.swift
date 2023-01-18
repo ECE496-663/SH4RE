@@ -25,24 +25,24 @@ struct LoginPage: View {
                 VStack {
                     Spacer()
                         .frame(height: screenSize.height * 0.05)
-                    Text("Email Address")
-                        .font(.system(size: 18))
-                        .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
-                    TextField("Your email", text: $username)
-                        .frame(width: screenSize.width * 0.8, height: 20)
-                        .textFieldStyle(.roundedBorder)
-                        .padding()
-
-                    Text("Password")
-                        .font(.system(size: 18))
-                        .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
-                    SecureField("Your password", text: $password)
-                        .disableAutocorrection(true)
-                        .autocapitalization(.none)
-                        .frame(width: screenSize.width * 0.8, height: 20)
-                        .textFieldStyle(.roundedBorder)
-                        .padding()
-
+                    Group {
+                        Text("Email Address")
+                            .font(.system(size: 18))
+                            .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
+                        TextField("Your email", text: $username)
+                            .frame(width: screenSize.width * 0.8, height: 20)
+                            .textFieldStyle(.roundedBorder)
+                            .padding()
+                        Text("Password")
+                            .font(.system(size: 18))
+                            .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
+                        SecureField("Your password", text: $password)
+                            .disableAutocorrection(true)
+                            .autocapitalization(.none)
+                            .frame(width: screenSize.width * 0.8, height: 20)
+                            .textFieldStyle(.roundedBorder)
+                            .padding()
+                    }
                     HStack {
                         Spacer()
                         Button(action: {
@@ -87,6 +87,15 @@ struct LoginPage: View {
                                 .frame(alignment: .trailing)
                                 .foregroundColor(customColours["primaryDark"]!)
                         }
+                    }
+                    Button(action: {
+                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                    })
+                    {
+                        Text("Or continue as guest")
+                            .font(.system(size: 15))
+                            .frame(alignment: .trailing)
+                            .foregroundColor(customColours["primaryDark"]!)
                     }
                     Spacer()
                 }
