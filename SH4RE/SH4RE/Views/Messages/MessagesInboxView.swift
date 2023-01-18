@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MessagesView: View {
+struct MessagesInboxView: View {
     @Binding var tabSelection: Int
     @State private var searchQuery: String = ""
     
@@ -85,16 +85,16 @@ struct MessagesView: View {
     }
 }
 
-struct MessagesView_Previews_helper: View {
+struct MessagesInboxView_Previews_helper: View {
     @State private var tabSelection = 3
     
     var body: some View {
-        MessagesView(tabSelection: $tabSelection)
+        MessagesInboxView(tabSelection: $tabSelection)
     }
 }
 
-struct MessagesView_Previews: PreviewProvider {
+struct MessagesInboxView_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesView_Previews_helper()
+        MessagesInboxView_Previews_helper()
     }
 }

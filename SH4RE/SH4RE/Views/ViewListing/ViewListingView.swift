@@ -88,7 +88,7 @@ struct ViewListingView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            NavigationLink(destination: MessagesView(tabSelection: $tabSelection)) {
+            NavigationLink(destination: MessagesInboxView(tabSelection: $tabSelection)) {
                 Button(action: { tabSelection = 4 }) {
                     HStack {
                         Text("Message")

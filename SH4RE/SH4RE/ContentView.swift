@@ -36,7 +36,7 @@ struct ContentView: View {
                         Label("Post", systemImage: "plus.square.fill")
                     }
                     .tag(3)
-                MessagesView(tabSelection: $tabSelection)
+                MessagesInboxView(tabSelection: $tabSelection)
                     .tabItem {
                         Label("Messages", systemImage: "message.fill")
                     }
