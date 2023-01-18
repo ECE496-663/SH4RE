@@ -24,6 +24,7 @@ extension EnvironmentValues {
 struct CreateListingView: View {
     @Binding var tabSelection: Int
     @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
+    @ObservedObject var currentUser = CurrentUser()
     
     @State private var image = UIImage(named: "CreateListingBkgPic")!
     @State private var pictures:[UIImage] = []

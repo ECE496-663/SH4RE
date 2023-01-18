@@ -92,7 +92,7 @@ private struct Placeholder: View {
 
 struct MessagesChat_Previews: PreviewProvider {
     
-    var chatUser = User(uid: "123", email: "test@test.com", profileImageUrl: "")
+//    var chatUser = User(uid: "123", email: "test@test.com", profileImageUrl: "")
     
     static var previews: some View {
         MessagesChat()

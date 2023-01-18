@@ -22,33 +22,34 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-                        if (currentUser.hasLoggedIn) {
-            TabView(selection: $tabSelection) {
-                HomeView(tabSelection: $tabSelection)
-                    .tabItem {
-                        Label("Home", systemImage: "house.fill")
-                    }
-                    .tag(1)
-                SearchView(tabSelection: $tabSelection)
-                    .tabItem {
-                        Label("Search", systemImage: "safari.fill")
-                    }
-                    .tag(2)
-                CreateListingView(tabSelection: $tabSelection)
-                    .tabItem {
-                        Label("Post", systemImage: "plus.square.fill")
-                    }
-                    .tag(3)
-                MessagesInboxView(tabSelection: $tabSelection)
-                    .tabItem {
-                        Label("Messages", systemImage: "message.fill")
-                    }
-                    .tag(4)
-                AccountView(tabSelection: $tabSelection)
-                    .tabItem {
-                        Label("Account", systemImage: "person.crop.circle.fill")
-                    }
-                    .tag(5)
+            if (currentUser.hasLoggedIn) {
+                TabView(selection: $tabSelection) {
+                    HomeView(tabSelection: $tabSelection)
+                        .tabItem {
+                            Label("Home", systemImage: "house.fill")
+                        }
+                        .tag(1)
+                    SearchView(tabSelection: $tabSelection)
+                        .tabItem {
+                            Label("Search", systemImage: "safari.fill")
+                        }
+                        .tag(2)
+                    CreateListingView(tabSelection: $tabSelection)
+                        .tabItem {
+                            Label("Post", systemImage: "plus.square.fill")
+                        }
+                        .tag(3)
+                    MessagesInboxView(tabSelection: $tabSelection)
+                        .tabItem {
+                            Label("Messages", systemImage: "message.fill")
+                        }
+                        .tag(4)
+                    AccountView(tabSelection: $tabSelection)
+                        .tabItem {
+                            Label("Account", systemImage: "person.crop.circle.fill")
+                        }
+                        .tag(5)
+                }
             }
             else {
                 LoginFlow().environmentObject(currentUser)
