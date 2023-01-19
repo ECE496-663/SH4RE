@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct MessagesChat: View {
-//    let chatUser: User?
     
     @State var chatText = ""
+    static let emptyScrollToString = "Empty"
     
     var body: some View {
         ZStack {
@@ -26,59 +26,99 @@ struct MessagesChat: View {
     }
     
     private var messagesView: some View {
-        ScrollView {
-            ForEach(0..<20) { num in
-                HStack {
-                    Spacer()
-                    HStack {
-                        Text("beep beep")
-                            .foregroundColor(.white)
+        VStack {
+            ScrollView {
+                ScrollViewReader { scrollViewProxy in
+                    VStack {
+//                        ForEach(allChatMessages) { message in
+//                            MessageView(message: message)
+//                        }
+                        
+                        HStack{ Spacer() }
+                            .id(Self.emptyScrollToString)
                     }
-                    .padding()
-                    .background(Color("PrimaryDark"))
-                    .cornerRadius(8)
+//                    .onReceive(allChatMessages.$count) { _ in
+//                        withAnimation(.easeOut(duration: 0.5)) {
+//                            scrollViewProxy.scrollTo(Self.emptyScrollToString, anchor: .bottom)
+//                        }
+//                    }
                 }
-                .padding(.horizontal)
-                .padding(.top, 8)
             }
-            
-            HStack{ Spacer() }
-                .frame(height: 50)
+            .background(Color(.init(white: 0.95, alpha: 1)))
+            .safeAreaInset(edge: .bottom) {
+                chatBottomBar
+                    .background(Color(.systemBackground).ignoresSafeArea())
+            }
         }
-        .background(Color(.init(white: 0.95, alpha: 1)))
-        
     }
     
+    
     private var chatBottomBar: some View {
-            HStack(spacing: 16) {
-                ZStack {
-                    Placeholder()
-                    TextEditor(text: $chatText)
-                        .opacity(chatText.isEmpty ? 0.5 : 1)
-                }
-                .frame(height: 40)
+        HStack(spacing: 16) {
+            ZStack {
+                Placeholder()
+                TextEditor(text: $chatText)
+                    .opacity(chatText.isEmpty ? 0.5 : 1)
+            }
+            .frame(height: 40)
+            
+            Button {
+                // handle send here
+            } label: {
+                Text("Send")
+                    .foregroundColor(.white)
                 
-                Button {
-                    
-                } label: {
-                    Text("Send")
-                        .foregroundColor(.white)
-                        
-                }
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-                .background(Color("PrimaryDark"))
-                .cornerRadius(4)
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
+            .background(Color("PrimaryDark"))
+            .cornerRadius(4)
         }
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+    }
+}
+
+struct MessageView: View {
+    @ObservedObject var currentUser = CurrentUser()
+    let message: ChatMessage
+    
+    var body: some View {
+        VStack {
+            if message.fromId == currentUser.getUid() {
+                HStack {
+                    Spacer()
+                    HStack {
+                        Text(message.text)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    .background(Color.blue)
+                    .cornerRadius(8)
+                }
+            } else {
+                HStack {
+                    HStack {
+                        Text(message.text)
+                            .foregroundColor(.black)
+                    }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    Spacer()
+                }
+            }
+        }
+        .padding(.horizontal)
+        .padding(.top, 8)
+    }
 }
 
 private struct Placeholder: View {
     var body: some View {
         HStack {
             Text("Message")
+                .keyboardType(.numberPad)
                 .foregroundColor(Color("TextGrey"))
                 .font(.body)
                 .padding(.leading, 5)
@@ -87,12 +127,10 @@ private struct Placeholder: View {
         }
     }
 }
-                     
-                     
+
+
 
 struct MessagesChat_Previews: PreviewProvider {
-    
-//    var chatUser = User(uid: "123", email: "test@test.com", profileImageUrl: "")
     
     static var previews: some View {
         MessagesChat()

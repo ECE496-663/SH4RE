@@ -15,6 +15,12 @@ struct MessagesInboxView: View {
     
     @State var shouldShowLogOutOptions = false
     
+//    init() {
+//       // should fetch recent messages here
+//   }
+    
+    // need a handle send
+    
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
@@ -56,6 +62,7 @@ struct MessagesInboxView: View {
             ForEach(0..<10, id: \.self) { num in
                 VStack {
                     NavigationLink {
+                        // pass in user that is is with this
                         MessagesChat()
                     } label: {
                         HStack(spacing: 16) {
@@ -64,7 +71,6 @@ struct MessagesInboxView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .clipShape(Circle())
                                 .frame(width: 40, height: 40)
-                                .border(.black)
                             
                             
                             VStack(alignment: .leading) {
@@ -91,16 +97,8 @@ struct MessagesInboxView: View {
     }
 }
 
-struct MessagesInboxView_Previews_helper: View {
-    @State private var tabSelection = 3
-    
-    var body: some View {
-        MessagesInboxView(tabSelection: $tabSelection)
-    }
-}
-
 struct MessagesInboxView_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesInboxView_Previews_helper()
+        MessagesInboxView(tabSelection: .constant(1))
     }
 }
