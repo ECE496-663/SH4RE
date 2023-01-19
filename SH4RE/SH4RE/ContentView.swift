@@ -10,8 +10,6 @@ import FirebaseAuth
 
 var screenSize: CGRect = UIScreen.main.bounds
 
-var screenSize: CGRect = UIScreen.main.bounds
-
 struct ContentView: View {
     
     @State private var tabSelection = 1
