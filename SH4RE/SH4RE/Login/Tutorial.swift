@@ -12,6 +12,7 @@ struct Tutorial: View {
     @State private var tutorialIndex: Int = 0
     @State private var title: String = ""
     @State private var description: String = ""
+    @State private var image = UIImage(named: "Tutorial1")!
 
     func updateText() {
         switch tutorialIndex {
@@ -21,9 +22,11 @@ struct Tutorial: View {
         case 1:
             title = "Affordable peer-to-peer rates"
             description = "The items here are listed by users just like you. If you see an item you like, you can make a request to rent it and pick it up directly from the owner."
+            image = UIImage(named: "Tutorial2")!
         case 2:
             title = "Get exclusive access to your community"
             description = "Press the button below to begin SH4RE-ing with your community. You can continue as just a Guest if you want to only take a quick look at what's availble around you.\n\n\n\n"
+            image = UIImage(named: "Tutorial3")!
         default:
                 break
         }
@@ -31,6 +34,12 @@ struct Tutorial: View {
 
     var body: some View {
         VStack {
+            Spacer()
+
+            Image(uiImage: image)
+                .resizable()
+                .frame(maxWidth: screenSize.width * 0.75, maxHeight: screenSize.height * 0.3)
+
             HStack(spacing: 3) {
                 ForEach(0..<3, id: \.self) { index in
                     Capsule()
@@ -41,8 +50,6 @@ struct Tutorial: View {
                         .animation(.spring(), value: UUID())
                 }
             }
-
-            Spacer()
 
             Text(title)
                 .font(.system(size: 20, weight: .semibold))
