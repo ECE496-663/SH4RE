@@ -15,9 +15,13 @@ import FirebaseStorage
 
 struct SearchView: View {
     @Binding var tabSelection: Int
+<<<<<<< HEAD:SH4RE/SH4RE/Views/Search/SearchView.swift
 
+=======
+    
+>>>>>>> ef581b2e637ab5b5d0a07535a4197a0e1f773b07:SH4RE/SH4RE/Search/SearchView.swift
     @State private var searchQuery: String = ""
-
+    
     @ObservedObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 20)]
     
@@ -61,3 +65,11 @@ struct SearchView: View {
     }
 }
 
+<<<<<<< HEAD:SH4RE/SH4RE/Views/Search/SearchView.swift
+=======
+struct SearchView_Previews: PreviewProvider {
+    static var previews: some View {
+        SearchView(tabSelection: .constant(1))
+    }
+}
+>>>>>>> ef581b2e637ab5b5d0a07535a4197a0e1f773b07:SH4RE/SH4RE/Search/SearchView.swift

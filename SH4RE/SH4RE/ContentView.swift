@@ -10,12 +10,15 @@ import FirebaseAuth
 
 var screenSize: CGRect = UIScreen.main.bounds
 
+var screenSize: CGRect = UIScreen.main.bounds
+
 struct ContentView: View {
     
     @State private var tabSelection = 1
     @AppStorage("isLoggedIn") var is_logged_in: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
     
     @ObservedObject var currentUser = CurrentUser()
+    
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
     }
@@ -50,6 +53,7 @@ struct ContentView: View {
                         }
                         .tag(5)
                 }
+                .accentColor(Color("PrimaryDark"))
             }
             else {
                 LoginFlow().environmentObject(currentUser)

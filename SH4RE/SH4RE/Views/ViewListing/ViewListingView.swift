@@ -17,14 +17,12 @@ import FirebaseStorage
 
 struct ViewListingView: View {
     @Binding var tabSelection: Int
-    
-    
+        
     //parameters passed in from search nav link
     var listing: Listing
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     @State private var showCal = false
-
     
     var numberOfStars: Float = 4
     var hasHalfStar = true
@@ -115,22 +113,22 @@ struct ViewListingView: View {
         
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-
+            
             ScrollView {
                 VStack(alignment: .leading) {
                     GeometryReader { geometry in
                         ImageCarouselView(numberOfImages: self.numberOfImages) {
-                        ForEach(images, id:\.self) { image in
-                            Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: geometry.size.width, height: 250)
-                                .aspectRatio(contentMode: .fill)
+                            ForEach(images, id:\.self) { image in
+                                Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: geometry.size.width, height: 250)
+                                    .aspectRatio(contentMode: .fill)
                             }
                         }
                     }
                     .frame(height: 300)
-                                        
+                    
                     Text(listing.title)
                         .font(.title)
                         .bold()
@@ -177,8 +175,7 @@ struct ViewListingView: View {
                 DatePicker(dates: dates)
             }
         }
-        .overlay(
-            bottomBar, alignment: .bottom)
+        .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
             print("\(listing)")
 

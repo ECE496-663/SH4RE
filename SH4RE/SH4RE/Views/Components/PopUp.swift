@@ -22,7 +22,10 @@ struct PopUp<Content: View>: View {
                 Color.black.opacity(show ? 0.3 : 0).edgesIgnoringSafeArea(.all)
             }
             .onTapGesture {
+<<<<<<< HEAD:SH4RE/SH4RE/Views/Components/PopUp.swift
                 print("heyyy")
+=======
+>>>>>>> ef581b2e637ab5b5d0a07535a4197a0e1f773b07:SH4RE/SH4RE/Components/PopUp.swift
                 show = false
             }
             
