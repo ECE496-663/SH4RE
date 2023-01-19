@@ -63,6 +63,7 @@ struct LoginFlow: View {
             }
 
         }
+        .ignoresSafeArea(.keyboard)
         .onReceive(timer, perform: { _ in
             withAnimation(.default) {
                 closeSplashScreen = true
