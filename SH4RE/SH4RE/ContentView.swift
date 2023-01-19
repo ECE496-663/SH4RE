@@ -20,6 +20,7 @@ let customColours = [
 
 struct ContentView: View {
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
+    @State private var tabSelection = 1
     
     init() {
         UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
@@ -28,29 +29,34 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             if (isLoggedIn) {
-                TabView {
-                    HomeView()
+                TabView(selection: $tabSelection) {
+                    HomeView(tabSelection: $tabSelection)
                         .tabItem {
                             Label("Home", systemImage: "house.fill")
                         }
-                    SearchView()
+                        .tag(1)
+                    SearchView(tabSelection: $tabSelection)
                         .tabItem {
                             Label("Search", systemImage: "safari.fill")
                         }
-                    CreateListingView()
+                        .tag(2)
+                    CreateListingView(tabSelection: $tabSelection)
                         .tabItem {
                             Label("Post", systemImage: "plus.square.fill")
                         }
-                    MessagesView()
+                        .tag(3)
+                    MessagesView(tabSelection: $tabSelection)
                         .tabItem {
                             Label("Messages", systemImage: "message.fill")
                         }
-                    AccountView()
+                        .tag(4)
+                    AccountView(tabSelection: $tabSelection)
                         .tabItem {
                             Label("Account", systemImage: "person.crop.circle.fill")
                         }
+                        .tag(5)
                 }
-                .accentColor(customColours["primaryDark"])
+                .accentColor(Color("PrimaryDark"))
             }
             else {
                 LoginFlow()

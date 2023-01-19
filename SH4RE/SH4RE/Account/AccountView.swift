@@ -9,18 +9,20 @@ import SwiftUI
 
 struct AccountView: View {
     @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
-    
+    @Binding var tabSelection: Int
+
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
             if (username.isEmpty) {
-                GuestView()
+                GuestView(tabSelection: $tabSelection)
             }
             else {
                 VStack {
                     Button(action: {
                         UserDefaults.standard.set(false, forKey: "isLoggedIn")
                         UserDefaults.standard.set("", forKey: "UID")
+                        tabSelection = 1
                     })
                     {
                         Text("Logout")
@@ -39,6 +41,6 @@ struct AccountView: View {
 
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountView()
+        AccountView(tabSelection: .constant(1))
     }
 }

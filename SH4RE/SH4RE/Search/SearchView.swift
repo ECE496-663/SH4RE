@@ -14,11 +14,12 @@ import FirebaseStorage
 //needed this separate for now because of sychronous queries
 
 struct SearchView: View {
+    @Binding var tabSelection: Int
     @State private var searchQuery: String = ""
 
     @ObservedObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 20)]
-
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -27,7 +28,7 @@ struct SearchView: View {
                         // If theres no image for a listing, just use the placeholder
                         let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                         NavigationLink(destination: {
-                            ViewListingView(listing: listing)
+                            ViewListingView(tabSelection: $tabSelection, listing: listing)
                         }, label: {
                             ProductCard(listing: listing, image: productImage)
                         })
@@ -61,7 +62,6 @@ struct SearchView: View {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView()
+        SearchView(tabSelection: .constant(1))
     }
 }
-

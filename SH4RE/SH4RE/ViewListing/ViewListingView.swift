@@ -16,11 +16,14 @@ import FirebaseStorage
 //if you need to create more variables create filler class variable and we will connect to database in later commit
 
 struct ViewListingView: View {
+    @Binding var tabSelection: Int
     
     //parameters passed in from search nav link
     var listing: Listing
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
+    @State private var showCal = false
+    
     
     var numberOfStars: Float = 4
     var hasHalfStar = true
@@ -29,28 +32,29 @@ struct ViewListingView: View {
     @State var description:String = ""
     @State var title:String = ""
     @State var price:String = ""
-
+    @State private var dates: Set<DateComponents> = []
+    
     
     var body: some View {
         
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-
+            
             ScrollView {
                 VStack(alignment: .leading) {
                     GeometryReader { geometry in
                         ImageCarouselView(numberOfImages: self.numberOfImages) {
-                        ForEach(images, id:\.self) { image in
-                            Image(uiImage: image ?? (UIImage(named:"placeholder") ?? UIImage()))
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: geometry.size.width, height: 250)
-                                .aspectRatio(contentMode: .fill)
+                            ForEach(images, id:\.self) { image in
+                                Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: geometry.size.width, height: 250)
+                                    .aspectRatio(contentMode: .fill)
                             }
                         }
                     }
                     .frame(height: 300)
-                                        
+                    
                     Text(listing.title)
                         .font(.title)
                         .bold()
@@ -71,7 +75,7 @@ struct ViewListingView: View {
                         .padding([.top], 10)
                     
                     Button(action: {
-                        print("Check Availability button clicked")
+                        showCal.toggle()
                     }) {
                         HStack {
                             Text("Check Availability")
@@ -89,11 +93,32 @@ struct ViewListingView: View {
                         .padding()
                         
                     }
-                    
                     Text("Reviews (\(numberOfReviews))")
                         .font(.headline)
                         .padding()
+                    
+                    HStack(alignment: .top) {
+                        Image("placeholder")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .clipShape(Circle())
+                            .frame(width: 40, height: 40)
+                        
+                        VStack(alignment: .leading) {
+                            Text("Melissa Lim")
+                                .font(.body)
+                            
+                            StarsView(numberOfStars: 3.5)
+                            Text("Fusce non arcu non nunc ultrices hendrerit. In libero risus, auctor ac turpis in, venenatis tempus erat tincidunt et lorem ipsum.")
+                                .font(.footnote)
+                        }
+                        
+                    }.padding([.horizontal])
+                    
                 }
+            }
+            PopUp(show: $showCal) {
+                DatePicker(dates: dates)
             }
         }
         
@@ -112,27 +137,26 @@ struct ViewListingView: View {
                             .foregroundColor(Color("TextGrey"))
                             .frame(alignment: .leading)
                         HStack {
-                                Text("$\(listing.price)")
-                                    .font(.headline)
-                                    .bold()
-                                Text("/day")
-                                    .font(.caption)
-                                    .foregroundColor(Color("TextGrey"))
+                            Text("$\(listing.price)")
+                                .font(.headline)
+                                .bold()
+                            Text("/day")
+                                .font(.caption)
+                                .foregroundColor(Color("TextGrey"))
                         }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Button(action: {
-                    print("Message user about \(listing.price)")
-                }) {
-                    HStack {
-                        Text("Message")
-                            .font(.body)
-                            .foregroundColor(Color("White"))
-                        
-                        Image(systemName: "message")
-                            .foregroundColor(Color("White"))
+                NavigationLink(destination: MessagesView(tabSelection: $tabSelection)) {
+                    Button(action: { tabSelection = 4 }) {
+                        HStack {
+                            Text("Message")
+                                .font(.body)
+                                .foregroundColor(Color("White"))
+                            
+                            Image(systemName: "message")
+                                .foregroundColor(Color("White"))
+                        }
                     }
                 }
                 .frame(alignment: .trailing)
@@ -144,7 +168,7 @@ struct ViewListingView: View {
         }
         .padding([.horizontal])
         .frame(alignment: .bottom)
-        .onAppear(){
+        .onAppear() {
             price = listing.price
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
@@ -162,11 +186,12 @@ struct ViewListingView: View {
             }
         }
     }
-
 }
 
-struct ViewListingView_Previews: PreviewProvider {
-    static var previews: some View {
-        ViewListingView(listing:Listing(title:"test title", description: "test description", imagepath: ["listingimages/3rWyQLjIYsIA7wlrQ37r/1.jpg"], price:"20.00"))
-    }
-}
+//struct ViewListingView_Previews: PreviewProvider {
+//    var listing: Listing = Listing(id: "1", title: "title", description: "description", imagepath: [], price: "1", imageDict: UIImage())
+//
+//    static var previews: some View {
+//        ViewListingView(tabSelection: .constant(1), listing: listing)
+//    }
+//}

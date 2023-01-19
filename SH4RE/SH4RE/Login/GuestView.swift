@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct GuestView: View {
+    @Binding var tabSelection: Int
+    
     var body: some View {
         VStack {
             Text("You are currently logged in as a Guest, to make requests to rent items or make your own listings please login in to your account")
@@ -20,6 +22,7 @@ struct GuestView: View {
             Button(action: {
                 UserDefaults.standard.set(false, forKey: "isLoggedIn")
                 UserDefaults.standard.set("", forKey: "UID")
+                tabSelection = 1
             })
             {
                 Text("Login to your account")
@@ -36,6 +39,6 @@ struct GuestView: View {
 
 struct GuestView_Previews: PreviewProvider {
     static var previews: some View {
-        GuestView()
+        GuestView(tabSelection: .constant(1))
     }
 }

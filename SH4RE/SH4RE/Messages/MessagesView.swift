@@ -9,12 +9,13 @@ import SwiftUI
 
 struct MessagesView: View {
     @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
-    
+    @Binding var tabSelection: Int
+
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
             if (username.isEmpty) {
-                GuestView()
+                GuestView(tabSelection: $tabSelection)
             }
             else {
                 VStack {
@@ -27,6 +28,6 @@ struct MessagesView: View {
 
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesView()
+        MessagesView(tabSelection: .constant(1))
     }
 }

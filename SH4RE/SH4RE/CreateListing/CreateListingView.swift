@@ -23,6 +23,7 @@ extension EnvironmentValues {
 struct CreateListingView: View {
     @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
     var storageManager = StorageManager()
+    @Binding var tabSelection: Int
 
     // image entry
     @State private var image = UIImage(named: "CreateListingBkgPic")!
@@ -73,7 +74,7 @@ struct CreateListingView: View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
             if (username.isEmpty) {
-                GuestView()
+                GuestView(tabSelection: $tabSelection)
             }
             else {
                 VStack {
