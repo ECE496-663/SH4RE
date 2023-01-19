@@ -8,12 +8,9 @@
 import SwiftUI
 
 struct MessagesView: View {
-<<<<<<< HEAD
     @EnvironmentObject var currentUser: CurrentUser
-=======
     @Binding var tabSelection: Int
 
->>>>>>> ef581b2e637ab5b5d0a07535a4197a0e1f773b07
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
