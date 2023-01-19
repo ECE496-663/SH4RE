@@ -13,7 +13,8 @@ struct AccountView: View {
 
     @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
     
-    @EnvironmentObject var currentUser: CurrentUser
+    @ObservedObject var currentUser = CurrentUser()
+
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
