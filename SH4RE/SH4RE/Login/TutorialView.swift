@@ -39,6 +39,7 @@ struct TutorialView: View {
             Image(uiImage: image)
                 .resizable()
                 .frame(maxWidth: screenSize.width * 0.75, maxHeight: screenSize.height * 0.3)
+                .blendMode(.multiply)
 
             HStack(spacing: 3) {
                 ForEach(0..<3, id: \.self) { index in
@@ -94,7 +95,7 @@ struct TutorialView: View {
                     .frame(width: (tutorialIndex == 2) ? screenSize.width * 0.8 : 0, height: (tutorialIndex == 2) ? 30 : 0)
                     .padding()
                     .foregroundColor(.white)
-                    .background((tutorialIndex == 2) ? Color.primaryDark : .white)
+                    .background((tutorialIndex == 2) ? Color.primaryDark : Color.backgroundGrey)
                     .cornerRadius(40)
                     .animation(.spring(), value: UUID())
             }

@@ -66,6 +66,7 @@ struct LoginControlView: View {
             }
 
         }
+        .background(Color.backgroundGrey)
         .ignoresSafeArea(.keyboard)
         .onReceive(timer, perform: { _ in
             withAnimation(.default) {
