@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CreateAccount: View {
+struct CreateAccountView: View {
     @Environment(\.showLoginScreen) var showLoginScreen
     @State private var username: String = ""
     @State private var password: String = ""
@@ -15,7 +15,7 @@ struct CreateAccount: View {
 
     var body: some View {
         ZStack {
-            Color(UIColor(customColours["primaryBase"]!))
+            Color(UIColor(primaryBase))
                 .ignoresSafeArea()
             Text("Create Account")
                 .foregroundColor(.white)
@@ -32,6 +32,8 @@ struct CreateAccount: View {
                             .font(.system(size: 18))
                             .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
                         TextField("Your email", text: $username)
+                            .disableAutocorrection(true)
+                            .autocapitalization(.none)
                             .frame(width: screenSize.width * 0.8, height: 20)
                             .textFieldStyle(.roundedBorder)
                             .padding()
@@ -70,7 +72,7 @@ struct CreateAccount: View {
                                 .fontWeight(.bold)
                                 .frame(width: screenSize.width * 0.8, height: 40)
                                 .foregroundColor(.white)
-                                .background(customColours["primaryDark"]!)
+                                .background(primaryDark)
                                 .cornerRadius(40)
                         }
                         Button(action: {
@@ -80,16 +82,17 @@ struct CreateAccount: View {
                             Text("Cancel")
                                 .fontWeight(.semibold)
                                 .frame(width: screenSize.width * 0.8, height: 40)
-                                .foregroundColor(customColours["primaryDark"]!)
+                                .foregroundColor(primaryDark)
                                 .background(.white)
                                 .cornerRadius(40)
-                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(customColours["primaryDark"]!, lineWidth: 2))
+                                .overlay(RoundedRectangle(cornerRadius: 40)
+                                    .stroke(primaryDark, lineWidth: 2))
                         }
                     }
                     Spacer()
                 }
                 .frame(maxWidth: screenSize.width, maxHeight: screenSize.height)
-                .background(customColours["grey"]!)
+                .background(grey)
                 .cornerRadius(50)
             }
             .offset(x: 0, y: screenSize.height * 0.15)
@@ -99,6 +102,6 @@ struct CreateAccount: View {
 
 struct CreateAccount_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccount()
+        CreateAccountView()
     }
 }

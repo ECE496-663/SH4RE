@@ -22,7 +22,9 @@ extension EnvironmentValues {
     }
 }
 
-struct LoginFlow: View {
+struct LoginControlView: View {
+    @AppStorage("hasSeenTutorial") var hasSeenTutorial: Bool = UserDefaults.standard.bool(forKey: "hasSeenTutorial")
+    
     @State private var closeSplashScreen = false
     @State private var closeTutorialScreen = false
     @State private var showLogin = false
@@ -35,6 +37,7 @@ struct LoginFlow: View {
             showLogin = true
         }
         closeTutorialScreen = true
+        showLogin = true
     }
     
     func showCreateAccountScreen() {
@@ -44,20 +47,20 @@ struct LoginFlow: View {
 
     var body: some View {
         ZStack {
-            LandingScreen()
+            LandingView()
                 .position(x: screenSize.width * 0.5, y: (closeSplashScreen) ? screenSize.height * -2 : screenSize.height * 0.452)
 
             if (!closeTutorialScreen) {
-                Tutorial()
+                TutorialView()
                     .environment(\.showLoginScreen, showLoginScreen)
                     .position(x: screenSize.width * 0.5, y: (closeSplashScreen) ? screenSize.height * 0.452 : screenSize.height * 2)
             }
             else {
-                LoginPage()
+                LoginView()
                     .environment(\.showCreateAccountScreen, showCreateAccountScreen)
                     .position(x: screenSize.width * 0.5, y: (showLogin) ? screenSize.height * 0.452 : screenSize.height * -2)
                 if (showCreateAccount) {
-                    CreateAccount()
+                    CreateAccountView()
                         .environment(\.showLoginScreen, showLoginScreen)
                 }
             }
@@ -67,15 +70,9 @@ struct LoginFlow: View {
         .onReceive(timer, perform: { _ in
             withAnimation(.default) {
                 closeSplashScreen = true
-                showLogin = closeTutorialScreen
+                closeTutorialScreen = hasSeenTutorial
+                showLogin = hasSeenTutorial
                 timer.upstream.connect().cancel()
-            }
-        })
-        .onChange(of: closeTutorialScreen, perform: { _ in
-            withAnimation(.default) {
-                closeSplashScreen = false
-                closeTutorialScreen = true
-                timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
             }
         })
     }
@@ -83,6 +80,6 @@ struct LoginFlow: View {
 
 struct LoginFlow_Previews: PreviewProvider {
     static var previews: some View {
-        LoginFlow()
+        LoginControlView()
     }
 }

@@ -8,22 +8,23 @@
 import SwiftUI
 
 let screenSize: CGRect = UIScreen.main.bounds
-let customColours = [
-    "primaryBase": Color.init(UIColor(named: "PrimaryBase")!),
-    "primaryDark": Color.init(UIColor(named: "PrimaryDark")!),
-    "primaryLight": Color.init(UIColor(named: "PrimaryLight")!),
-    "grey": Color.init(UIColor(named: "Grey")!),
-    "darkGrey": Color.init(UIColor(named: "DarkGrey")!),
-    "textfield": Color.init(UIColor(named: "TextFieldInputDefault")!),
-    "error": Color.init(UIColor(named: "Error")!)
-]
+
+// custom colours
+let primaryBase = Color.init(UIColor(named: "PrimaryBase")!)
+let primaryDark = Color.init(UIColor(named: "PrimaryDark")!)
+let primaryLight = Color.init(UIColor(named: "PrimaryLight")!)
+let grey = Color.init(UIColor(named: "Grey")!)
+let backgroundGrey = Color.init(UIColor(named: "BackgroundGrey")!)
+let darkGrey = Color.init(UIColor(named: "DarkGrey")!)
+let textfield = Color.init(UIColor(named: "TextFieldInputDefault")!)
+let errorColour = Color.init(UIColor(named: "Error")!)
 
 struct ContentView: View {
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
     @State private var tabSelection = 1
     
     init() {
-        UITabBar.appearance().backgroundColor = UIColor(Color("BackgroundGrey"))
+        UITabBar.appearance().backgroundColor = UIColor(backgroundGrey)
     }
     
     var body: some View {
@@ -56,10 +57,10 @@ struct ContentView: View {
                         }
                         .tag(5)
                 }
-                .accentColor(Color("PrimaryDark"))
+                .accentColor(primaryDark)
             }
             else {
-                LoginFlow()
+                LoginControlView()
             }
         }
     }

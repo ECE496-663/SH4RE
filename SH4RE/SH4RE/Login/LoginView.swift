@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct LoginPage: View {
+struct LoginView: View {
     @Environment(\.showCreateAccountScreen) var showCreateAccountScreen
     @State private var username: String = ""
     @State private var password: String = ""
 
     var body: some View {
         ZStack {
-            Color(UIColor(customColours["primaryBase"]!))
+            Color(UIColor(primaryBase))
                 .ignoresSafeArea()
             Text("Login")
                 .foregroundColor(.white)
@@ -30,6 +30,8 @@ struct LoginPage: View {
                             .font(.system(size: 18))
                             .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
                         TextField("Your email", text: $username)
+                            .disableAutocorrection(true)
+                            .autocapitalization(.none)
                             .frame(width: screenSize.width * 0.8, height: 20)
                             .textFieldStyle(.roundedBorder)
                             .padding()
@@ -52,7 +54,7 @@ struct LoginPage: View {
                             Text("Forgot Password?\t\t")
                                 .font(.system(size: 15))
                                 .frame(alignment: .trailing)
-                                .foregroundColor(customColours["primaryBase"]!)
+                                .foregroundColor(primaryBase)
                             
                         }
                     }
@@ -70,7 +72,7 @@ struct LoginPage: View {
                             .frame(width: screenSize.width * 0.8, height: 40)
                             .padding()
                             .foregroundColor(.white)
-                            .background(customColours["primaryDark"]!)
+                            .background(primaryDark)
                             .cornerRadius(40)
                             .padding(.bottom)
                     }
@@ -85,7 +87,7 @@ struct LoginPage: View {
                             Text("Create a new account")
                                 .font(.system(size: 15))
                                 .frame(alignment: .trailing)
-                                .foregroundColor(customColours["primaryDark"]!)
+                                .foregroundColor(primaryDark)
                         }
                     }
                     Button(action: {
@@ -95,12 +97,12 @@ struct LoginPage: View {
                         Text("Or continue as guest")
                             .font(.system(size: 15))
                             .frame(alignment: .trailing)
-                            .foregroundColor(customColours["primaryDark"]!)
+                            .foregroundColor(primaryDark)
                     }
                     Spacer()
                 }
                 .frame(maxWidth: screenSize.width, maxHeight: screenSize.height)
-                .background(customColours["grey"]!)
+                .background(grey)
                 .cornerRadius(50)
             }
             .offset(x: 0, y: screenSize.height * 0.15)
@@ -110,6 +112,6 @@ struct LoginPage: View {
 
 struct LoginPage_Previews: PreviewProvider {
     static var previews: some View {
-        LoginPage()
+        LoginView()
     }
 }
