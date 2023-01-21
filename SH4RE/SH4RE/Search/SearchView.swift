@@ -35,7 +35,7 @@ struct SearchView: View {
                     }
                 }.padding()
             }
-            .background(backgroundGrey)
+            .background(Color.backgroundGrey)
             .toolbar {
                 TextField("Search", text: $searchQuery)
                     .textFieldStyle(.roundedBorder)

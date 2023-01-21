@@ -26,7 +26,7 @@ struct ImageCarouselView<Content: View>: View {
             }) {
                 ZStack {
                     Circle()
-                        .fill(primaryDark)
+                        .fill(Color.primaryDark)
                         .frame(width: 25, height: 25)
                     Image(systemName: "xmark")
                         .font(.system(size: 15, weight: .bold, design: .rounded))
@@ -76,7 +76,7 @@ struct ImageCarouselView<Content: View>: View {
                     ForEach(0..<self.numberOfImages - scrollOffset, id: \.self) { index in
                         Capsule()
                             .frame(width: index == self.currentIndex ? 50 : 10, height: 10)
-                            .foregroundColor(index == self.currentIndex ? primaryDark : .white)
+                            .foregroundColor(index == self.currentIndex ? .primaryDark : .white)
                             .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
                             .padding(.bottom, 8)
                             .animation(.spring(), value: UUID())

@@ -44,7 +44,7 @@ struct TutorialView: View {
                 ForEach(0..<3, id: \.self) { index in
                     Capsule()
                         .frame(width: index == tutorialIndex ? 50 : 10, height: 10)
-                        .foregroundColor(index == tutorialIndex ? primaryDark : grey)
+                        .foregroundColor(index == tutorialIndex ? .primaryDark : .grey)
                         .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
                         .padding(.bottom, 8)
                         .animation(.spring(), value: UUID())
@@ -53,7 +53,7 @@ struct TutorialView: View {
 
             Text(title)
                 .font(.system(size: 20, weight: .semibold))
-                .foregroundColor(primaryDark)
+                .foregroundColor(.primaryDark)
                 .frame(maxWidth: screenSize.width * 0.5)
                 .multilineTextAlignment(.center)
                 .padding()
@@ -62,7 +62,7 @@ struct TutorialView: View {
 
             Text(description)
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(darkGrey)
+                .foregroundColor(.darkGrey)
                 .frame(maxWidth: screenSize.width * 0.7)
                 .multilineTextAlignment(.center)
                 .transition(AnyTransition.opacity.animation(.easeInOut(duration:0.5)))
@@ -81,7 +81,7 @@ struct TutorialView: View {
                         .font(.system(size: 40))
                 }
                 .frame(width: 100, height: 100)
-                .background(primaryDark)
+                .background(Color.primaryDark)
                 .clipShape(Circle())
             }
             Button(action: {
@@ -94,7 +94,7 @@ struct TutorialView: View {
                     .frame(width: (tutorialIndex == 2) ? screenSize.width * 0.8 : 0, height: (tutorialIndex == 2) ? 30 : 0)
                     .padding()
                     .foregroundColor(.white)
-                    .background((tutorialIndex == 2) ? primaryDark : .white)
+                    .background((tutorialIndex == 2) ? Color.primaryDark : .white)
                     .cornerRadius(40)
                     .animation(.spring(), value: UUID())
             }

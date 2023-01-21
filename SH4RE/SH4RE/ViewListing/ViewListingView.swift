@@ -80,15 +80,15 @@ struct ViewListingView: View {
                         HStack {
                             Text("Check Availability")
                                 .font(.body)
-                                .foregroundColor(primaryDark)
+                                .foregroundColor(.primaryDark)
                             
                             Image(systemName: "calendar")
-                                .foregroundColor(primaryDark)
+                                .foregroundColor(.primaryDark)
                         }
                         .padding([.horizontal, .vertical], 10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 40)
-                                .stroke(primaryDark)
+                                .stroke(Color.primaryDark)
                         )
                         .padding()
                         
@@ -161,7 +161,7 @@ struct ViewListingView: View {
                 }
                 .frame(alignment: .trailing)
                 .padding()
-                .background(primaryDark)
+                .background(Color.primaryDark)
                 .cornerRadius(40)
                 .padding()
             }

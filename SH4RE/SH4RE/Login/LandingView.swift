@@ -10,7 +10,7 @@ import SwiftUI
 struct LandingView: View {
     var body: some View {
         ZStack {
-            Color(UIColor(primaryBase))
+            Color(UIColor(.primaryBase))
                 .ignoresSafeArea()
             Text("SH4RE")
                 .foregroundColor(.white)

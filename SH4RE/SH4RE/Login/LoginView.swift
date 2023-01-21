@@ -14,7 +14,7 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            Color(UIColor(primaryBase))
+            Color(UIColor(.primaryBase))
                 .ignoresSafeArea()
             Text("Login")
                 .foregroundColor(.white)
@@ -54,7 +54,7 @@ struct LoginView: View {
                             Text("Forgot Password?\t\t")
                                 .font(.system(size: 15))
                                 .frame(alignment: .trailing)
-                                .foregroundColor(primaryBase)
+                                .foregroundColor(.primaryBase)
                             
                         }
                     }
@@ -72,7 +72,7 @@ struct LoginView: View {
                             .frame(width: screenSize.width * 0.8, height: 40)
                             .padding()
                             .foregroundColor(.white)
-                            .background(primaryDark)
+                            .background(Color.primaryDark)
                             .cornerRadius(40)
                             .padding(.bottom)
                     }
@@ -87,7 +87,7 @@ struct LoginView: View {
                             Text("Create a new account")
                                 .font(.system(size: 15))
                                 .frame(alignment: .trailing)
-                                .foregroundColor(primaryDark)
+                                .foregroundColor(.primaryDark)
                         }
                     }
                     Button(action: {
@@ -97,12 +97,12 @@ struct LoginView: View {
                         Text("Or continue as guest")
                             .font(.system(size: 15))
                             .frame(alignment: .trailing)
-                            .foregroundColor(primaryDark)
+                            .foregroundColor(.primaryDark)
                     }
                     Spacer()
                 }
                 .frame(maxWidth: screenSize.width, maxHeight: screenSize.height)
-                .background(grey)
+                .background(Color.grey)
                 .cornerRadius(50)
             }
             .offset(x: 0, y: screenSize.height * 0.15)

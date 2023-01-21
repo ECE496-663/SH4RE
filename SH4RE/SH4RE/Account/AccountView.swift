@@ -13,7 +13,7 @@ struct AccountView: View {
 
     var body: some View {
         ZStack {
-            Color(UIColor(backgroundGrey))
+            Color(UIColor(.backgroundGrey))
                 .ignoresSafeArea()
             if (username.isEmpty) {
                 GuestView(tabSelection: $tabSelection)
@@ -29,11 +29,11 @@ struct AccountView: View {
                         Text("Logout")
                             .fontWeight(.semibold)
                             .frame(width: screenSize.width * 0.8, height: 40)
-                            .foregroundColor(primaryDark)
+                            .foregroundColor(.primaryDark)
                             .background(.white)
                             .cornerRadius(40)
                             .overlay(RoundedRectangle(cornerRadius: 40)
-                                .stroke(primaryDark, lineWidth: 2))
+                                .stroke(Color.primaryDark, lineWidth: 2))
                     }
                 }
             }

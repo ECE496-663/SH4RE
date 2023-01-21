@@ -10,21 +10,23 @@ import SwiftUI
 let screenSize: CGRect = UIScreen.main.bounds
 
 // custom colours
-let primaryBase = Color.init(UIColor(named: "PrimaryBase")!)
-let primaryDark = Color.init(UIColor(named: "PrimaryDark")!)
-let primaryLight = Color.init(UIColor(named: "PrimaryLight")!)
-let grey = Color.init(UIColor(named: "Grey")!)
-let backgroundGrey = Color.init(UIColor(named: "BackgroundGrey")!)
-let darkGrey = Color.init(UIColor(named: "DarkGrey")!)
-let textfield = Color.init(UIColor(named: "TextFieldInputDefault")!)
-let errorColour = Color.init(UIColor(named: "Error")!)
+extension Color {
+    static let primaryBase = Color("PrimaryBase")
+    static let primaryDark = Color("PrimaryDark")
+    static let primaryLight = Color("PrimaryLight")
+    static let grey = Color("Grey")
+    static let backgroundGrey = Color("BackgroundGrey")
+    static let darkGrey = Color("DarkGrey")
+    static let textfield = Color("TextFieldInputDefault")
+    static let errorColour = Color("Error")
+}
 
 struct ContentView: View {
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
     @State private var tabSelection = 1
     
     init() {
-        UITabBar.appearance().backgroundColor = UIColor(backgroundGrey)
+        UITabBar.appearance().backgroundColor = UIColor(.backgroundGrey)
     }
     
     var body: some View {
@@ -57,7 +59,7 @@ struct ContentView: View {
                         }
                         .tag(5)
                 }
-                .accentColor(primaryDark)
+                .accentColor(.primaryDark)
             }
             else {
                 LoginControlView()

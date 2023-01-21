@@ -142,10 +142,10 @@ struct CreateListingView: View {
                             VStack{
                                 HStack{
                                     Text(categorySelection.isEmpty ? categoryPlaceholder : categorySelection)
-                                        .foregroundColor(categorySelection.isEmpty ? textfield : .black)
+                                        .foregroundColor(categorySelection.isEmpty ? .textfield : .black)
                                     Spacer()
                                     Image(systemName: "arrowtriangle.left.fill")
-                                        .foregroundColor(textfield)
+                                        .foregroundColor(.textfield)
                                 }
                                 .frame(width: screenSize.width * 0.9, height: 30)
                                 .background(.white)
@@ -212,7 +212,7 @@ struct CreateListingView: View {
                                 Text("Custom Availability")
                             }
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(primaryBase)
+                            .foregroundColor(.primaryBase)
                         }
                         .frame(maxWidth: screenSize.width * 0.85, alignment: .leading)
                         
@@ -225,7 +225,7 @@ struct CreateListingView: View {
                             )
                             .datePickerStyle(.graphical)
                             .frame(maxWidth: screenSize.width * 0.9)
-                            .tint(primaryBase)
+                            .tint(.primaryBase)
                         }
                         Group {
                             // POST
@@ -285,21 +285,21 @@ struct CreateListingView: View {
                                     .frame(width: screenSize.width * 0.9, height: 20)
                                     .padding()
                                     .foregroundColor(.white)
-                                    .background(primaryDark)
+                                    .background(Color.primaryDark)
                                     .cornerRadius(40)
                             }
                             .alertX(isPresented: $errorInField, content: {
                                 AlertX(
                                     title: Text("ERROR: Entries missing"),
                                     theme: AlertX.Theme.custom(
-                                        windowColor: errorColour,
+                                        windowColor: .errorColour,
                                         alertTextColor: .white,
                                         enableShadow: true,
                                         enableRoundedCorners: true,
                                         enableTransparency: false,
                                         cancelButtonColor: .white,
                                         cancelButtonTextColor: .white,
-                                        defaultButtonColor: primaryDark,
+                                        defaultButtonColor: .primaryDark,
                                         defaultButtonTextColor: .white
                                     )
                                 )
@@ -309,13 +309,13 @@ struct CreateListingView: View {
                                     title: Text("Listing Posted!"),
                                     theme: AlertX.Theme.custom(
                                         windowColor: .white,
-                                        alertTextColor: primaryDark,
+                                        alertTextColor: .primaryDark,
                                         enableShadow: true,
                                         enableRoundedCorners: true,
                                         enableTransparency: false,
                                         cancelButtonColor: .white,
                                         cancelButtonTextColor: .white,
-                                        defaultButtonColor: primaryDark,
+                                        defaultButtonColor: .primaryDark,
                                         defaultButtonTextColor: .white
                                     )
                                 )
@@ -339,10 +339,10 @@ struct CreateListingView: View {
                                     .fontWeight(.semibold)
                                     .frame(width: screenSize.width * 0.9, height: 10)
                                     .padding()
-                                    .foregroundColor(primaryDark)
+                                    .foregroundColor(.primaryDark)
                                     .background(.white)
                                     .cornerRadius(40)
-                                    .overlay(RoundedRectangle(cornerRadius: 40) .stroke(primaryDark, lineWidth: 2))
+                                    .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.primaryDark, lineWidth: 2))
                             }
                             .padding(.bottom)
                             .alertX(isPresented: $showCancelAlertX, content: {
@@ -350,13 +350,13 @@ struct CreateListingView: View {
                                     title: Text("Listing Cleared"),
                                     theme: AlertX.Theme.custom(
                                         windowColor: .white,
-                                        alertTextColor: primaryDark,
+                                        alertTextColor: .primaryDark,
                                         enableShadow: true,
                                         enableRoundedCorners: true,
                                         enableTransparency: false,
                                         cancelButtonColor: .white,
                                         cancelButtonTextColor: .white,
-                                        defaultButtonColor: primaryDark,
+                                        defaultButtonColor: .primaryDark,
                                         defaultButtonTextColor: .white
                                     )
                                 )

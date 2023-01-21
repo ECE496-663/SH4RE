@@ -15,7 +15,7 @@ struct CreateAccountView: View {
 
     var body: some View {
         ZStack {
-            Color(UIColor(primaryBase))
+            Color(UIColor(.primaryBase))
                 .ignoresSafeArea()
             Text("Create Account")
                 .foregroundColor(.white)
@@ -72,7 +72,7 @@ struct CreateAccountView: View {
                                 .fontWeight(.bold)
                                 .frame(width: screenSize.width * 0.8, height: 40)
                                 .foregroundColor(.white)
-                                .background(primaryDark)
+                                .background(Color.primaryDark)
                                 .cornerRadius(40)
                         }
                         Button(action: {
@@ -82,17 +82,17 @@ struct CreateAccountView: View {
                             Text("Cancel")
                                 .fontWeight(.semibold)
                                 .frame(width: screenSize.width * 0.8, height: 40)
-                                .foregroundColor(primaryDark)
+                                .foregroundColor(.primaryDark)
                                 .background(.white)
                                 .cornerRadius(40)
                                 .overlay(RoundedRectangle(cornerRadius: 40)
-                                    .stroke(primaryDark, lineWidth: 2))
+                                    .stroke(Color.primaryDark, lineWidth: 2))
                         }
                     }
                     Spacer()
                 }
                 .frame(maxWidth: screenSize.width, maxHeight: screenSize.height)
-                .background(grey)
+                .background(Color.grey)
                 .cornerRadius(50)
             }
             .offset(x: 0, y: screenSize.height * 0.15)
