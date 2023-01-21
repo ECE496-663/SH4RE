@@ -79,7 +79,7 @@ struct CreateListingView: View {
             else {
                 VStack {
                     GeometryReader { geometry in
-                        ImageCarouselView(numberOfImages: imagesCount) {
+                        ImageCarouselView(numberOfImages: imagesCount, isEditable: true) {
                             ForEach(pictures, id:\.self) { picture in
                                 Image(uiImage: picture)
                                     .resizable()

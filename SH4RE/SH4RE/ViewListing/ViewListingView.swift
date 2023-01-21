@@ -43,7 +43,7 @@ struct ViewListingView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     GeometryReader { geometry in
-                        ImageCarouselView(numberOfImages: self.numberOfImages) {
+                        ImageCarouselView(numberOfImages: self.numberOfImages, isEditable: false) {
                             ForEach(images, id:\.self) { image in
                                 Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
                                     .resizable()

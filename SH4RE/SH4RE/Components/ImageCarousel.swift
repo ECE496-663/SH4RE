@@ -10,17 +10,19 @@ import SwiftUI
 struct ImageCarouselView<Content: View>: View {
     @Environment(\.deleteImage) var deleteImage
     private var numberOfImages: Int
+    private var isEditable: Bool
     private var content: Content
     @State private var currentIndex: Int = 0
     @State private var offset = CGSize.zero
 
-    init(numberOfImages: Int, @ViewBuilder content: () -> Content) {
+    init(numberOfImages: Int, isEditable: Bool, @ViewBuilder content: () -> Content) {
         self.numberOfImages = numberOfImages
+        self.isEditable = isEditable
         self.content = content()
     }
 
     var body: some View {
-        if (currentIndex != numberOfImages - 1) {
+        if (currentIndex != numberOfImages - 1 && isEditable) {
             Button(action: {
                 self.deleteImage!(currentIndex)
             }) {
@@ -88,7 +90,3 @@ struct ImageCarouselView<Content: View>: View {
         .frame(maxHeight: 300)
     }
 }
-
-// NOTE TO SELF:
-//FIX DELETE BUTTON ON VIEW LISTING
-// IGNORE THIS IN PR, IM DOING THIS RIGHT NOW PLS APPROVE
