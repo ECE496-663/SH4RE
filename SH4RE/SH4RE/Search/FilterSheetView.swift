@@ -107,25 +107,12 @@ struct FilterSheetView: View {
                     }
                     
                     //Rating
-                    VStack {
+                    VStack  {
                         Text("Min Rating")
                             .font(.title2)
-                        StarsView(numberOfStars: 3.5)
+                        RatingsView(rating: $minRating)
+                            .scaleEffect(2, anchor: .topLeading)
                     }
-//                    HStack(spacing:10) {
-//                        StarRatingView(value: $rating4, stars: 5)
-//                            .frame(width: 200, height: 40, alignment: .center)
-//                        Circle()
-//                            .fill(.gray)
-//                            .frame(width: 40, height: 40, alignment: .center)
-//                            .overlay(
-//                                Text("\(rating4, specifier: "%.1F")")
-//                                    .foregroundColor(.white)
-//                                    .fontWeight(.bold)
-//                            )
-//                    }
-//                    ratingPickerView(rating: $rating4)
-                    RatingsView(rating: $rating4)
                 }
                 .padding(.bottom, 3)
             }
