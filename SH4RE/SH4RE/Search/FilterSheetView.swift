@@ -9,13 +9,8 @@ import SwiftUI
 import Combine
 
 struct FilterSheetView: View {
-//    let screenSize: CGRect = UIScreen.main.bounds
     
-    
-    var dropDownList = ["Tools", "Sporting Equipment", "Cameras", "Cooking"]
-    var dropDownPlaceholder = "Category"
-    @State private var birthMonth: DropdownMenuOption? = nil
-    @State private var revealDetails = false
+    var dropDownList = ["Tools", "Sporting Equipment", "Cameras", "Cooking", "Outdoors"]
     @State private var dropDownSelection: String = ""
 
     @State private var location: String = ""
@@ -57,23 +52,7 @@ struct FilterSheetView: View {
                     VStack (alignment: .leading){
                         Text("Category")
                             .font(.title2)
-                        GroupBox {
-                            DisclosureGroup("Categories") {
-                                Text("Item 1")
-                                Text("Item 2")
-                                Text("Item 3")
-                            }.disclosureGroupStyle(CustomDisclosureGroupStyle(button: Text("ok")))
-                        }
-                        
-                        VStack {
-                            DropdownMenu(
-                                selectedOption: self.$birthMonth,
-                                placeholder: "Category",
-                                options: DropdownMenuOption.testAllMonths
-                            )
-                            
-                            Text(birthMonth?.option ?? "")
-                        }
+                        DropdownMenu(label: "Categories", options: dropDownList, selection: $dropDownSelection, useClear: true, clearValue: "")
                     }
                     
                     //Price
@@ -109,31 +88,12 @@ struct FilterSheetView: View {
     }
 }
 
-struct CustomDisclosureGroupStyle<Label: View>: DisclosureGroupStyle {
-    let button: Label
-    func makeBody(configuration: Configuration) -> some View {
-        HStack {
-            configuration.label
-            Spacer()
-            button
-                .rotationEffect(.degrees(configuration.isExpanded ? 90 : 0))
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            withAnimation {
-                configuration.isExpanded.toggle()
-            }
-        }
-        if configuration.isExpanded {
-            configuration.content
-                .padding()//.leading, 30)
-                .disclosureGroupStyle(self)
-        }
-    }
-}
+
 
 struct FilterSheetView_Previews: PreviewProvider {
     static var previews: some View {
         FilterSheetView()
     }
 }
+
+
