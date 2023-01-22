@@ -23,11 +23,23 @@ struct FilterSheetView: View {
     @State private var maxPrice: String = ""
     @State private var maxDistance: String = ""
     
-    @State private var rating4 = 2.3
+    @State private var minRating = 0.0
 
+    fileprivate func NumericTextField(label: String, textEntry: Binding<String>) -> some View {
+        return TextField(label, text: textEntry)
+            .keyboardType(.numberPad)
+            .textFieldStyle(.roundedBorder)
+            .onReceive(Just(minPrice)) { newValue in
+                let filtered = newValue.filter { "0123456789".contains($0) }
+                if filtered != newValue {
+                    self.minPrice = filtered
+                }
+            }
+    }
+    
     var body: some View {
-//        ZStack (alignment: .topLeading){
-            VStack (alignment: .leading) {
+        ScrollView {
+            VStack (alignment: .leading){
                 Group {
                     Text("Filters")
                         .font(.title)
@@ -65,47 +77,22 @@ struct FilterSheetView: View {
                     }
                     
                     //Price
-                    VStack {
+                    VStack (alignment: .leading) {
                         Text("Daily Price")
                             .font(.title2)
                         HStack {
-                            TextField("Min", text: $minPrice)
-                                .keyboardType(.numberPad)
-                                .textFieldStyle(.roundedBorder)
-                                .onReceive(Just(minPrice)) { newValue in
-                                    let filtered = newValue.filter { "0123456789".contains($0) }
-                                    if filtered != newValue {
-                                        self.minPrice = filtered
-                                    }
-                                }
-                            TextField("Max", text: $maxPrice)
-                                .keyboardType(.numberPad)
-                                .textFieldStyle(.roundedBorder)
-                                .onReceive(Just(maxPrice)) { newValue in
-                                    let filtered = newValue.filter { "0123456789".contains($0) }
-                                    if filtered != newValue {
-                                        self.minPrice = filtered
-                                    }
-                                }
+                            NumericTextField(label: "Min", textEntry: $minPrice)
+                            NumericTextField(label: "Max", textEntry: $maxPrice)
                         }
                     }
-                    
+
                     //Distance
-                    VStack {
+                    VStack (alignment: .leading) {
                         Text("Max Distance")
                             .font(.title2)
-                        TextField("Max Distance", text: $maxDistance)
-                            .textFieldStyle(.roundedBorder)
-                            .keyboardType(.numberPad)
-                            .textFieldStyle(.roundedBorder)
-                            .onReceive(Just(maxDistance)) { newValue in
-                                let filtered = newValue.filter { "0123456789".contains($0) }
-                                if filtered != newValue {
-                                    self.maxDistance = filtered
-                                }
-                            }
+                        NumericTextField(label: "Max Distance", textEntry: $maxDistance)
                     }
-                    
+
                     //Rating
                     VStack  {
                         Text("Min Rating")
@@ -117,7 +104,8 @@ struct FilterSheetView: View {
                 .padding(.bottom, 3)
             }
             .padding()
-//        }
+        }
+        .background(Color("BackgroundGrey"))
     }
 }
 
