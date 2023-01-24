@@ -76,15 +76,14 @@ struct CreateAccountView: View {
                         Button(action: {
                             Task{
                                 do  {
-                                    try await Auth.auth().createUser(withEmail: username, password: password)
-                                    currentUser.hasLoggedIn = true
-                                    documentWrite(collectionPath: "User Info", uid: Auth.auth().currentUser!.uid, data: ["name": name,"email": username])
+                                  try await Auth.auth().createUser(withEmail: username, password: password)
+                                  currentUser.hasLoggedIn = true
+                                  documentWrite(collectionPath: "User Info", uid: Auth.auth().currentUser!.uid, data: ["name": name,"email": username])
                                 }
                                 catch {
-                                    print(error.localizedDescription)
+                                  print(error.localizedDescription)
                                 }
                             }
-                            currentUser.hasLoggedIn = true
                         })
                         {
                             Text("Create Account")

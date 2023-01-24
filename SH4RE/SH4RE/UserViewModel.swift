@@ -1,9 +1,9 @@
+
 import Foundation
 import Firebase
 import SwiftUI
 import FirebaseAuth
 
-//Functions used to extract data about users
 struct User : Identifiable{
     var id :String
     var name:String
@@ -50,3 +50,4 @@ func fetchAllUsers(completion: @escaping([User]) -> Void) {
             })
         }
     }
+

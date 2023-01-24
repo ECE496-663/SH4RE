@@ -24,6 +24,20 @@ func documentWrite(collectionPath : String, data:Dictionary<String,Any>) -> Stri
     }
     return id
 }
+func documentWrite(collectionPath : String, uid: String, data:Dictionary<String,Any>) -> String{
+    let db = Firestore.firestore()
+    let ref = db.collection(collectionPath).document()
+    let id = ref.documentID
+    ref.setData(data)
+    { err in
+        if let err = err {
+            print("Error writing document: \(err)")
+        }else{
+            print("Document sucessfully written")
+        }
+    }
+    return id
+}
 
 func documentWrite(collectionPath : String, uid:String,  data:Dictionary<String,Any>) -> String{
     let db = Firestore.firestore()
