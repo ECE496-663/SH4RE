@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E29DDA82936B22F0089F703 /* ProductCard.swift */; };
+		1E3D19D0297F93BC00251D39 /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D19CF297F93BC00251D39 /* ButtonStyles.swift */; };
 		1E7CB011297DF4B6008E4854 /* DropdownMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7CB010297DF4B6008E4854 /* DropdownMenu.swift */; };
 		1E8511672939BC060008D2CA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C1E292DB4FE00F7F8E3 /* FirebaseFirestore */; };
 		1E8511682939BC060008D2CA /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C20292DB4FE00F7F8E3 /* FirebaseFirestoreSwift */; };
@@ -64,6 +65,7 @@
 /* Begin PBXFileReference section */
 		12AA3C2D2933038800F7F8E3 /* ListingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingViewModel.swift; sourceTree = "<group>"; };
 		1E29DDA82936B22F0089F703 /* ProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCard.swift; sourceTree = "<group>"; };
+		1E3D19CF297F93BC00251D39 /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		1E7CB010297DF4B6008E4854 /* DropdownMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownMenu.swift; sourceTree = "<group>"; };
 		1EB9FCD92979CC3A00659C5C /* FilterSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSheetView.swift; sourceTree = "<group>"; };
 		1EB9FCDB2979D1AB00659C5C /* RatingPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingPicker.swift; sourceTree = "<group>"; };
@@ -264,6 +266,7 @@
 				9DB46C58296E56BB005F0216 /* DatePicker.swift */,
 				9DB46C5A296E5E31005F0216 /* PopUp.swift */,
 				1E7CB010297DF4B6008E4854 /* DropdownMenu.swift */,
+				1E3D19CF297F93BC00251D39 /* ButtonStyles.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -447,6 +450,7 @@
 				9D080589292FE85900094169 /* MessagesView.swift in Sources */,
 				D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */,
 				9D95674A29380897003F6B74 /* ImageCarousel.swift in Sources */,
+				1E3D19D0297F93BC00251D39 /* ButtonStyles.swift in Sources */,
 				D120FABE2968AD6F00CCD7A5 /* GuestView.swift in Sources */,
 				D120FAB8296675FA00CCD7A5 /* LoginControlView.swift in Sources */,
 			);

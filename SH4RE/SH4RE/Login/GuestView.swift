@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct GuestView: View {
     @Binding var tabSelection: Int
     
@@ -26,13 +27,8 @@ struct GuestView: View {
             })
             {
                 Text("Login to your account")
-                    .fontWeight(.bold)
-                    .frame(width: screenSize.width * 0.8, height: 40)
-                    .foregroundColor(.white)
-                    .background(Color.primaryDark)
-                    .cornerRadius(40)
-                    .padding(.bottom)
             }
+            .buttonStyle(primaryButtonStyle())
         }
     }
 }

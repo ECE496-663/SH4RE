@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+
+
 struct AccountView: View {
     @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
     @Binding var tabSelection: Int
@@ -27,14 +29,8 @@ struct AccountView: View {
                     })
                     {
                         Text("Logout")
-                            .fontWeight(.semibold)
-                            .frame(width: screenSize.width * 0.8, height: 40)
-                            .foregroundColor(.primaryDark)
-                            .background(.white)
-                            .cornerRadius(40)
-                            .overlay(RoundedRectangle(cornerRadius: 40)
-                                .stroke(Color.primaryDark, lineWidth: 2))
                     }
+                    .buttonStyle(secondaryButtonStyle())
                 }
             }
         }
