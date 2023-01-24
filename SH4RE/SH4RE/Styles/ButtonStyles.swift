@@ -28,7 +28,6 @@ struct primaryButtonStyle: ButtonStyle{
             .foregroundColor(.white)
             .background(Color.primaryDark)
             .cornerRadius(40)
-            .padding(.bottom)
     }
 }
 

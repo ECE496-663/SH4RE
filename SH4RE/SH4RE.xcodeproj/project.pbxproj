@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E29DDA82936B22F0089F703 /* ProductCard.swift */; };
 		1E3D19D0297F93BC00251D39 /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D19CF297F93BC00251D39 /* ButtonStyles.swift */; };
+		1E3D19D3297FB41100251D39 /* TextFieldStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D19D2297FB41100251D39 /* TextFieldStyles.swift */; };
 		1E7CB011297DF4B6008E4854 /* DropdownMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7CB010297DF4B6008E4854 /* DropdownMenu.swift */; };
 		1E8511672939BC060008D2CA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C1E292DB4FE00F7F8E3 /* FirebaseFirestore */; };
 		1E8511682939BC060008D2CA /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 12AA3C20292DB4FE00F7F8E3 /* FirebaseFirestoreSwift */; };
@@ -66,6 +67,7 @@
 		12AA3C2D2933038800F7F8E3 /* ListingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingViewModel.swift; sourceTree = "<group>"; };
 		1E29DDA82936B22F0089F703 /* ProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCard.swift; sourceTree = "<group>"; };
 		1E3D19CF297F93BC00251D39 /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
+		1E3D19D2297FB41100251D39 /* TextFieldStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldStyles.swift; sourceTree = "<group>"; };
 		1E7CB010297DF4B6008E4854 /* DropdownMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownMenu.swift; sourceTree = "<group>"; };
 		1EB9FCD92979CC3A00659C5C /* FilterSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSheetView.swift; sourceTree = "<group>"; };
 		1EB9FCDB2979D1AB00659C5C /* RatingPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingPicker.swift; sourceTree = "<group>"; };
@@ -139,6 +141,15 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		1E3D19D1297FB3E700251D39 /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				1E3D19CF297F93BC00251D39 /* ButtonStyles.swift */,
+				1E3D19D2297FB41100251D39 /* TextFieldStyles.swift */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
 		5939D35129132D7000866FA5 = {
 			isa = PBXGroup;
 			children = (
@@ -163,6 +174,7 @@
 		5939D35C29132D7000866FA5 /* SH4RE */ = {
 			isa = PBXGroup;
 			children = (
+				1E3D19D1297FB3E700251D39 /* Styles */,
 				D120FAB22966530700CCD7A5 /* Login */,
 				9D95674829380837003F6B74 /* Components */,
 				5939D35D29132D7000866FA5 /* SH4REApp.swift */,
@@ -266,7 +278,6 @@
 				9DB46C58296E56BB005F0216 /* DatePicker.swift */,
 				9DB46C5A296E5E31005F0216 /* PopUp.swift */,
 				1E7CB010297DF4B6008E4854 /* DropdownMenu.swift */,
-				1E3D19CF297F93BC00251D39 /* ButtonStyles.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -433,6 +444,7 @@
 				9D95674D29381193003F6B74 /* Stars.swift in Sources */,
 				D120FABC2967B4B000CCD7A5 /* CreateAccountView.swift in Sources */,
 				1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */,
+				1E3D19D3297FB41100251D39 /* TextFieldStyles.swift in Sources */,
 				1EB9FCDA2979CC3A00659C5C /* FilterSheetView.swift in Sources */,
 				9DB46C59296E56BB005F0216 /* DatePicker.swift in Sources */,
 				9D080594292FE9F400094169 /* AccountView.swift in Sources */,
