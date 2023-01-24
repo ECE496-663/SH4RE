@@ -43,7 +43,7 @@ struct ViewListingView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     GeometryReader { geometry in
-                        ImageCarouselView(numberOfImages: self.numberOfImages) {
+                        ImageCarouselView(numberOfImages: self.numberOfImages, isEditable: false) {
                             ForEach(images, id:\.self) { image in
                                 Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
                                     .resizable()
@@ -80,15 +80,15 @@ struct ViewListingView: View {
                         HStack {
                             Text("Check Availability")
                                 .font(.body)
-                                .foregroundColor(Color("PrimaryDark"))
+                                .foregroundColor(.primaryDark)
                             
                             Image(systemName: "calendar")
-                                .foregroundColor(Color("PrimaryDark"))
+                                .foregroundColor(.primaryDark)
                         }
                         .padding([.horizontal, .vertical], 10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 40)
-                                .stroke(Color("PrimaryDark"))
+                                .stroke(Color.primaryDark)
                         )
                         .padding()
                         
@@ -161,7 +161,7 @@ struct ViewListingView: View {
                 }
                 .frame(alignment: .trailing)
                 .padding()
-                .background(Color("PrimaryDark"))
+                .background(Color.primaryDark)
                 .cornerRadius(40)
                 .padding()
             }

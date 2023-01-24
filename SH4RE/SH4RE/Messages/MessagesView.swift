@@ -8,13 +8,19 @@
 import SwiftUI
 
 struct MessagesView: View {
+    @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
     @Binding var tabSelection: Int
 
     var body: some View {
         ZStack {
             Color("BackgroundGrey").ignoresSafeArea()
-            VStack {
-                Text("Messages View")
+            if (username.isEmpty) {
+                GuestView(tabSelection: $tabSelection)
+            }
+            else {
+                VStack {
+                    Text("Messages View")
+                }
             }
         }
     }

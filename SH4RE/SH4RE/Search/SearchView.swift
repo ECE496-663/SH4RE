@@ -15,9 +15,8 @@ import FirebaseStorage
 
 struct SearchView: View {
     @Binding var tabSelection: Int
-    
     @State private var searchQuery: String = ""
-    
+
     @ObservedObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 20)]
     
@@ -36,7 +35,7 @@ struct SearchView: View {
                     }
                 }.padding()
             }
-            .background(Color("BackgroundGrey"))
+            .background(Color.backgroundGrey)
             .toolbar {
                 TextField("Search", text: $searchQuery)
                     .textFieldStyle(.roundedBorder)

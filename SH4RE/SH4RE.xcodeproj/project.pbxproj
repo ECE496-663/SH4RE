@@ -33,6 +33,12 @@
 		D119C04229281DBA00E83142 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C04129281DBA00E83142 /* HomeView.swift */; };
 		D119C0482928313700E83142 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C0472928313700E83142 /* ImagePicker.swift */; };
 		D120FAB12965428500CCD7A5 /* AlertX in Frameworks */ = {isa = PBXBuildFile; productRef = D120FAB02965428500CCD7A5 /* AlertX */; };
+		D120FAB42966533800CCD7A5 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB32966533800CCD7A5 /* LandingView.swift */; };
+		D120FAB6296658A100CCD7A5 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB5296658A100CCD7A5 /* TutorialView.swift */; };
+		D120FAB8296675FA00CCD7A5 /* LoginControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB7296675FA00CCD7A5 /* LoginControlView.swift */; };
+		D120FABA29668A7000CCD7A5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FAB929668A7000CCD7A5 /* LoginView.swift */; };
+		D120FABC2967B4B000CCD7A5 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FABB2967B4B000CCD7A5 /* CreateAccountView.swift */; };
+		D120FABE2968AD6F00CCD7A5 /* GuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D120FABD2968AD6F00CCD7A5 /* GuestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +85,12 @@
 		D119C03D29280D0600E83142 /* CreateListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
 		D119C04129281DBA00E83142 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		D119C0472928313700E83142 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		D120FAB32966533800CCD7A5 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
+		D120FAB5296658A100CCD7A5 /* TutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
+		D120FAB7296675FA00CCD7A5 /* LoginControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginControlView.swift; sourceTree = "<group>"; };
+		D120FAB929668A7000CCD7A5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		D120FABB2967B4B000CCD7A5 /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
+		D120FABD2968AD6F00CCD7A5 /* GuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +154,7 @@
 		5939D35C29132D7000866FA5 /* SH4RE */ = {
 			isa = PBXGroup;
 			children = (
+				D120FAB22966530700CCD7A5 /* Login */,
 				9D95674829380837003F6B74 /* Components */,
 				5939D35D29132D7000866FA5 /* SH4REApp.swift */,
 				5939D35F29132D7000866FA5 /* ContentView.swift */,
@@ -244,6 +257,19 @@
 				9DB46C5A296E5E31005F0216 /* PopUp.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		D120FAB22966530700CCD7A5 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				D120FAB32966533800CCD7A5 /* LandingView.swift */,
+				D120FAB5296658A100CCD7A5 /* TutorialView.swift */,
+				D120FAB7296675FA00CCD7A5 /* LoginControlView.swift */,
+				D120FAB929668A7000CCD7A5 /* LoginView.swift */,
+				D120FABB2967B4B000CCD7A5 /* CreateAccountView.swift */,
+				D120FABD2968AD6F00CCD7A5 /* GuestView.swift */,
+			);
+			path = Login;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -392,17 +418,23 @@
 				5939D38929132D8500866FA5 /* FirebaseDB.swift in Sources */,
 				9D95674B29380B70003F6B74 /* ListingViewModel.swift in Sources */,
 				9D95674D29381193003F6B74 /* Stars.swift in Sources */,
+				D120FABC2967B4B000CCD7A5 /* CreateAccountView.swift in Sources */,
 				1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */,
 				9DB46C59296E56BB005F0216 /* DatePicker.swift in Sources */,
 				9D080594292FE9F400094169 /* AccountView.swift in Sources */,
 				5939D36029132D7000866FA5 /* ContentView.swift in Sources */,
 				D119C04229281DBA00E83142 /* HomeView.swift in Sources */,
+				D120FAB42966533800CCD7A5 /* LandingView.swift in Sources */,
 				5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */,
 				D119C0482928313700E83142 /* ImagePicker.swift in Sources */,
+				D120FAB6296658A100CCD7A5 /* TutorialView.swift in Sources */,
+				D120FABA29668A7000CCD7A5 /* LoginView.swift in Sources */,
 				9D080596292FF43800094169 /* ViewListingView.swift in Sources */,
 				9D080589292FE85900094169 /* MessagesView.swift in Sources */,
 				D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */,
 				9D95674A29380897003F6B74 /* ImageCarousel.swift in Sources */,
+				D120FABE2968AD6F00CCD7A5 /* GuestView.swift in Sources */,
+				D120FAB8296675FA00CCD7A5 /* LoginControlView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,6 @@ import Firebase
 
 @main
 struct SH4REApp: App {
-    
     init(){
         FirebaseApp.configure()
     }

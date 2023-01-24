@@ -10,23 +10,25 @@ import SwiftUI
 struct ImageCarouselView<Content: View>: View {
     @Environment(\.deleteImage) var deleteImage
     private var numberOfImages: Int
+    private var isEditable: Bool
     private var content: Content
     @State private var currentIndex: Int = 0
     @State private var offset = CGSize.zero
 
-    init(numberOfImages: Int, @ViewBuilder content: () -> Content) {
+    init(numberOfImages: Int, isEditable: Bool, @ViewBuilder content: () -> Content) {
         self.numberOfImages = numberOfImages
+        self.isEditable = isEditable
         self.content = content()
     }
 
     var body: some View {
-        if (currentIndex != numberOfImages - 1) {
+        if (currentIndex != numberOfImages - 1 && isEditable) {
             Button(action: {
                 self.deleteImage!(currentIndex)
             }) {
                 ZStack {
                     Circle()
-                        .fill(Color("PrimaryDark"))
+                        .fill(Color.primaryDark)
                         .frame(width: 25, height: 25)
                     Image(systemName: "xmark")
                         .font(.system(size: 15, weight: .bold, design: .rounded))
@@ -72,11 +74,11 @@ struct ImageCarouselView<Content: View>: View {
                         }
                 )
                 HStack(spacing: 3) {
-                    let scroll_offset = (numberOfImages == 6) ? 1 : 0
-                    ForEach(0..<self.numberOfImages - scroll_offset, id: \.self) { index in
+                    let scrollOffset = (numberOfImages == 6) ? 1 : 0
+                    ForEach(0..<self.numberOfImages - scrollOffset, id: \.self) { index in
                         Capsule()
                             .frame(width: index == self.currentIndex ? 50 : 10, height: 10)
-                            .foregroundColor(index == self.currentIndex ? Color("PrimaryDark") : .white)
+                            .foregroundColor(index == self.currentIndex ? .primaryDark : .white)
                             .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
                             .padding(.bottom, 8)
                             .animation(.spring(), value: UUID())
@@ -88,4 +90,3 @@ struct ImageCarouselView<Content: View>: View {
         .frame(maxHeight: 300)
     }
 }
-
