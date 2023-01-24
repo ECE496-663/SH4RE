@@ -17,13 +17,14 @@ struct CreateAccountView: View {
         ZStack {
             Color(UIColor(.primaryBase))
                 .ignoresSafeArea()
-            Text("Create Account")
-                .foregroundColor(.white)
-                .font(.system(size: 30))
-                .position(x: screenSize.width * 0.5, y: screenSize.height * 0.05)
-
-            Group {
-                VStack {
+            VStack {
+                Text("Create Account")
+                    .foregroundColor(.white)
+                    .font(.system(size: 30))
+                    .padding(.top, 70)
+                    .padding(.bottom, 40)
+                
+                VStack (alignment: .trailing) {
                     Spacer()
                         .frame(height: screenSize.height * 0.05)
                     
@@ -34,9 +35,9 @@ struct CreateAccountView: View {
                         TextField("Your email", text: $username)
                             .disableAutocorrection(true)
                             .autocapitalization(.none)
-                            .frame(width: screenSize.width * 0.8, height: 20)
-                            .textFieldStyle(.roundedBorder)
-                            .padding()
+                            .frame(width: screenSize.width * 0.8)
+                            .textFieldStyle(textInputStyle())
+                            .padding(.bottom)
                         
                         Text("Password")
                             .font(.system(size: 18))
@@ -44,9 +45,10 @@ struct CreateAccountView: View {
                         SecureField("Your password", text: $password)
                             .disableAutocorrection(true)
                             .autocapitalization(.none)
-                            .frame(width: screenSize.width * 0.8, height: 20)
-                            .textFieldStyle(.roundedBorder)
-                            .padding()
+                            .frame(width: screenSize.width * 0.8)
+                            .textFieldStyle(textInputStyle())
+                            .padding(.bottom)
+                        
                         
                         Text("Confirm Password")
                             .font(.system(size: 18))
@@ -54,49 +56,37 @@ struct CreateAccountView: View {
                         SecureField("Your password", text: $confirmPassword)
                             .disableAutocorrection(true)
                             .autocapitalization(.none)
-                            .frame(width: screenSize.width * 0.8, height: 20)
-                            .textFieldStyle(.roundedBorder)
-                            .padding()
+                            .frame(width: screenSize.width * 0.8)
+                            .textFieldStyle(textInputStyle())
                     }
-
-                    Spacer()
-                        .frame(height: screenSize.height * 0.25)
                     
-                    VStack {
+                    Spacer()
+                    
+                    VStack (alignment: .trailing) {
                         Button(action: {
                             UserDefaults.standard.set(true, forKey: "isLoggedIn")
                             UserDefaults.standard.set("test", forKey: "UID")
                         })
                         {
                             Text("Create Account")
-                                .fontWeight(.bold)
-                                .frame(width: screenSize.width * 0.8, height: 40)
-                                .foregroundColor(.white)
-                                .background(Color.primaryDark)
-                                .cornerRadius(40)
                         }
+                        .buttonStyle(primaryButtonStyle())
                         Button(action: {
                             showLoginScreen!()
                         })
                         {
                             Text("Cancel")
-                                .fontWeight(.semibold)
-                                .frame(width: screenSize.width * 0.8, height: 40)
-                                .foregroundColor(.primaryDark)
-                                .background(.white)
-                                .cornerRadius(40)
-                                .overlay(RoundedRectangle(cornerRadius: 40)
-                                    .stroke(Color.primaryDark, lineWidth: 2))
                         }
+                        .buttonStyle(secondaryButtonStyle())
                     }
-                    Spacer()
+                    .padding(.bottom, 50)
                 }
-                .frame(maxWidth: screenSize.width, maxHeight: screenSize.height)
+                .frame(maxWidth: screenSize.width)
                 .background(Color.grey)
                 .cornerRadius(50)
             }
-            .offset(x: 0, y: screenSize.height * 0.15)
         }
+        .frame(height: screenSize.height)
     }
 }
 

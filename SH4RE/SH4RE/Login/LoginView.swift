@@ -68,14 +68,9 @@ struct LoginView: View {
                     })
                     {
                         Text("Login")
-                            .fontWeight(.bold)
-                            .frame(width: screenSize.width * 0.8, height: 40)
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.primaryDark)
-                            .cornerRadius(40)
-                            .padding(.bottom)
                     }
+                    .buttonStyle(primaryButtonStyle(tall:true))
+                    .padding(.bottom)
                     HStack {
                         Text("Don't have an account?")
                             .font(.system(size: 15))
