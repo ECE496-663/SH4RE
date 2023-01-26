@@ -188,9 +188,4 @@ struct ViewListingView: View {
     }
 }
 
-struct ViewListingView_Previews: PreviewProvider {
-    static var previews: some View {
-        ViewListingView(listing:Listing(uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"test title",  description: "test description", imagepath: ["listingimages/3rWyQLjIYsIA7wlrQ37r/1.jpg"], price:"20.00"))
-    }
-}
 

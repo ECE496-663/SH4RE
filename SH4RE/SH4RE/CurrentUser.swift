@@ -8,7 +8,6 @@ import SwiftUI
 import FirebaseAuth
 
 //class used to manage view transitions 
->>>>>>> c77fc87 (added user fields to listings)
 class CurrentUser : ObservableObject{
     @Published var hasLoggedIn: Bool
     init() {
