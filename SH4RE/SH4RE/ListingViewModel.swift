@@ -15,6 +15,7 @@ import FirebaseStorage
 //Struct for listing TODO add more properties
 struct Listing : Identifiable{
     var id :String =  UUID().uuidString
+    var uid : String
     var title:String
     var description:String
     var imagepath = [String]()
@@ -38,11 +39,12 @@ class ListingViewModel : ObservableObject{
                 
                 //Assign listing properties here
                 let id = QueryDocumentSnapshot.documentID
+                let uid = data["uid"] as? String ?? ""
                 let title = data["Title"] as? String ?? ""
                 let description = data["Description"] as? String ?? ""
                 let imagepath = data["image_path"] as? [String] ?? []
                 let price = data["Price"] as? String ?? ""
-                return Listing(id:id, title:title, description:description, imagepath:imagepath, price:price)
+                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price)
             }
             if QuerySnapshot!.isEmpty{
                 completion(false)

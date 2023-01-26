@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct LoginView: View {
     @Environment(\.showCreateAccountScreen) var showCreateAccountScreen
+    @EnvironmentObject var currentUser : CurrentUser
     @State private var username: String = ""
     @State private var password: String = ""
+    
 
     var body: some View {
         ZStack {
@@ -63,8 +66,15 @@ struct LoginView: View {
                         .frame(height: screenSize.height * 0.25)
 
                     Button(action: {
-                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                        UserDefaults.standard.set("test", forKey: "UID")
+                        Task{
+                            do  {
+                              try await Auth.auth().signIn(withEmail: username, password: password)
+                            }
+                            catch {
+                              print(error.localizedDescription)
+                            }
+                        }
+                        currentUser.hasLoggedIn = true
                     })
                     {
                         Text("Login")
@@ -91,7 +101,15 @@ struct LoginView: View {
                         }
                     }
                     Button(action: {
-                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                        Task{
+                            do  {
+                              try await Auth.auth().signInAnonymously()
+                            }
+                            catch {
+                              print(error.localizedDescription)
+                            }
+                        }
+                        currentUser.hasLoggedIn = true
                     })
                     {
                         Text("Or continue as guest")
