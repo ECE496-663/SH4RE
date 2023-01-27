@@ -62,7 +62,7 @@ struct MessagesInboxView: View {
                 VStack {
                     NavigationLink {
                         // pass in user that is is with this
-//                        MessagesChat(otherUserId: user.getUid())
+                        MessagesChat(otherUserId: "123")
                     } label: {
                         HStack(spacing: 16) {
                             Image("placeholder")

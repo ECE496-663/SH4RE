@@ -16,8 +16,6 @@ struct MessagesChat: View {
     
     static let emptyScrollToString = "Empty"
     
-    
-    // TODO: Bryan
     var otherUserId: String
     
     init(otherUserId: String) {
@@ -170,7 +168,6 @@ struct MessagesChat: View {
 }
 
 struct MessageView: View {
-    @ObservedObject var currentUser = CurrentUser()
     let message: ChatMessage
     
     var body: some View {
