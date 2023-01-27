@@ -17,23 +17,97 @@ import FirebaseStorage
 
 struct ViewListingView: View {
     @Binding var tabSelection: Int
-    
+        
     //parameters passed in from search nav link
     var listing: Listing
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     @State private var showCal = false
     
-    
     var numberOfStars: Float = 4
     var hasHalfStar = true
     var numberOfReviews = 3
-    @State var numberOfImages = 0// should become images.length or something
+    @State var numberOfImages = 0
     @State var description:String = ""
     @State var title:String = ""
     @State var price:String = ""
     @State private var dates: Set<DateComponents> = []
     
+    private var reviews: some View {
+        VStack(alignment: .leading) {
+            Text("Reviews (\(numberOfReviews))")
+                .font(.headline)
+                .padding()
+            
+            HStack(alignment: .top) {
+                Image("placeholder")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(Circle())
+                    .frame(width: 40, height: 40)
+                
+                VStack(alignment: .leading) {
+                    Text("Melissa Lim")
+                        .font(.body)
+                    
+                    StarsView(numberOfStars: 3.5)
+                    Text("Fusce non arcu non nunc ultrices hendrerit. In libero risus, auctor ac turpis in, venenatis tempus erat tincidunt et lorem ipsum.")
+                        .font(.footnote)
+                }
+                
+            }
+            .padding([.horizontal])
+        }
+        
+    }
+    
+    private var bottomBar: some View {
+        HStack {
+            VStack {
+                if (listing.price.isEmpty) {
+                    Text("Message user for more pricing info")
+                        .foregroundColor(Color("TextGrey"))
+                        .font(.caption)
+                }
+                else {
+                    Text("Price")
+                        .font(.callout)
+                        .bold()
+                        .foregroundColor(Color("TextGrey"))
+                        .frame(alignment: .leading)
+                    HStack {
+                            Text("$\(listing.price)")
+                                .font(.headline)
+                                .bold()
+                            Text("/day")
+                                .font(.caption)
+                                .foregroundColor(Color("TextGrey"))
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            NavigationLink(destination: MessagesInboxView(tabSelection: $tabSelection)) {
+                Button(action: { tabSelection = 4 }) {
+                    HStack {
+                        Text("Message")
+                            .font(.body)
+                            .foregroundColor(Color("White"))
+                        
+                        Image(systemName: "message")
+                            .foregroundColor(Color("White"))
+                    }
+                }
+            }
+            .frame(alignment: .trailing)
+            .padding()
+            .background(Color("PrimaryDark"))
+            .cornerRadius(40)
+            .padding()
+        }
+        .padding([.horizontal])
+        .background(Color("White"))
+    }
+
     
     var body: some View {
         
@@ -80,95 +154,31 @@ struct ViewListingView: View {
                         HStack {
                             Text("Check Availability")
                                 .font(.body)
-                                .foregroundColor(.primaryDark)
+                                .foregroundColor(Color("PrimaryDark"))
                             
                             Image(systemName: "calendar")
-                                .foregroundColor(.primaryDark)
+                                .foregroundColor(Color("PrimaryDark"))
                         }
                         .padding([.horizontal, .vertical], 10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 40)
-                                .stroke(Color.primaryDark)
+                                .stroke(Color("PrimaryDark"))
                         )
                         .padding()
                         
                     }
-                    Text("Reviews (\(numberOfReviews))")
-                        .font(.headline)
-                        .padding()
                     
-                    HStack(alignment: .top) {
-                        Image("placeholder")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .clipShape(Circle())
-                            .frame(width: 40, height: 40)
-                        
-                        VStack(alignment: .leading) {
-                            Text("Melissa Lim")
-                                .font(.body)
-                            
-                            StarsView(numberOfStars: 3.5)
-                            Text("Fusce non arcu non nunc ultrices hendrerit. In libero risus, auctor ac turpis in, venenatis tempus erat tincidunt et lorem ipsum.")
-                                .font(.footnote)
-                        }
-                        
-                    }.padding([.horizontal])
-                    
+                    reviews
                 }
             }
             PopUp(show: $showCal) {
                 DatePicker(dates: dates)
             }
         }
-        
-        ZStack {
-            HStack {
-                VStack {
-                    if (listing.price.isEmpty) {
-                        Text("Message user for more pricing info")
-                            .foregroundColor(Color("TextGrey"))
-                            .font(.caption)
-                    }
-                    else {
-                        Text("Price")
-                            .font(.callout)
-                            .bold()
-                            .foregroundColor(Color("TextGrey"))
-                            .frame(alignment: .leading)
-                        HStack {
-                            Text("$\(listing.price)")
-                                .font(.headline)
-                                .bold()
-                            Text("/day")
-                                .font(.caption)
-                                .foregroundColor(Color("TextGrey"))
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                NavigationLink(destination: MessagesView(tabSelection: $tabSelection)) {
-                    Button(action: { tabSelection = 4 }) {
-                        HStack {
-                            Text("Message")
-                                .font(.body)
-                                .foregroundColor(Color("White"))
-                            
-                            Image(systemName: "message")
-                                .foregroundColor(Color("White"))
-                        }
-                    }
-                }
-                .frame(alignment: .trailing)
-                .padding()
-                .background(Color.primaryDark)
-                .cornerRadius(40)
-                .padding()
-            }
-        }
-        .padding([.horizontal])
-        .frame(alignment: .bottom)
+        .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
+            print("\(listing)")
+
             price = listing.price
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
@@ -185,7 +195,21 @@ struct ViewListingView: View {
                 }
             }
         }
+        
     }
 }
 
-
+//struct ViewListingView_Previews_helper: View {
+//    @State private var tabSelection = 1
+//    var listing : Listing = Listing(id: "3rWyQLjIYsIA7wlrQ37r", title: "Camera", description: "This is a very fancy DSLR camera", imagepath: ["listingimages/3rWyQLjIYsIA7wlrQ37r/1.jpg", "listingimages/3rWyQLjIYsIA7wlrQ37r/2.jpg"], price: "25", imageDict: UIImage(named: "placeholder")!)
+//
+//    var body: some View {
+//        ViewListingView(tabSelection: $tabSelection, listing: listing)
+//    }
+//}
+//
+//struct ViewListingView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ViewListingView_Previews_helper()
+//    }
+//}
