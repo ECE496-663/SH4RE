@@ -85,7 +85,7 @@ struct MessagesChat: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
-            .background(Color("PrimaryDark"))
+            .background(Color.primaryDark)
             .cornerRadius(4)
         }
         .padding(.horizontal)
@@ -206,7 +206,7 @@ private struct Placeholder: View {
         HStack {
             Text("Message")
                 .keyboardType(.numberPad)
-                .foregroundColor(Color("TextGrey"))
+                .foregroundColor(.grey)
                 .font(.body)
                 .padding(.leading, 5)
                 .padding(.top, -4)

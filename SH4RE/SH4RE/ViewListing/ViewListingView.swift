@@ -66,14 +66,14 @@ struct ViewListingView: View {
             VStack {
                 if (listing.price.isEmpty) {
                     Text("Message user for more pricing info")
-                        .foregroundColor(Color("TextGrey"))
+                        .foregroundColor(.grey)
                         .font(.caption)
                 }
                 else {
                     Text("Price")
                         .font(.callout)
                         .bold()
-                        .foregroundColor(Color("TextGrey"))
+                        .foregroundColor(.grey)
                         .frame(alignment: .leading)
                     HStack {
                             Text("$\(listing.price)")
@@ -81,7 +81,7 @@ struct ViewListingView: View {
                                 .bold()
                             Text("/day")
                                 .font(.caption)
-                                .foregroundColor(Color("TextGrey"))
+                                .foregroundColor(.grey)
                     }
                 }
             }
@@ -91,28 +91,28 @@ struct ViewListingView: View {
                     HStack {
                         Text("Message")
                             .font(.body)
-                            .foregroundColor(Color("White"))
+                            .foregroundColor(.white)
                         
                         Image(systemName: "message")
-                            .foregroundColor(Color("White"))
+                            .foregroundColor(.white)
                     }
                 }
             }
             .frame(alignment: .trailing)
             .padding()
-            .background(Color("PrimaryDark"))
+            .background(Color.primaryDark)
             .cornerRadius(40)
             .padding()
         }
         .padding([.horizontal])
-        .background(Color("White"))
+        .background(.white)
     }
 
     
     var body: some View {
         
         ZStack {
-            Color("BackgroundGrey").ignoresSafeArea()
+            Color.backgroundGrey.ignoresSafeArea()
             
             ScrollView {
                 VStack(alignment: .leading) {
@@ -139,7 +139,7 @@ struct ViewListingView: View {
                         
                         Text("(\(numberOfReviews) reviews)")
                             .font(.caption)
-                            .foregroundColor(Color("TextGrey"))
+                            .foregroundColor(.grey)
                     }
                     .padding([.horizontal])
                     
@@ -154,15 +154,15 @@ struct ViewListingView: View {
                         HStack {
                             Text("Check Availability")
                                 .font(.body)
-                                .foregroundColor(Color("PrimaryDark"))
+                                .foregroundColor(.primaryDark)
                             
                             Image(systemName: "calendar")
-                                .foregroundColor(Color("PrimaryDark"))
+                                .foregroundColor(.primaryDark)
                         }
                         .padding([.horizontal, .vertical], 10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 40)
-                                .stroke(Color("PrimaryDark"))
+                                .stroke(Color.primaryDark)
                         )
                         .padding()
                         
@@ -177,8 +177,6 @@ struct ViewListingView: View {
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
-            print("\(listing)")
-
             price = listing.price
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
@@ -198,18 +196,3 @@ struct ViewListingView: View {
         
     }
 }
-
-//struct ViewListingView_Previews_helper: View {
-//    @State private var tabSelection = 1
-//    var listing : Listing = Listing(id: "3rWyQLjIYsIA7wlrQ37r", title: "Camera", description: "This is a very fancy DSLR camera", imagepath: ["listingimages/3rWyQLjIYsIA7wlrQ37r/1.jpg", "listingimages/3rWyQLjIYsIA7wlrQ37r/2.jpg"], price: "25", imageDict: UIImage(named: "placeholder")!)
-//
-//    var body: some View {
-//        ViewListingView(tabSelection: $tabSelection, listing: listing)
-//    }
-//}
-//
-//struct ViewListingView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ViewListingView_Previews_helper()
-//    }
-//}

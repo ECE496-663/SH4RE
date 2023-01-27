@@ -20,6 +20,7 @@ extension Color {
     static let darkGrey = Color("DarkGrey")
     static let textfield = Color("TextFieldInputDefault")
     static let errorColour = Color("Error")
+    static let yellow = Color("Yellow")
 }
 
 struct ContentView: View {

@@ -13,19 +13,17 @@ struct MessagesInboxView: View {
     
     @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
     @ObservedObject var currentUser = CurrentUser()
-
-    @State var shouldShowLogOutOptions = false
-
     
-    // need a handle send
+    @State var shouldShowLogOutOptions = false
     
     var body: some View {
         ZStack {
-            Color("BackgroundGrey").ignoresSafeArea()
-//            if (username.isEmpty) {
-//                GuestView()
-//            }
-//            else {
+            Color.backgroundGrey.ignoresSafeArea()
+            
+            if (username.isEmpty) {
+                GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
+            }
+            else {
                 NavigationView {
                     VStack {
                         customNavBar
@@ -34,7 +32,7 @@ struct MessagesInboxView: View {
                     .navigationBarHidden(true)
                 }
             }
-//        }
+        }
     }
     
     private var customNavBar: some View {
@@ -75,16 +73,16 @@ struct MessagesInboxView: View {
                             VStack(alignment: .leading) {
                                 Text("Username")
                                     .font(.body)
-                                    .foregroundColor(Color("Black"))
+                                    .foregroundColor(.black)
                                 Text("Message sent to user")
                                     .font(.callout)
-                                    .foregroundColor(Color("TextGrey"))
+                                    .foregroundColor(.grey)
                             }
                             Spacer()
                             
                             Text("22d")
                                 .font(.callout)
-                                .foregroundColor(Color("Black"))
+                                .foregroundColor(.black)
                         }
                     }
                     Divider()
