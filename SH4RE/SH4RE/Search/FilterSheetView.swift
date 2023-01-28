@@ -23,7 +23,7 @@ struct FilterSheetView: View {
     fileprivate func NumericTextField(label: String, textEntry: Binding<String>) -> some View {
         return TextField(label, text: textEntry)
             .keyboardType(.numberPad)
-            .textFieldStyle(.roundedBorder)
+            .textFieldStyle(textInputStyle())
             .onReceive(Just(minPrice)) { newValue in
                 let filtered = newValue.filter { "0123456789".contains($0) }
                 if filtered != newValue {
@@ -45,7 +45,7 @@ struct FilterSheetView: View {
                         Text("Location")
                             .font(.title2)
                         TextField("Location", text: $location)
-                            .textFieldStyle(.roundedBorder)
+                            .textFieldStyle(textInputStyle())
                     }
                     
                     //Categories
