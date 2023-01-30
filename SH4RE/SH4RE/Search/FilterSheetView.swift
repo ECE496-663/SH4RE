@@ -43,10 +43,10 @@ struct FilterSheetView: View {
         return TextField(label, text: textEntry)
             .keyboardType(.numberPad)
             .textFieldStyle(textInputStyle())
-            .onReceive(Just(minPrice)) { newValue in
+            .onReceive(Just(textEntry.wrappedValue)) { newValue in
                 let filtered = newValue.filter { "0123456789".contains($0) }
                 if filtered != newValue {
-                    self.minPrice = filtered
+                    textEntry.wrappedValue = filtered
                 }
             }
     }
