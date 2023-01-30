@@ -10,7 +10,7 @@ import SwiftUI
 struct textInputStyle: TextFieldStyle{
 
     func _body(configuration: TextField<Self._Label>) -> some View {
-            configuration
+        configuration
             .textFieldStyle(PlainTextFieldStyle())
             // Text alignment.
             .multilineTextAlignment(.leading)
@@ -36,13 +36,60 @@ struct textInputStyle: TextFieldStyle{
     }
 }
 
+/// This style expects a button with an image as the label to place at the beginning of the tet field
+struct locationInputStyle: TextFieldStyle{
+    
+    var button: Button<Image>
+
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        HStack {
+            button
+            configuration
+                .textFieldStyle(PlainTextFieldStyle())
+            // Text alignment.
+                .multilineTextAlignment(.leading)
+            // Cursor color.
+                .accentColor(.primaryDark)
+            // Text color.
+                .foregroundColor(.black)
+                .padding(.leading, 5)
+        }
+        // TextField spacing.
+        .padding(.vertical, 16)
+        .padding(.leading, 16)
+        .padding(.trailing, 20)
+        // TextField border
+        .background(border)
+        .background(.white)
+        .cornerRadius(8)
+        
+    }
+    var border: some View {
+      RoundedRectangle(cornerRadius: 8)
+        .strokeBorder(
+            .gray,
+          lineWidth: 1
+        )
+    }
+}
+
 
 struct TextFieldStyles_PreviewsHelper: View {
     @State var username: String = ""
     var body: some View {
-        TextField("Your email", text: $username)
-            .frame(width: screenSize.width * 0.8)
-            .textFieldStyle(textInputStyle())
+        VStack {
+            TextField("Your email", text: $username)
+                .frame(width: screenSize.width * 0.8)
+                .textFieldStyle(textInputStyle())
+            TextField("Location", text: $username)
+                .frame(width: screenSize.width * 0.8)
+                .textFieldStyle(
+                    locationInputStyle(button: Button(action:{},
+                                                      label:{
+                                                          Image(systemName: "scope")
+                                                      }))
+                )
+        }
     }
 }
 

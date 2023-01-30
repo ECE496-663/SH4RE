@@ -12,11 +12,17 @@ struct LocationEntryField: View {
     @Binding var location: String
     var body: some View {
         HStack {
-            Image(systemName: "scope")
             TextField("Location", text: $location)
-                .textFieldStyle(textInputStyle())
-            //Use https://betterprogramming.pub/custom-colors-and-modifiers-in-swiftui-a093c243c126 to make it, they turn text into a button using the modifiers, in this case, we can turn a text field into the location field and just pass the variable for the location button as well as a variable to the button modifier
-            //Also possible to use https://www.youtube.com/watch?v=cOD1l2lv2Jw&ab_channel=azamsharp
+                .textFieldStyle(
+                    locationInputStyle(
+                        button: Button(action:{
+                            // Currently no action, have to set up location
+                            // This could be a staring point https://www.youtube.com/watch?v=cOD1l2lv2Jw&ab_channel=azamsharp
+                        }, label:{
+                            Image(systemName: "scope")
+                        })
+                    )
+                )
         }
     }
 }
