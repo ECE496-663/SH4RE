@@ -42,18 +42,6 @@ struct SearchView: View {
                     }
                 }
                 .padding()
-                // Filter Sheet
-                .overlay(alignment: .bottom, content: {
-                    Button(action: {
-                        showingFilterSheet.toggle();
-                    }, label: {
-                        HStack {
-                            Label("Filter", systemImage: "slider.horizontal.3")
-                        }
-                    })
-                    .buttonStyle(primaryButtonStyle(width: 120, tall: true))
-                    .padding(.bottom, 30)
-                })
                 // Reader to find scroll position to disappear filter button
                 .background(GeometryReader {
                     return Color.clear.preference(
