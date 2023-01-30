@@ -188,10 +188,4 @@ struct ViewListingView: View {
     }
 }
 
-//struct ViewListingView_Previews: PreviewProvider {
-//    var listing: Listing = Listing(id: "1", title: "title", description: "description", imagepath: [], price: "1", imageDict: UIImage())
-//
-//    static var previews: some View {
-//        ViewListingView(tabSelection: .constant(1), listing: listing)
-//    }
-//}
+

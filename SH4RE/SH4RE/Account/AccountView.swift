@@ -6,26 +6,30 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 
 
 struct AccountView: View {
-    @AppStorage("UID") var username: String = (UserDefaults.standard.string(forKey: "UID") ?? "")
     @Binding var tabSelection: Int
-
+    @EnvironmentObject var currentUser: CurrentUser
     var body: some View {
         ZStack {
-            Color(UIColor(.backgroundGrey))
-                .ignoresSafeArea()
-            if (username.isEmpty) {
-                GuestView(tabSelection: $tabSelection)
+            Color(UIColor(.backgroundGrey)).ignoresSafeArea()
+            if (currentUser.isGuest()) {
+                GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
             else {
                 VStack {
                     Button(action: {
-                        UserDefaults.standard.set(false, forKey: "isLoggedIn")
-                        UserDefaults.standard.set("", forKey: "UID")
                         tabSelection = 1
+                        do {
+                            try Auth.auth().signOut()
+                        }
+                        catch {
+                            print(error)
+                        }
+                        currentUser.hasLoggedIn = false
                     })
                     {
                         Text("Logout")
