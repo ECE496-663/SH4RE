@@ -91,7 +91,7 @@ struct FilterSheetView: View {
                     }
 
                     //Rating
-                    VStack  {
+                    VStack (alignment: .leading) {
                         Text("Min Rating")
                             .font(.title2)
                         RatingsView(rating: $minRating)
