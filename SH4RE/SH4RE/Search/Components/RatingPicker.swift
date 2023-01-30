@@ -58,7 +58,6 @@ struct RatingsView: View {
                             let percent = min(max(0, Float(value.location.x / geometry.size.width * 1)), 1)
                             let newValue = (closedRange).lowerBound + ceil(Double(percent) * ((closedRange.upperBound - closedRange.lowerBound)*2))/2
                             $rating.wrappedValue = newValue
-                            print(newValue)
                         })
                 }
             )

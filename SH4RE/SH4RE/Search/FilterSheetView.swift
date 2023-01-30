@@ -8,9 +8,22 @@
 import SwiftUI
 import Combine
 
+struct LocationEntryField: View {
+    @Binding var location: String
+    var body: some View {
+        HStack {
+            Image(systemName: "scope")
+            TextField("Location", text: $location)
+                .textFieldStyle(textInputStyle())
+            //Use https://betterprogramming.pub/custom-colors-and-modifiers-in-swiftui-a093c243c126 to make it, they turn text into a button using the modifiers, in this case, we can turn a text field into the location field and just pass the variable for the location button as well as a variable to the button modifier
+            //Also possible to use https://www.youtube.com/watch?v=cOD1l2lv2Jw&ab_channel=azamsharp
+        }
+    }
+}
+
 struct FilterSheetView: View {
     
-    var dropDownList = ["Tools", "Sporting Equipment", "Cameras", "Cooking", "Outdoors"]
+    var dropDownList = ["Film & Photography", "Audio Visual Equipment", "Projectors & Screens", "Drones", "DJ Equipment", "Transport", "Storage", "Electronics", "Party & Events", "Sports", "Musical Instruments", "Home, Office & Garden", "Holiday & Travel", "Clothing"]
     @State private var dropDownSelection: String = ""
 
     @State private var location: String = ""
@@ -44,8 +57,7 @@ struct FilterSheetView: View {
                     VStack (alignment: .leading) {
                         Text("Location")
                             .font(.title2)
-                        TextField("Location", text: $location)
-                            .textFieldStyle(textInputStyle())
+                        LocationEntryField(location: $location)
                     }
                     
                     //Categories
@@ -95,5 +107,6 @@ struct FilterSheetView_Previews: PreviewProvider {
         FilterSheetView()
     }
 }
+
 
 

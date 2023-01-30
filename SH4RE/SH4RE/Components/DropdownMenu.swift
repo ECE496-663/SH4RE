@@ -9,9 +9,10 @@ import SwiftUI
 
 
 struct DropdownStyle: DisclosureGroupStyle {
+    var noSelection: Bool
     let button: some View = Image(systemName: "chevron.up")
         .fontWeight(.medium)
-        .foregroundColor(.black)
+        .foregroundColor(.gray)
     var border: some View {
       RoundedRectangle(cornerRadius: 8)
         .strokeBorder(
@@ -35,6 +36,7 @@ struct DropdownStyle: DisclosureGroupStyle {
             }
             HStack {
                 configuration.label
+                    .foregroundColor(noSelection ? .gray : .black)
                 Spacer()
                 button
                     .rotationEffect(.degrees(configuration.isExpanded ? 180 : 0))
@@ -70,7 +72,7 @@ struct DropdownMenu: View {
     @Binding var selection: String
     var useClear: Bool = false
     var clearValue: String = ""
-    @State var expanded: Bool = true
+    @State var expanded: Bool = false
     var body: some View {
         DisclosureGroup(selection == clearValue ? label : selection, isExpanded: $expanded) {
             ScrollView{
@@ -108,7 +110,7 @@ struct DropdownMenu: View {
                 }
             }
             .frame(maxHeight: 140)
-        }.disclosureGroupStyle(DropdownStyle())
+        }.disclosureGroupStyle(DropdownStyle(noSelection: selection == clearValue))
     }
 }
 
