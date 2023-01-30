@@ -55,7 +55,7 @@ struct FilterSheetView: View {
         ScrollView {
             VStack (alignment: .leading){
                 Group {
-                    Text("Filters")
+                    Text("Filter")
                         .font(.title)
                         .bold()
                     
