@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseAuth
 
-
 struct GuestView: View {
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser

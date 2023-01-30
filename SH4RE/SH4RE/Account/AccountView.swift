@@ -8,8 +8,6 @@
 import SwiftUI
 import FirebaseAuth
 
-
-
 struct AccountView: View {
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser

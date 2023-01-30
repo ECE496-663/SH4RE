@@ -7,13 +7,10 @@
 
 import SwiftUI
 
-
-
-
-
+//This file is the framework of what can be used to create the current location button. This isn't really part of the ticket, but it is a good starting point.
 
 // Code from https://www.hackingwithswift.com/quick-start/swiftui/how-to-read-the-users-location-using-locationbutton
-// Probably need to change info.plst firt https://stackoverflow.com/questions/57681885/how-to-get-current-location-using-swiftui-without-viewcontrollers
+// Probably need to change info.plst first https://stackoverflow.com/questions/57681885/how-to-get-current-location-using-swiftui-without-viewcontrollers
 //
 //import CoreLocation
 //import CoreLocationUI
