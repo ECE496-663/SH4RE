@@ -17,6 +17,7 @@ import FirebaseStorage
 
 struct ViewListingView: View {
     @Binding var tabSelection: Int
+    @EnvironmentObject var currentUser: CurrentUser
         
     //parameters passed in from search nav link
     var listing: Listing
@@ -31,6 +32,7 @@ struct ViewListingView: View {
     @State var description:String = ""
     @State var title:String = ""
     @State var price:String = ""
+    @State var name:String = ""
     @State private var dates: Set<DateComponents> = []
     
     private var reviews: some View {
@@ -86,16 +88,14 @@ struct ViewListingView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            NavigationLink(destination: MessagesInboxView(tabSelection: $tabSelection)) {
-                Button(action: { tabSelection = 4 }) {
-                    HStack {
-                        Text("Message")
-                            .font(.body)
-                            .foregroundColor(.white)
-                        
-                        Image(systemName: "message")
-                            .foregroundColor(.white)
-                    }
+            NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
+                HStack {
+                    Text("Message")
+                        .font(.body)
+                        .foregroundColor(.white)
+                    
+                    Image(systemName: "message")
+                        .foregroundColor(.white)
                 }
             }
             .frame(alignment: .trailing)
@@ -177,7 +177,6 @@ struct ViewListingView: View {
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
-            price = listing.price
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
                 let storageRef = Storage.storage().reference(withPath: path)
@@ -192,6 +191,9 @@ struct ViewListingView: View {
                     }
                 }
             }
+            getUserName(uid: listing.uid, completion: { ret in
+                name = ret
+            })
         }
         
     }

@@ -26,7 +26,7 @@ func documentWrite(collectionPath : String, data:Dictionary<String,Any>) -> Stri
 }
 func documentWrite(collectionPath : String, uid: String, data:Dictionary<String,Any>) -> String{
     let db = Firestore.firestore()
-    let ref = db.collection(collectionPath).document()
+    let ref = db.collection(collectionPath).document(uid)
     let id = ref.documentID
     ref.setData(data)
     { err in

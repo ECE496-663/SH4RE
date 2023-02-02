@@ -16,6 +16,7 @@ import FirebaseStorage
 struct SearchView: View {
     @Binding var tabSelection: Int
     @State private var searchQuery: String = ""
+    @EnvironmentObject var currentUser: CurrentUser
 
     @ObservedObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 20)]
@@ -28,7 +29,7 @@ struct SearchView: View {
                         // If theres no image for a listing, just use the placeholder
                         let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                         NavigationLink(destination: {
-                            ViewListingView(tabSelection: $tabSelection, listing: listing)
+                            ViewListingView(tabSelection: $tabSelection, listing: listing).environmentObject(currentUser)
                         }, label: {
                             ProductCard(listing: listing, image: productImage)
                         })

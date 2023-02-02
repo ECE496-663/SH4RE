@@ -39,7 +39,7 @@ struct ContentView: View {
                             Label("Home", systemImage: "house.fill")
                         }
                         .tag(1)
-                    SearchView(tabSelection: $tabSelection)
+                    SearchView(tabSelection: $tabSelection).environmentObject(currentUser)
                         .tabItem {
                             Label("Search", systemImage: "safari.fill")
                         }
