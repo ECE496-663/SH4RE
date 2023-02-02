@@ -69,12 +69,12 @@ struct LoginView: View {
                         Task{
                             do  {
                               try await Auth.auth().signIn(withEmail: username, password: password)
+                              currentUser.hasLoggedIn = true
                             }
                             catch {
                               print(error.localizedDescription)
                             }
                         }
-                        currentUser.hasLoggedIn = true
                     })
                     {
                         Text("Login")
@@ -104,12 +104,12 @@ struct LoginView: View {
                         Task{
                             do  {
                               try await Auth.auth().signInAnonymously()
+                              currentUser.hasLoggedIn = true
                             }
                             catch {
                               print(error.localizedDescription)
                             }
                         }
-                        currentUser.hasLoggedIn = true
                     })
                     {
                         Text("Or continue as guest")
