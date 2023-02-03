@@ -112,8 +112,8 @@ struct CreateAccountView: View {
                             AlertX(
                                 title: Text("ERROR: " + errorDescription),
                                 theme: AlertX.Theme.custom(
-                                    windowColor: .errorColour,
-                                    alertTextColor: .white,
+                                    windowColor: .grey,
+                                    alertTextColor: .errorColour,
                                     enableShadow: true,
                                     enableRoundedCorners: true,
                                     enableTransparency: false,
