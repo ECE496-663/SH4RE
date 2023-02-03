@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import AlertX
 
 struct CreateAccountView: View {
     @Environment(\.showLoginScreen) var showLoginScreen
@@ -15,6 +16,8 @@ struct CreateAccountView: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
+    @State private var errorInField: Bool = false
+    @State private var errorDescription: String = ""
 
     var body: some View {
         ZStack {
@@ -35,6 +38,7 @@ struct CreateAccountView: View {
                             .font(.system(size: 18))
                             .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
                         TextField("Your Name", text: $name)
+                            .disableAutocorrection(true)
                             .frame(width: screenSize.width * 0.8, height: 20)
                             .textFieldStyle(.roundedBorder)
                             .padding()
@@ -74,14 +78,25 @@ struct CreateAccountView: View {
                     
                     VStack {
                         Button(action: {
-                            Task{
-                                do  {
-                                  try await Auth.auth().createUser(withEmail: username, password: password)
-                                  currentUser.hasLoggedIn = true
-                                  documentWrite(collectionPath: "User Info", uid: Auth.auth().currentUser!.uid, data: ["name": name,"email": username])
-                                }
-                                catch {
-                                  print(error.localizedDescription)
+                            if (username.isEmpty || name.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+                                errorInField = true
+                                errorDescription = "Some entries missing"
+                            }
+                            else if (password != confirmPassword) {
+                                errorInField = true
+                                errorDescription = "Passwords did not match"
+                            }
+                            else {
+                                Task {
+                                    do {
+                                        try await Auth.auth().createUser(withEmail: username, password: password)
+                                        currentUser.hasLoggedIn = true
+                                        documentWrite(collectionPath: "User Info", uid: Auth.auth().currentUser!.uid, data: ["name": name,"email": username])
+                                    }
+                                    catch {
+                                        errorInField = true
+                                        errorDescription = error.localizedDescription
+                                    }
                                 }
                             }
                         })
@@ -93,6 +108,22 @@ struct CreateAccountView: View {
                                 .background(Color.primaryDark)
                                 .cornerRadius(40)
                         }
+                        .alertX(isPresented: $errorInField, content: {
+                            AlertX(
+                                title: Text("ERROR: " + errorDescription),
+                                theme: AlertX.Theme.custom(
+                                    windowColor: .errorColour,
+                                    alertTextColor: .white,
+                                    enableShadow: true,
+                                    enableRoundedCorners: true,
+                                    enableTransparency: false,
+                                    cancelButtonColor: .white,
+                                    cancelButtonTextColor: .white,
+                                    defaultButtonColor: .primaryDark,
+                                    defaultButtonTextColor: .white
+                                )
+                            )
+                        })
                         Button(action: {
                             showLoginScreen!()
                         })
