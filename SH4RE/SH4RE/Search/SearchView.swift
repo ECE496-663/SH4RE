@@ -104,7 +104,7 @@ struct SearchView: View {
             .buttonStyle(primaryButtonStyle(width: 120, tall: true))
             .padding(.bottom, 30)
             .sheet(isPresented: $showingFilterSheet) {
-                FilterSheetView()
+                FilterSheetView(showingFilterSheet: $showingFilterSheet)
                     .presentationDetents([.medium, .large])
             }
         }

@@ -38,6 +38,8 @@ struct FilterSheetView: View {
     @State private var maxPrice: String = ""
     @State private var maxDistance: String = ""
     
+    @Binding var showingFilterSheet: Bool
+    
     @State private var minRating = 0.0
 
     fileprivate func NumericTextField(label: String, textEntry: Binding<String>) -> some View {
@@ -56,9 +58,16 @@ struct FilterSheetView: View {
         ScrollView {
             VStack (alignment: .leading){
                 Group {
-                    Text("Filter")
-                        .font(.title)
-                        .bold()
+                    HStack {
+                        Text("Filter")
+                            .font(.title)
+                            .bold()
+                        Spacer()
+                        Button("Apply", action: {
+                            showingFilterSheet.toggle()
+                        }).buttonStyle(primaryButtonStyle(width: 80))
+                        
+                    }
                     
                     //Location
                     VStack (alignment: .leading) {
@@ -108,10 +117,16 @@ struct FilterSheetView: View {
 }
 
 
+struct FilterSheetView_PreviewsHelper: View {
+    @State var showingFilterSheet = true
+    var body: some View {
+        FilterSheetView(showingFilterSheet: $showingFilterSheet)
+    }
+}
 
 struct FilterSheetView_Previews: PreviewProvider {
     static var previews: some View {
-        FilterSheetView()
+        FilterSheetView_PreviewsHelper()
     }
 }
 
