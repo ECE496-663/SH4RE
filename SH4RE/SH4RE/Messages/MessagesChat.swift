@@ -219,7 +219,6 @@ struct MessagesChat: View {
             } label: {
                 Text("Send")
                     .foregroundColor(.white)
-                
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
@@ -246,7 +245,7 @@ struct MessageView: View {
                             .foregroundColor(.white)
                     }
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.primaryDark)
                     .cornerRadius(8)
                 }
             } else {
@@ -256,7 +255,7 @@ struct MessageView: View {
                             .foregroundColor(.black)
                     }
                     .padding()
-                    .background(Color.white)
+                    .background(.white)
                     .cornerRadius(8)
                     Spacer()
                 }
@@ -272,7 +271,7 @@ private struct Placeholder: View {
         HStack {
             Text("Message")
                 .keyboardType(.numberPad)
-                .foregroundColor(.grey)
+                .foregroundColor(.darkGrey)
                 .font(.body)
                 .padding(.leading, 5)
                 .padding(.top, -4)

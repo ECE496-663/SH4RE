@@ -137,10 +137,10 @@ struct MessagesInboxView: View {
                     .font(.title2)
                     .fontWeight(.bold)
                 
-                TextField("Search", text: $searchQuery)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: screenSize.width * 0.9, height: 20)
-                    .padding([.top])
+//                TextField("Search", text: $searchQuery)
+//                    .textFieldStyle(.roundedBorder)
+//                    .frame(width: screenSize.width * 0.9, height: 20)
+//                    .padding([.top])
             }
             
             Spacer()
