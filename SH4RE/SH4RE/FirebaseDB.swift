@@ -39,7 +39,6 @@ func documentWrite(collectionPath : String, uid: String, data:Dictionary<String,
     return id
 }
 
-
 //Modifies documents data, creates document if not yet created
 func documentSet(collectionPath : String, documentID : String, data:Dictionary<String,Any>) -> Bool{
     var setSucess : Bool = false
