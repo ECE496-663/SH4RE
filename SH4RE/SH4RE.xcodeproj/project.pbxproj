@@ -14,6 +14,7 @@
 		122652182970B55C006F5955 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 122652172970B55C006F5955 /* FirebaseFirestoreSwift */; };
 		1226521A2970B55C006F5955 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 122652192970B55C006F5955 /* FirebaseStorage */; };
 		1226521C2970B55C006F5955 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1226521B2970B55C006F5955 /* FirebaseStorageCombine-Community */; };
+		1247410729821407009B2145 /* ReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1247410629821407009B2145 /* ReviewViewModel.swift */; };
 		12870D3629787414006CFA2B /* CurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12870D3529787414006CFA2B /* CurrentUser.swift */; };
 		12A7A36E296F6C1C000B18D4 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A7A36D296F6C1C000B18D4 /* UserViewModel.swift */; };
 		1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E29DDA82936B22F0089F703 /* ProductCard.swift */; };
@@ -67,6 +68,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1247410629821407009B2145 /* ReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewViewModel.swift; sourceTree = "<group>"; };
 		12870D3529787414006CFA2B /* CurrentUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUser.swift; sourceTree = "<group>"; };
 		12A7A36D296F6C1C000B18D4 /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		12AA3C2D2933038800F7F8E3 /* ListingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingViewModel.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				12A7A36D296F6C1C000B18D4 /* UserViewModel.swift */,
 				12870D3529787414006CFA2B /* CurrentUser.swift */,
 				9D250D1F298475FA009AA895 /* ChatMessageModel.swift */,
+				1247410629821407009B2145 /* ReviewViewModel.swift */,
 			);
 			path = SH4RE;
 			sourceTree = "<group>";
@@ -444,6 +447,7 @@
 				9D95674B29380B70003F6B74 /* ListingViewModel.swift in Sources */,
 				9D95674D29381193003F6B74 /* Stars.swift in Sources */,
 				D120FABC2967B4B000CCD7A5 /* CreateAccountView.swift in Sources */,
+				1247410729821407009B2145 /* ReviewViewModel.swift in Sources */,
 				1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */,
 				9DB46C59296E56BB005F0216 /* DatePicker.swift in Sources */,
 				9D080594292FE9F400094169 /* AccountView.swift in Sources */,
