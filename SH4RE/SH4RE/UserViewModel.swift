@@ -52,3 +52,19 @@ func fetchAllUsers(completion: @escaping([User]) -> Void) {
             })
         }
     }
+
+func getUserName(uid:String, completion: @escaping(String) -> Void){
+    //let curUser = Auth.auth().currentUser!
+    let docRef = Firestore.firestore().collection("User Info").document(uid)
+    docRef.getDocument{ (document, error) in
+        guard error == nil else{
+            print("Error reading document:", error ?? "")
+            return
+        }
+        if let document = document, document.exists {
+            let data = document.data()!
+            let name = data["name"] as? String ?? ""
+            completion(name)
+        }
+    }
+}
