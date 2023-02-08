@@ -25,6 +25,13 @@ struct SearchView: View {
     
     @State var showFilterButton = true
     @State var scrollOffset: CGFloat = 0.00
+    
+    @State var dropDownSelection: String = ""
+    @State var location: String = ""
+    @State var minPrice: String = ""
+    @State var maxPrice: String = ""
+    @State var maxDistance: String = ""
+    @State var minRating = 0.0
 
     var body: some View {
         NavigationStack {
@@ -104,7 +111,7 @@ struct SearchView: View {
             .buttonStyle(primaryButtonStyle(width: 120, tall: true))
             .padding(.bottom, 30)
             .sheet(isPresented: $showingFilterSheet) {
-                FilterSheetView(showingFilterSheet: $showingFilterSheet)
+                FilterSheetView(dropDownSelection: $dropDownSelection, location: $location, minPrice: $minPrice, maxPrice:$maxPrice, maxDistance: $maxDistance, minRating:$minRating, showingFilterSheet: $showingFilterSheet)
                     .presentationDetents([.medium, .large])
             }
         }

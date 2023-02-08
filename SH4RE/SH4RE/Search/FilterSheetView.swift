@@ -31,17 +31,16 @@ struct LocationEntryField: View {
 struct FilterSheetView: View {
     
     var dropDownList = ["Film & Photography", "Audio Visual Equipment", "Projectors & Screens", "Drones", "DJ Equipment", "Transport", "Storage", "Electronics", "Party & Events", "Sports", "Musical Instruments", "Home, Office & Garden", "Holiday & Travel", "Clothing"]
-    @State private var dropDownSelection: String = ""
-
-    @State private var location: String = ""
-    @State private var minPrice: String = ""
-    @State private var maxPrice: String = ""
-    @State private var maxDistance: String = ""
+    
+    @Binding var dropDownSelection: String
+    @Binding var location: String
+    @Binding var minPrice: String
+    @Binding var maxPrice: String
+    @Binding var maxDistance: String
+    @Binding var minRating: Double
     
     @Binding var showingFilterSheet: Bool
     
-    @State private var minRating = 0.0
-
     fileprivate func NumericTextField(label: String, textEntry: Binding<String>, error: Bool = false) -> some View {
         return TextField(label, text: textEntry)
             .keyboardType(.numberPad)
@@ -72,7 +71,9 @@ struct FilterSheetView: View {
                             .bold()
                         Spacer()
                         Button("Apply", action: {
-                            showingFilterSheet.toggle()
+                            if (!minMaxError(min: minPrice, max: maxPrice)){
+                                showingFilterSheet.toggle()
+                            }
                         }).buttonStyle(primaryButtonStyle(width: 80))
                         
                     }
@@ -126,9 +127,15 @@ struct FilterSheetView: View {
 
 
 struct FilterSheetView_PreviewsHelper: View {
+    @State var dropDownSelection: String = ""
     @State var showingFilterSheet = true
+    @State var location: String = ""
+    @State var minPrice: String = ""
+    @State var maxPrice: String = ""
+    @State var maxDistance: String = ""
+    @State var minRating = 0.0
     var body: some View {
-        FilterSheetView(showingFilterSheet: $showingFilterSheet)
+        FilterSheetView(dropDownSelection: $dropDownSelection, location: $location, minPrice: $minPrice, maxPrice:$maxPrice, maxDistance: $maxDistance, minRating:$minRating, showingFilterSheet: $showingFilterSheet)
     }
 }
 
