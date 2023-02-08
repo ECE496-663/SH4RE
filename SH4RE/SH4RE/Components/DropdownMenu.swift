@@ -10,7 +10,7 @@ import SwiftUI
 
 struct DropdownStyle: DisclosureGroupStyle {
     var noSelection: Bool
-    let button: some View = Image(systemName: "chevron.up")
+    let button: some View = Image(systemName: "chevron.down")
         .fontWeight(.medium)
         .foregroundColor(.gray)
     var border: some View {
