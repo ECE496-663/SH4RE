@@ -42,16 +42,24 @@ struct FilterSheetView: View {
     
     @State private var minRating = 0.0
 
-    fileprivate func NumericTextField(label: String, textEntry: Binding<String>) -> some View {
+    fileprivate func NumericTextField(label: String, textEntry: Binding<String>, error: Bool = false) -> some View {
         return TextField(label, text: textEntry)
             .keyboardType(.numberPad)
-            .textFieldStyle(textInputStyle())
+            .textFieldStyle(textInputStyle(error: error))
             .onReceive(Just(textEntry.wrappedValue)) { newValue in
                 let filtered = newValue.filter { "0123456789".contains($0) }
                 if filtered != newValue {
                     textEntry.wrappedValue = filtered
                 }
             }
+    }
+    
+    /// If the max is defined, and it is less than the min, it will return an error, expects strings to be numbers
+    fileprivate func minMaxError(min:String, max:String) -> Bool {
+        if(maxPrice != "") {
+            return Int(maxPrice) ?? 0 < Int(minPrice) ?? 0
+        }
+        return false
     }
     
     var body: some View {
@@ -88,8 +96,8 @@ struct FilterSheetView: View {
                         Text("Daily Price")
                             .font(.title2)
                         HStack {
-                            NumericTextField(label: "Min", textEntry: $minPrice)
-                            NumericTextField(label: "Max", textEntry: $maxPrice)
+                            NumericTextField(label: "Min", textEntry: $minPrice, error: minMaxError(min: minPrice, max: maxPrice))
+                            NumericTextField(label: "Max", textEntry: $maxPrice, error: minMaxError(min: minPrice, max: maxPrice))
                         }
                     }
 

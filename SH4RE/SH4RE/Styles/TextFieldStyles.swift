@@ -8,16 +8,18 @@
 import SwiftUI
 
 struct textInputStyle: TextFieldStyle{
-
+    //Making an optional error variable
+    var error: Bool = false
+    
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
             .textFieldStyle(PlainTextFieldStyle())
             // Text alignment.
             .multilineTextAlignment(.leading)
             // Cursor color.
-            .accentColor(.primaryDark)
+            .accentColor(error ? .red : .primaryDark)
             // Text color.
-            .foregroundColor(.black)
+            .foregroundColor(error ? .red : .black)
             // TextField spacing.
             .padding(.vertical, 16)
             .padding(.horizontal, 20)
@@ -30,7 +32,7 @@ struct textInputStyle: TextFieldStyle{
     var border: some View {
       RoundedRectangle(cornerRadius: 8)
         .strokeBorder(
-            .gray,
+            error ? .red : .gray,
           lineWidth: 1
         )
     }
@@ -76,11 +78,15 @@ struct locationInputStyle: TextFieldStyle{
 
 struct TextFieldStyles_PreviewsHelper: View {
     @State var username: String = ""
+    var error: Bool = true
     var body: some View {
         VStack {
             TextField("Your email", text: $username)
                 .frame(width: screenSize.width * 0.8)
                 .textFieldStyle(textInputStyle())
+            TextField("Your error", text: $username)
+                .frame(width: screenSize.width * 0.8)
+                .textFieldStyle(textInputStyle(error: error))
             TextField("Location", text: $username)
                 .frame(width: screenSize.width * 0.8)
                 .textFieldStyle(
