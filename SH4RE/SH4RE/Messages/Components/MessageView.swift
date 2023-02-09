@@ -16,7 +16,7 @@ struct MessageView: View {
                 HStack {
                     Spacer()
                     HStack {
-                        Text(message.text)
+                        Text(message.text.replacingOccurrences(of: "\n", with: ""))
                             .foregroundColor(.white)
                     }
                     .padding()
@@ -26,7 +26,7 @@ struct MessageView: View {
             } else {
                 HStack {
                     HStack {
-                        Text(message.text)
+                        Text(message.text.replacingOccurrences(of: "\n", with: ""))
                             .foregroundColor(.black)
                     }
                     .padding()

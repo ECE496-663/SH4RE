@@ -78,8 +78,6 @@ struct MessagesInboxView: View {
                             self.chatLogViewModel.chatUser = self.chatUser
                             self.chatLogViewModel.fetchMessages()
                             self.shouldNavigateToChatLogView.toggle()
-                            
-                            
                         } label: {
                             HStack(spacing: 16) {
                                 Image("ProfilePhotoPlaceholder") // TODO: this will become a profile picture
@@ -92,7 +90,7 @@ struct MessagesInboxView: View {
                                     Text(recentMessage.name)
                                         .font(.body)
                                         .foregroundColor(.black)
-                                    Text(recentMessage.text)
+                                    Text(recentMessage.text.replacingOccurrences(of: "\n", with: ""))
                                         .font(.callout)
                                         .foregroundColor(.darkGrey)
                                         .truncationMode(.tail)
