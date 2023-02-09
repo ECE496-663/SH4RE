@@ -82,12 +82,11 @@ struct MessagesInboxView: View {
                             
                         } label: {
                             HStack(spacing: 16) {
-                                Image("placeholder") // TODO: this will become a profile picture
+                                Image("ProfilePhotoPlaceholder") // TODO: this will become a profile picture
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .clipShape(Circle())
                                     .frame(width: 40, height: 40)
-                                
                                 
                                 VStack(alignment: .leading) {
                                     Text(recentMessage.name)
@@ -95,7 +94,7 @@ struct MessagesInboxView: View {
                                         .foregroundColor(.black)
                                     Text(recentMessage.text)
                                         .font(.callout)
-                                        .foregroundColor(.grey)
+                                        .foregroundColor(.darkGrey)
                                 }
                                 Spacer()
                                 

@@ -32,14 +32,8 @@ struct AccountView: View {
                     })
                     {
                         Text("Logout")
-                            .fontWeight(.semibold)
-                            .frame(width: screenSize.width * 0.8, height: 40)
-                            .foregroundColor(.primaryDark)
-                            .background(.white)
-                            .cornerRadius(40)
-                            .overlay(RoundedRectangle(cornerRadius: 40)
-                                .stroke(Color.primaryDark, lineWidth: 2))
                     }
+                    .buttonStyle(secondaryButtonStyle())
                 }
             }
         }
