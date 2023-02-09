@@ -95,6 +95,8 @@ struct MessagesInboxView: View {
                                     Text(recentMessage.text)
                                         .font(.callout)
                                         .foregroundColor(.darkGrey)
+                                        .truncationMode(.tail)
+                                        .frame(height: 10)
                                 }
                                 Spacer()
                                 
