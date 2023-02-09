@@ -62,18 +62,25 @@ struct MessagesChat: View {
                 Placeholder()
                 TextEditor(text: $vm.chatText)
                     .opacity(vm.chatText.isEmpty ? 0.5 : 1)
+                    .onChange(of: vm.chatText) { value in
+                            if value.contains("\n") {
+                                vm.chatText = value.replacingOccurrences(of: "\n", with: "")
+                            }
+                        }
             }
             .frame(height: 40)
             
             Button {
-                vm.handleSend()
+                if (!vm.chatText.isEmpty) {
+                    vm.handleSend()
+                }
             } label: {
                 Text("Send")
                     .foregroundColor(.white)
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
-            .background(Color.primaryDark)
+            .background(vm.chatText.isEmpty ? Color.grey : Color.primaryDark)
             .cornerRadius(4)
         }
         .padding(.horizontal)
