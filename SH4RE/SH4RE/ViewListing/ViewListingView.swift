@@ -35,6 +35,9 @@ struct ViewListingView: View {
     @State private var dates: Set<DateComponents> = []
     
     
+    var rkManager = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
+
+    
     var body: some View {
         
         ZStack {
@@ -98,7 +101,7 @@ struct ViewListingView: View {
                         .padding()
                     
                     HStack(alignment: .top) {
-                        Image("placeholder")
+                        Image("ProfilePhotoPlaceholder")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .clipShape(Circle())
@@ -118,8 +121,9 @@ struct ViewListingView: View {
                 }
             }
             PopUp(show: $showCal) {
-                DatePicker(dates: dates)
+                RKViewController(isPresented: $showCal, rkManager: rkManager)
             }
+            
         }
         
         ZStack {

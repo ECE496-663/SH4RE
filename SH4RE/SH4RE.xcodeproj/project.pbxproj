@@ -33,6 +33,13 @@
 		5939D37C29132D7200866FA5 /* SH4REUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D37B29132D7200866FA5 /* SH4REUITestsLaunchTests.swift */; };
 		5939D38929132D8500866FA5 /* FirebaseDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D38829132D8500866FA5 /* FirebaseDB.swift */; };
 		59BB153A29204E8D00EA4AF6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 59BB153929204E8D00EA4AF6 /* GoogleService-Info.plist */; };
+		9D0518572998496200366A10 /* RKManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0518562998496200366A10 /* RKManager.swift */; };
+		9D05185E2998497400366A10 /* RKMonth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0518582998497300366A10 /* RKMonth.swift */; };
+		9D05185F2998497400366A10 /* RKColorSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D05185D2998497400366A10 /* RKColorSettings.swift */; };
+		9D0518602998497400366A10 /* RKCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D05185B2998497300366A10 /* RKCell.swift */; };
+		9D0518612998497400366A10 /* RKDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D05185C2998497300366A10 /* RKDate.swift */; };
+		9D0518622998497400366A10 /* RKViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0518592998497300366A10 /* RKViewController.swift */; };
+		9D0518632998497400366A10 /* RKWeekdayHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D05185A2998497300366A10 /* RKWeekdayHeader.swift */; };
 		9D080583292FE62200094169 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D080582292FE62200094169 /* SearchView.swift */; };
 		9D080589292FE85900094169 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D080588292FE85900094169 /* MessagesView.swift */; };
 		9D080594292FE9F400094169 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D080593292FE9F400094169 /* AccountView.swift */; };
@@ -96,6 +103,13 @@
 		5939D37B29132D7200866FA5 /* SH4REUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SH4REUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		5939D38829132D8500866FA5 /* FirebaseDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDB.swift; sourceTree = "<group>"; };
 		59BB153929204E8D00EA4AF6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		9D0518562998496200366A10 /* RKManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RKManager.swift; sourceTree = "<group>"; };
+		9D0518582998497300366A10 /* RKMonth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RKMonth.swift; sourceTree = "<group>"; };
+		9D0518592998497300366A10 /* RKViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RKViewController.swift; sourceTree = "<group>"; };
+		9D05185A2998497300366A10 /* RKWeekdayHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RKWeekdayHeader.swift; sourceTree = "<group>"; };
+		9D05185B2998497300366A10 /* RKCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RKCell.swift; sourceTree = "<group>"; };
+		9D05185C2998497300366A10 /* RKDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RKDate.swift; sourceTree = "<group>"; };
+		9D05185D2998497400366A10 /* RKColorSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RKColorSettings.swift; sourceTree = "<group>"; };
 		9D080582292FE62200094169 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		9D080588292FE85900094169 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		9D080593292FE9F400094169 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
@@ -292,6 +306,13 @@
 			isa = PBXGroup;
 			children = (
 				D119C0472928313700E83142 /* ImagePicker.swift */,
+				9D05185B2998497300366A10 /* RKCell.swift */,
+				9D05185D2998497400366A10 /* RKColorSettings.swift */,
+				9D05185C2998497300366A10 /* RKDate.swift */,
+				9D0518582998497300366A10 /* RKMonth.swift */,
+				9D0518592998497300366A10 /* RKViewController.swift */,
+				9D05185A2998497300366A10 /* RKWeekdayHeader.swift */,
+				9D0518562998496200366A10 /* RKManager.swift */,
 				9D95674929380897003F6B74 /* ImageCarousel.swift */,
 				9D95674C29381193003F6B74 /* Stars.swift */,
 				9DB46C58296E56BB005F0216 /* DatePicker.swift */,
@@ -463,6 +484,7 @@
 				9DB46C5B296E5E31005F0216 /* PopUp.swift in Sources */,
 				9D080583292FE62200094169 /* SearchView.swift in Sources */,
 				5939D38929132D8500866FA5 /* FirebaseDB.swift in Sources */,
+				9D05185F2998497400366A10 /* RKColorSettings.swift in Sources */,
 				9D95674B29380B70003F6B74 /* ListingViewModel.swift in Sources */,
 				1EB9FCDC2979D1AB00659C5C /* RatingPicker.swift in Sources */,
 				9D95674D29381193003F6B74 /* Stars.swift in Sources */,
@@ -475,22 +497,28 @@
 				9D080594292FE9F400094169 /* AccountView.swift in Sources */,
 				5939D36029132D7000866FA5 /* ContentView.swift in Sources */,
 				D119C04229281DBA00E83142 /* HomeView.swift in Sources */,
+				9D0518612998497400366A10 /* RKDate.swift in Sources */,
 				D120FAB42966533800CCD7A5 /* LandingView.swift in Sources */,
 				5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */,
 				1E1208A82988388700604D68 /* CurrentLocationButton.swift in Sources */,
 				D119C0482928313700E83142 /* ImagePicker.swift in Sources */,
+				9D0518622998497400366A10 /* RKViewController.swift in Sources */,
 				D120FAB6296658A100CCD7A5 /* TutorialView.swift in Sources */,
 				D120FABA29668A7000CCD7A5 /* LoginView.swift in Sources */,
 				5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */,
 				D119C0482928313700E83142 /* ImagePicker.swift in Sources */,
+				9D0518632998497400366A10 /* RKWeekdayHeader.swift in Sources */,
+				9D05185E2998497400366A10 /* RKMonth.swift in Sources */,
 				9D080596292FF43800094169 /* ViewListingView.swift in Sources */,
 				1E7CB011297DF4B6008E4854 /* DropdownMenu.swift in Sources */,
 				9D080589292FE85900094169 /* MessagesView.swift in Sources */,
 				D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */,
+				9D0518572998496200366A10 /* RKManager.swift in Sources */,
 				9D95674A29380897003F6B74 /* ImageCarousel.swift in Sources */,
 				1E3D19D0297F93BC00251D39 /* ButtonStyles.swift in Sources */,
 				D120FABE2968AD6F00CCD7A5 /* GuestView.swift in Sources */,
 				D120FAB8296675FA00CCD7A5 /* LoginControlView.swift in Sources */,
+				9D0518602998497400366A10 /* RKCell.swift in Sources */,
 				12A7A36E296F6C1C000B18D4 /* UserViewModel.swift in Sources */,
 				12870D3629787414006CFA2B /* CurrentUser.swift in Sources */,
 				D120FAB8296675FA00CCD7A5 /* LoginControlView.swift in Sources */,
