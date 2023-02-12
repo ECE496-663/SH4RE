@@ -14,13 +14,13 @@ class RKColorSettings : ObservableObject {
     // foreground colors
     @Published var textColor: Color = Color.primary
     @Published var todayColor: Color = Color.white
-    @Published var selectedColor: Color = Color.white
+    @Published var selectedColor: Color = Color.primaryDark
     @Published var disabledColor: Color = Color.gray
     @Published var betweenStartAndEndColor: Color = Color.white
     // background colors
-    @Published var textBackColor: Color = Color.clear
+    @Published var textBackColor: Color = Color.white
     @Published var todayBackColor: Color = Color.gray
-    @Published var selectedBackColor: Color = Color.red
+    @Published var selectedBackColor: Color = Color.primaryLight
     @Published var disabledBackColor: Color = Color.clear
     @Published var betweenStartAndEndBackColor: Color = Color.blue
     // headers foreground colors

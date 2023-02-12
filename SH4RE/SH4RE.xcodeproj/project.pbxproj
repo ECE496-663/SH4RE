@@ -252,6 +252,20 @@
 			path = SH4REUITests;
 			sourceTree = "<group>";
 		};
+		9D0518642998774900366A10 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				9D05185B2998497300366A10 /* RKCell.swift */,
+				9D05185D2998497400366A10 /* RKColorSettings.swift */,
+				9D05185C2998497300366A10 /* RKDate.swift */,
+				9D0518582998497300366A10 /* RKMonth.swift */,
+				9D0518592998497300366A10 /* RKViewController.swift */,
+				9D05185A2998497300366A10 /* RKWeekdayHeader.swift */,
+				9D0518562998496200366A10 /* RKManager.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
 		9D08058A292FE94100094169 /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -305,14 +319,8 @@
 		9D95674829380837003F6B74 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				9D0518642998774900366A10 /* Calendar */,
 				D119C0472928313700E83142 /* ImagePicker.swift */,
-				9D05185B2998497300366A10 /* RKCell.swift */,
-				9D05185D2998497400366A10 /* RKColorSettings.swift */,
-				9D05185C2998497300366A10 /* RKDate.swift */,
-				9D0518582998497300366A10 /* RKMonth.swift */,
-				9D0518592998497300366A10 /* RKViewController.swift */,
-				9D05185A2998497300366A10 /* RKWeekdayHeader.swift */,
-				9D0518562998496200366A10 /* RKManager.swift */,
 				9D95674929380897003F6B74 /* ImageCarousel.swift */,
 				9D95674C29381193003F6B74 /* Stars.swift */,
 				9DB46C58296E56BB005F0216 /* DatePicker.swift */,

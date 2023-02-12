@@ -16,7 +16,7 @@ struct RKViewController: View {
     
     var body: some View {
         Group {
-            RKWeekdayHeader(rkManager: self.rkManager)
+//            RKWeekdayHeader(rkManager: self.rkManager)
             Divider()
             List {
                 ForEach(0..<numberOfMonths()) { index in
@@ -25,6 +25,7 @@ struct RKViewController: View {
                 Divider()
             }
         }
+        .background(Color("BackgroundGrey"))
     }
     
     func numberOfMonths() -> Int {
@@ -44,10 +45,7 @@ struct RKViewController: View {
 struct RKViewController_Previews : PreviewProvider {
     static var previews: some View {
         Group {
-            RKViewController(isPresented: .constant(false), rkManager: RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 0))
-            RKViewController(isPresented: .constant(false), rkManager: RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*32), mode: 0))
-                .environment(\.colorScheme, .dark)
-                .environment(\.layoutDirection, .rightToLeft)
+//            RKViewController(isPresented: .constant(false), rkManager: RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 0))
         }
     }
 }

@@ -35,8 +35,8 @@ struct ViewListingView: View {
     @State private var dates: Set<DateComponents> = []
     
     
-    var rkManager = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
-
+    var myRkManager = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
+    
     
     var body: some View {
         
@@ -120,10 +120,6 @@ struct ViewListingView: View {
                     
                 }
             }
-            PopUp(show: $showCal) {
-                RKViewController(isPresented: $showCal, rkManager: rkManager)
-            }
-            
         }
         
         ZStack {
@@ -173,6 +169,8 @@ struct ViewListingView: View {
         .padding([.horizontal])
         .frame(alignment: .bottom)
         .onAppear() {
+            myRkManager.disabledDates = [Date().addingTimeInterval(60*60*24*4), Date().addingTimeInterval(60*60*24*5), Date().addingTimeInterval(60*60*24*6)] // here is where we would add the disabled dates
+            
             price = listing.price
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
@@ -189,7 +187,9 @@ struct ViewListingView: View {
                 }
             }
         }
+        .sheet(isPresented: $showCal) {
+            RKViewController(isPresented: $showCal, rkManager: myRkManager)
+        }
     }
 }
-
 
