@@ -18,12 +18,13 @@ import FirebaseStorage
 struct ViewListingView: View {
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser
-        
+    
     //parameters passed in from search nav link
     var listing: Listing
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     @State private var showCal = false
+    @State private var showPopUp = false
     
     var numberOfStars: Float = 4
     var hasHalfStar = true
@@ -78,17 +79,35 @@ struct ViewListingView: View {
                         .foregroundColor(.grey)
                         .frame(alignment: .leading)
                     HStack {
-                            Text("$\(listing.price)")
-                                .font(.headline)
-                                .bold()
-                            Text("/day")
-                                .font(.caption)
-                                .foregroundColor(.grey)
+                        Text("$\(listing.price)")
+                            .font(.headline)
+                            .bold()
+                        Text("/day")
+                            .font(.caption)
+                            .foregroundColor(.grey)
                     }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
+            //                        NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
+            //                            HStack {
+            //                                Text("Message")
+            //                                    .font(.body)
+            //                                    .foregroundColor(.white)
+            //
+            //                                Image(systemName: "message")
+            //                                    .foregroundColor(.white)
+            //                            }
+            //                        }
+            //                        .frame(alignment: .trailing)
+            //                        .padding()
+            //                        .background(Color.primaryDark)
+            //                        .cornerRadius(40)
+            //                        .padding()
+            
+            Button(action: {
+                showPopUp.toggle()
+            }, label: {
                 HStack {
                     Text("Message")
                         .font(.body)
@@ -97,17 +116,17 @@ struct ViewListingView: View {
                     Image(systemName: "message")
                         .foregroundColor(.white)
                 }
-            }
-            .frame(alignment: .trailing)
-            .padding()
-            .background(Color.primaryDark)
-            .cornerRadius(40)
-            .padding()
+                .frame(alignment: .trailing)
+                .padding()
+                .background(Color.primaryDark)
+                .cornerRadius(40)
+                .padding()
+            })
         }
         .padding([.horizontal])
         .background(.white)
     }
-
+    
     
     var body: some View {
         
@@ -173,6 +192,42 @@ struct ViewListingView: View {
             }
             PopUp(show: $showCal) {
                 DatePicker(dates: dates)
+            }
+            PopUp(show: $showPopUp) {
+                VStack(alignment: .leading) {
+                    Text("Send request for “\(listing.title)” for the following dates: ").bold()
+                    ForEach(dates.sorted{$0.date! < $1.date!}, id: \.self) { date in
+                        let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
+                        
+                        Text("\(res)")
+                    }
+                    
+                    NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
+                        HStack {
+                            Text("Send")
+                                .font(.body)
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .fontWeight(.semibold)
+                    .frame(width: screenSize.width * 0.8, height: 40)
+                    .foregroundColor(.white)
+                    .background(Color.primaryDark)
+                    .cornerRadius(40)
+                    
+                    Button(action: {
+                        showPopUp.toggle()
+                    })
+                    {
+                        Text("Cancel")
+                    }
+                    .buttonStyle(secondaryButtonStyle())
+                }
+                .padding()
+                .frame(width: 350, height: 180)
+                .background(.white)
+                .cornerRadius(8)
+                
             }
         }
         .overlay(bottomBar, alignment: .bottom)
