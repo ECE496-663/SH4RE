@@ -15,9 +15,34 @@ struct MessageView: View {
             if message.fromId == getCurrentUserUid() {
                 HStack {
                     Spacer()
-                    HStack {
-                        Text(message.text.replacingOccurrences(of: "\n", with: ""))
-                            .foregroundColor(.white)
+                    VStack(alignment: .leading) {
+                        // TODO: add functionality for accepting/denying requests
+//                        if (message.isARequest) {
+//                            Text("Request sent!").italic()
+//                                .foregroundColor(.white)
+//                            HStack {
+//                                Text("Item: ")
+//                                    .foregroundColor(.white)
+//                                Text("Canon 7D 2019").bold()
+//                                    .foregroundColor(.white)
+//                            }
+//                            HStack {
+//                                Text("Dates: ")
+//                                    .foregroundColor(.white)
+//                                Text("Jan. 10 - Jan. 11").bold()
+//                                    .foregroundColor(.white)
+//                            }
+//
+//                            Button(action: { print("cancel request")})
+//                            {
+//                                Text("Cancel Request")
+//                            }
+//                            .buttonStyle(secondaryButtonStyle())
+//                        }
+//                        else {
+                            Text(message.text.replacingOccurrences(of: "\n", with: ""))
+                                .foregroundColor(.white)
+//                        }
                     }
                     .padding()
                     .background(Color.primaryDark)
@@ -25,12 +50,41 @@ struct MessageView: View {
                 }
             } else {
                 HStack {
-                    HStack {
-                        Text(message.text.replacingOccurrences(of: "\n", with: ""))
-                            .foregroundColor(.black)
+                    VStack(alignment: .leading) {
+//                        if (message.isARequest) {
+//                            Text("New Request!").italic()
+//                                .foregroundColor(.white)
+//                            HStack {
+//                                Text("Item: ")
+//                                    .foregroundColor(.white)
+//                                Text("Canon 7D 2019").bold()
+//                                    .foregroundColor(.white)
+//                            }
+//                            HStack {
+//                                Text("Dates: ")
+//                                    .foregroundColor(.white)
+//                                Text("Jan. 10 - Jan. 11").bold()
+//                                    .foregroundColor(.white)
+//                            }
+//
+//                            Button(action: { print("accept request")})
+//                            {
+//                                Text("Accept Request")
+//                            }
+//                            .buttonStyle(primaryButtonStyle())
+//
+//                            Button(action: { print("deny request")})
+//                            {
+//                                Text("Deny Request")
+//                            }
+//                            .buttonStyle(secondaryButtonStyle())
+//                        } else {
+                            Text(message.text.replacingOccurrences(of: "\n", with: ""))
+                                .foregroundColor(.black)
+//                        }
                     }
                     .padding()
-                    .background(.white)
+                    .background(Color.darkGrey)
                     .cornerRadius(8)
                     Spacer()
                 }
