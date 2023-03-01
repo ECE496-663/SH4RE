@@ -144,6 +144,27 @@ struct ViewListingView: View {
                                 .font(.caption)
                                 .foregroundColor(Color("TextGrey"))
                         }
+                        Button(action: {
+                            let startDate = "2023-03-01"
+                            let endDate = "2023-03-07"
+                            let dateFormatter = DateFormatter()
+                            dateFormatter.dateFormat = "yyyy-MM-dd"
+                            let start = dateFormatter.date(from: startDate)
+                            let end = dateFormatter.date(from: endDate)
+                            sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, start: start!, end: end!)
+                        })
+                        {
+                            Text("Send Request")
+                                .fontWeight(.semibold)
+                                .frame(width: screenSize.width * 0.9, height: 10)
+                                .padding()
+                                .foregroundColor(.primaryDark)
+                                .background(.white)
+                                .cornerRadius(40)
+                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.primaryDark, lineWidth: 2))
+                        }
+                        .padding(.bottom)
+                        
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
