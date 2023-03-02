@@ -207,7 +207,16 @@ struct ViewListingView: View {
                                 .font(.body)
                                 .foregroundColor(.white)
                         }
-                    }
+                    }.simultaneousGesture(TapGesture().onEnded{
+                        //TODO Feed in selected dates as start and end
+                        let startDate = "2023-03-08"
+                        let endDate = "2023-03-09"
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "yyyy-MM-dd"
+                        let start = dateFormatter.date(from: startDate)
+                        let end = dateFormatter.date(from: endDate)
+                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, start: start!, end: end!)
+                    })
                     .fontWeight(.semibold)
                     .frame(width: screenSize.width * 0.8, height: 40)
                     .foregroundColor(.white)

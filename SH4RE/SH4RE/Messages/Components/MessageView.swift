@@ -17,32 +17,32 @@ struct MessageView: View {
                     Spacer()
                     VStack(alignment: .leading) {
                         // TODO: add functionality for accepting/denying requests
-//                        if (message.isARequest) {
-//                            Text("Request sent!").italic()
-//                                .foregroundColor(.white)
-//                            HStack {
-//                                Text("Item: ")
-//                                    .foregroundColor(.white)
-//                                Text("Canon 7D 2019").bold()
-//                                    .foregroundColor(.white)
-//                            }
-//                            HStack {
-//                                Text("Dates: ")
-//                                    .foregroundColor(.white)
-//                                Text("Jan. 10 - Jan. 11").bold()
-//                                    .foregroundColor(.white)
-//                            }
-//
-//                            Button(action: { print("cancel request")})
-//                            {
-//                                Text("Cancel Request")
-//                            }
-//                            .buttonStyle(secondaryButtonStyle())
-//                        }
-//                        else {
+                        if (message.isRequest) {
+                            Text("Request sent!").italic()
+                                .foregroundColor(.white)
+                            HStack {
+                                Text("Item: ")
+                                    .foregroundColor(.white)
+                                Text(message.listingTitle).bold()
+                                    .foregroundColor(.white)
+                            }
+                            HStack {
+                                Text("Dates: ")
+                                    .foregroundColor(.white)
+                                Text(message.datesRequested).bold()
+                                    .foregroundColor(.white)
+                            }
+
+                            Button(action: { cancelRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId)})
+                            {
+                                Text("Cancel Request")
+                            }
+                            .buttonStyle(secondaryButtonStyle())
+                        }
+                        else {
                             Text(message.text.replacingOccurrences(of: "\n", with: ""))
                                 .foregroundColor(.white)
-//                        }
+                        }
                     }
                     .padding()
                     .background(Color.primaryDark)
@@ -51,37 +51,39 @@ struct MessageView: View {
             } else {
                 HStack {
                     VStack(alignment: .leading) {
-//                        if (message.isARequest) {
-//                            Text("New Request!").italic()
-//                                .foregroundColor(.white)
-//                            HStack {
-//                                Text("Item: ")
-//                                    .foregroundColor(.white)
-//                                Text("Canon 7D 2019").bold()
-//                                    .foregroundColor(.white)
-//                            }
-//                            HStack {
-//                                Text("Dates: ")
-//                                    .foregroundColor(.white)
-//                                Text("Jan. 10 - Jan. 11").bold()
-//                                    .foregroundColor(.white)
-//                            }
-//
-//                            Button(action: { print("accept request")})
-//                            {
-//                                Text("Accept Request")
-//                            }
-//                            .buttonStyle(primaryButtonStyle())
-//
-//                            Button(action: { print("deny request")})
-//                            {
-//                                Text("Deny Request")
-//                            }
-//                            .buttonStyle(secondaryButtonStyle())
-//                        } else {
+                        if (message.isRequest) {
+                            Text("New Request!").italic()
+                                .foregroundColor(.white)
+                            HStack {
+                                Text("Item: ")
+                                    .foregroundColor(.white)
+                                Text(message.listingTitle).bold()
+                                    .foregroundColor(.white)
+                            }
+                            HStack {
+                                Text("Dates: ")
+                                    .foregroundColor(.white)
+                                Text(message.datesRequested).bold()
+                                    .foregroundColor(.white)
+                            }
+
+                            Button(action: {
+                                acceptRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId)
+                            })
+                            {
+                                Text("Accept Request")
+                            }
+                            .buttonStyle(primaryButtonStyle())
+
+                            Button(action: { denyRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId)})
+                            {
+                                Text("Deny Request")
+                            }
+                            .buttonStyle(secondaryButtonStyle())
+                        } else {
                             Text(message.text.replacingOccurrences(of: "\n", with: ""))
                                 .foregroundColor(.black)
-//                        }
+                        }
                     }
                     .padding()
                     .background(Color.darkGrey)

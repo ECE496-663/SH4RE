@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import AlertX
+import Firebase
 import FirebaseAuth
 
 struct ParentFunctionKey: EnvironmentKey {
@@ -251,7 +252,19 @@ struct CreateListingView: View {
                                     else {
                                         calAvail = availabilitySelection
                                     }
-                                    let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()]
+                                    
+                                    //TODO need front end to populate this array based on selections
+                                     //Example of how to create a date
+                                     //let stringDate = "2019-10-10"
+                                     //let dateFormatter = DateFormatter()
+                                     //dateFormatter.dateFormat = "yyyy-MM-dd"
+                                     //let date = dateFormatter.date(from: stringDate)
+                                     //let timestamp = Timestamp(date:date)
+                                     
+                                     var availability = [Timestamp]()
+
+                                     let listingFields: [String: Any] = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": availability, "Address": postalCode, "UID": getCurrentUserUid()]
+
                                     let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
                                     
                                     // upload images and add paths to data fields
