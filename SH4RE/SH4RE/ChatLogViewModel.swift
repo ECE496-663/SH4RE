@@ -48,7 +48,13 @@ class ChatLogViewModel: ObservableObject {
                         let toId = data["toId"] as? String ?? ""
                         let text = data["text"] as? String ?? ""
                         let date = data["timestamp"] as? Date ?? Date()
-                        let cm = ChatMessage(id: change.document.documentID, fromId: fromId, toId: toId, text: text, timestamp: date)
+                        let isRequest = data["isRequest"] as? Bool ?? false
+                        let listingTitle = data["listingTitle"] as? String ?? ""
+                        let datesRequested = data["datesRequested"] as? String ?? ""
+                        let listingId = data["listingId"] as? String ?? ""
+                        let requestId = data["requestId"] as? String ?? ""
+
+                        let cm = ChatMessage(id: change.document.documentID, fromId: fromId, toId: toId, text: text, timestamp: date, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId:requestId)
                         self.chatMessages.append(cm)
                     }
                 })
@@ -69,7 +75,7 @@ class ChatLogViewModel: ObservableObject {
             .collection(toId)
             .document()
 
-        let msg = ChatMessage(id: nil, fromId: fromId, toId: toId, text: chatText, timestamp: Date())
+        let msg = ChatMessage(id: nil, fromId: fromId, toId: toId, text: chatText, timestamp: Date(), isRequest: false, listingTitle: "", datesRequested: "", listingId: "", requestId:"")
 
         try? document.setData(from: msg) { error in
             if let error = error {
@@ -115,7 +121,13 @@ class ChatLogViewModel: ObservableObject {
             FirebaseConstants.text: self.chatText,
             FirebaseConstants.fromId: uid,
             FirebaseConstants.toId: toId,
-            "name": chatUser.name
+            "name": chatUser.name,
+            "isRequest": false,
+            "listingTitle": "",
+            "datesRequested": "",
+            "listingId": "",
+            "requestId": ""
+            
         ] as [String : Any]
 
         document.setData(data) { error in
@@ -129,11 +141,16 @@ class ChatLogViewModel: ObservableObject {
             return
         }
         let recipientRecentMessageDictionary = [
-            FirebaseConstants.timestamp: Date(),
-            FirebaseConstants.text: self.chatText,
-            FirebaseConstants.fromId: uid,
-            FirebaseConstants.toId: toId,
-            "name": currentUser.name
+           FirebaseConstants.timestamp: Date(),
+           FirebaseConstants.text: "Rental Request",
+           FirebaseConstants.fromId: toId,
+           FirebaseConstants.toId: uid,
+           "name": currentUser.name,
+           "isRequest": false,
+           "listingTitle": "",
+           "datesRequested": "",
+           "listingId": "",
+           "requestId": ""
         ] as [String : Any]
         
         let recipDoc = FirebaseManager.shared.firestore
