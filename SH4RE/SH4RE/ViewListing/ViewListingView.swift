@@ -210,8 +210,8 @@ struct ViewListingView: View {
                         }
                     }.simultaneousGesture(TapGesture().onEnded{
                         //TODO Feed in selected dates as start and end
-                        let startDate = "2023-03-08"
-                        let endDate = "2023-03-09"
+                        let startDate = "2023-03-10"
+                        let endDate = "2023-03-11"
                         let dateFormatter = DateFormatter()
                         dateFormatter.dateFormat = "yyyy-MM-dd"
                         let start = dateFormatter.date(from: startDate)
