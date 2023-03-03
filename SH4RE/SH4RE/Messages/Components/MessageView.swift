@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MessageView: View {
     let message: ChatMessage
+    @State var requestStatus: Bool = false
     
     var body: some View {
         VStack {
@@ -66,20 +67,23 @@ struct MessageView: View {
                                 Text(message.datesRequested).bold()
                                     .foregroundColor(.white)
                             }
-
-                            Button(action: {
-                                acceptRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId)
-                            })
-                            {
-                                Text("Accept Request")
-                            }
-                            .buttonStyle(primaryButtonStyle())
-
-                            Button(action: { denyRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId)})
-                            {
-                                Text("Deny Request")
-                            }
-                            .buttonStyle(secondaryButtonStyle())
+                                if(requestStatus){
+                                    Button(action: {
+                                        acceptRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.toId, renterId: message.fromId)
+                                    })
+                                    {
+                                        Text("Accept Request")
+                                    }
+                                    .buttonStyle(primaryButtonStyle())
+                                    
+                                    Button(action: { denyRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId)})
+                                    {
+                                        Text("Deny Request")
+                                    }
+                                    .buttonStyle(secondaryButtonStyle())
+                                }
+                                //add accepted or denied text
+                            
                         } else {
                             Text(message.text.replacingOccurrences(of: "\n", with: ""))
                                 .foregroundColor(.black)
@@ -94,5 +98,14 @@ struct MessageView: View {
         }
         .padding(.horizontal)
         .padding(.top, 8)
+        .onAppear(){
+            print("appear")
+            if (message.isRequest){
+                isRequestPending(requestId: message.requestId, listingId: message.listingId, completion: {isPending in
+                    print(isPending)
+                    self.requestStatus = isPending
+                })
+            }
+        }
     }
 }
