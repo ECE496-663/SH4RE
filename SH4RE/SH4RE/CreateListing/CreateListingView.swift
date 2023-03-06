@@ -253,7 +253,7 @@ struct CreateListingView: View {
                                         calAvail = availabilitySelection
                                     }
                                     
-                                    //TODO need front end to populate this array based on selections
+                                     //TODO need front end to populate this array based on selections
                                      //Example of how to create a date
                                      //let stringDate = "2019-10-10"
                                      //let dateFormatter = DateFormatter()
