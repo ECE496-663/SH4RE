@@ -30,10 +30,7 @@ struct ViewListingView: View {
     var hasHalfStar = true
     var numberOfReviews = 3
     @State var numberOfImages = 0
-    @State var description:String = ""
-    @State var title:String = ""
-    @State var price:String = ""
-    @State var name:String = ""
+    
     @State private var dates: Set<DateComponents> = []
     
     var myRkManager = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
@@ -208,7 +205,7 @@ struct ViewListingView: View {
                                 .foregroundColor(.white)
                         }
                     }.simultaneousGesture(TapGesture().onEnded{
-                        //TODO Feed in selected dates as start and end
+                        //TODO Feed in selected start and end dates
                         let startDate = "2023-03-10"
                         let endDate = "2023-03-11"
                         let dateFormatter = DateFormatter()
@@ -254,10 +251,10 @@ struct ViewListingView: View {
                         images.append(image)
                     }
                 }
+                
+                //TODO connect listing.avaiability with Calendar once new calendar mergered
+                //lisiting.availability is [(Date,Date)] where each array value is a Start to end of a booking
             }
-            getUserName(uid: listing.uid, completion: { ret in
-                name = ret
-            })
         }
         .sheet(isPresented: $showCal) {
             RKViewController(isPresented: $showCal, rkManager: myRkManager)
