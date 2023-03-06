@@ -39,7 +39,7 @@ struct DatePicker: View {
         )
         .datePickerStyle(.graphical)
         .padding(20)
-        .background(Color("White"))
+        .background(.white)
         .cornerRadius(20)
 
     }

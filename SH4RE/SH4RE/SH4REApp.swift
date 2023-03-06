@@ -11,6 +11,7 @@ import Firebase
 @main
 struct SH4REApp: App {
     init(){
+        FirebaseConfiguration.shared.setLoggerLevel(.min)
         FirebaseApp.configure()
     }
     
