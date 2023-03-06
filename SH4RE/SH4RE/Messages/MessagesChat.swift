@@ -24,8 +24,6 @@ struct MessagesChat: View {
         .navigationTitle(vm.chatUser?.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .onDisappear {
-            vm.firestoreListener?.remove()
-            vm.chatMessages.removeAll()
         }
     }
     
