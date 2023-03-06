@@ -201,7 +201,7 @@ struct ViewListingView: View {
                         Text("\(res)")
                     }
                     
-                    NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
+                    NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title)))) {
                         HStack {
                             Text("Send")
                                 .font(.body)

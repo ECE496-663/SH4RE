@@ -119,20 +119,19 @@ func bookListing(listing_id : String, start: Date, end: Date){
 
  func sendBookingRequest(uid: String, listing_id : String, start: Date, end: Date){
      let collectionRef = Firestore.firestore().collection("Listings").document(listing_id).collection("Requests")
-
      collectionRef.whereField("UID", isEqualTo: uid).whereField("start", isEqualTo: Timestamp(date: start)).getDocuments() { (querySnapshot, err) in
          if let err = err {
              print("Error getting documents: \(err)")
          } else {
              if (querySnapshot!.isEmpty){
-
-                 let startTime = Timestamp(date:start)
-                 let endTime = Timestamp(date:end)
-                 let requestDoc = collectionRef.document()
-                 requestDoc.setData(["UID":uid, "start" : startTime, "end":endTime, "status" : "pending" ])
-                 bookListing(listing_id: listing_id, start: start, end: end)
                  
-                 let listingDocRef = Firestore.firestore().collection("Listings").document(listing_id)
+              let startTime = Timestamp(date:start)
+              let endTime = Timestamp(date:end)
+              let requestDoc = collectionRef.document()
+              requestDoc.setData(["UID":uid, "start" : startTime, "end":endTime, "status" : "pending" ])
+              bookListing(listing_id: listing_id, start: start, end: end)
+
+              let listingDocRef = Firestore.firestore().collection("Listings").document(listing_id)
                  
                  listingDocRef.getDocument() { (document, err) in
                      if let document = document, document.exists {
@@ -160,7 +159,7 @@ func bookListing(listing_id : String, start: Date, end: Date){
                              .document(renterId)
                              .collection(uid)
                              .document()
-
+                         
                          try? recipientMessageDocument.setData(from: msg) { error in
                              if let error = error {
                                  print(error)
@@ -168,93 +167,134 @@ func bookListing(listing_id : String, start: Date, end: Date){
                              }
                          }
                          
-                         let userDocRef = Firestore.firestore().collection("User Info").document(renterId)
+                         let renterName = title
+                         let recentMsgDoc = FirebaseManager.shared.firestore
+                             .collection(FirebaseConstants.recentMessages)
+                             .document(uid)
+                             .collection(FirebaseConstants.messages)
+                             .document(renterId)
                          
-                         userDocRef.getDocument() { (document, err) in
-                             if let document = document, document.exists {
-                                 let data = document.data()!
-                                 let renterName = data["name"] as? String ?? ""
-                                 let recentMsgDoc = FirebaseManager.shared.firestore
-                                     .collection(FirebaseConstants.recentMessages)
-                                     .document(uid)
-                                     .collection(FirebaseConstants.messages)
-                                     .document(renterId)
-                                 
-                                 let docData = [
-                                    FirebaseConstants.timestamp: Date(),
-                                    FirebaseConstants.text: "Rental Request",
-                                    FirebaseConstants.fromId: uid,
-                                    FirebaseConstants.toId: renterId,
-                                    "name": renterName,
-                                    "isRequest": false,
-                                    "listingTitle": "",
-                                    "datesRequested": "",
-                                    "listingId": "",
-                                    "requestId": ""
-                                    
-                                 ] as [String : Any]
-                                 
-                                 recentMsgDoc.setData(docData) { error in
-                                     if let error = error {
-                                         print("Failed to save recent message: \(error)")
-                                         return
-                                     }
-                                 }
-                                 guard let currentUser = FirebaseManager.shared.currentUser else {
-                                     return
-                                 }
-                                 let recipientRecentMessageDictionary = [
-                                    FirebaseConstants.timestamp: Date(),
-                                    FirebaseConstants.text: "Rental Request",
-                                    FirebaseConstants.fromId: renterId,
-                                    FirebaseConstants.toId: uid,
-                                    "name": currentUser.name,
-                                    "isRequest": false,
-                                    "listingTitle": "",
-                                    "datesRequested": "",
-                                    "listingId": "",
-                                    "requestId": ""
-                                    
-                                 ] as [String : Any]
-                                 
-                                 let recipDoc = FirebaseManager.shared.firestore
-                                     .collection(FirebaseConstants.recentMessages)
-                                     .document(renterId)
-                                     .collection(FirebaseConstants.messages)
-                                     .document(uid)
-                                 
-                                 recipDoc.setData(recipientRecentMessageDictionary) { error in
-                                     if let error = error {
-                                         print("Failed to save recent message: \(error)")
-                                         return
-                                     }
-                                 }
+                         let docData = [
+                            FirebaseConstants.timestamp: Date(),
+                            FirebaseConstants.text: "Rental Request",
+                            FirebaseConstants.fromId: uid,
+                            FirebaseConstants.toId: renterId,
+                            "name": renterName,
+                            "isRequest": false,
+                            "listingTitle": "",
+                            "datesRequested": "",
+                            "listingId": "",
+                            "requestId": ""
+                            
+                         ] as [String : Any]
+                         
+                         recentMsgDoc.setData(docData) { error in
+                             if let error = error {
+                                 print("Failed to save recent message: \(error)")
+                                 return
                              }
                          }
+                         guard let currentUser = FirebaseManager.shared.currentUser else {
+                             return
+                         }
+                         let recipientRecentMessageDictionary = [
+                            FirebaseConstants.timestamp: Date(),
+                            FirebaseConstants.text: "Rental Request",
+                            FirebaseConstants.fromId: renterId,
+                            FirebaseConstants.toId: uid,
+                            "name": currentUser.name,
+                            "isRequest": false,
+                            "listingTitle": "",
+                            "datesRequested": "",
+                            "listingId": "",
+                            "requestId": ""
+                            
+                         ] as [String : Any]
+                         
+                         let recipDoc = FirebaseManager.shared.firestore
+                             .collection(FirebaseConstants.recentMessages)
+                             .document(renterId)
+                             .collection(FirebaseConstants.messages)
+                             .document(uid)
+                         
+                         recipDoc.setData(recipientRecentMessageDictionary) { error in
+                             if let error = error {
+                                 print("Failed to save recent message: \(error)")
+                                 return
+                             }
+                         }
+                         //}
                          
                          
-                     } else {
+                         
+                     }else{
                          print("Document does not exist")
                      }
-                     
                  }
+            
+                 
              }else{
                  //Add something to return to front end
                  //probably 0 is success and else a failure code
                  print("booking request already made")
              }
          }
-     }
+         }
+     
  }
 
 func acceptRentalRequest(listing_id: String, rental_request_id : String, userId: String, renterId: String){
-     let docRef = Firestore.firestore().collection("Listings").document(listing_id).collection("Requests").document(rental_request_id)
-     docRef.updateData(["status": "accepted"])
-    
-     //need user id and renter id
-    
+     let docRef = Firestore.firestore().collection("Listings").document(listing_id)
+     docRef.collection("Requests").document(rental_request_id).updateData(["status": "accepted"])
      
-     let msg = ChatMessage(id: nil, fromId: userId, toId: renterId, text: "This request has been accepted", timestamp: Date(), isRequest: false, listingTitle: "", datesRequested: "", listingId: "", requestId: "")
+    docRef.getDocument() { (document, err) in
+        if let document = document, document.exists {
+            let data = document.data()!
+            let title = data["title"] as? String ?? ""
+            sendRentalStatusMessage(statusMessage: "This request has been accepted",messagePreview: "Request Accepted", userId: userId, renterId: renterId, title: title)
+        }
+    }
+     
+ }
+
+func denyRentalRequest(listing_id: String, rental_request_id : String, userId: String, renterId: String){
+     let docRef = Firestore.firestore().collection("Listings").document(listing_id).collection("Requests").document(rental_request_id)
+
+     docRef.updateData(["status": "denied"])
+
+     docRef.getDocument(completion: { (document, err) in
+         if let document = document {
+             let data = document.data()!
+             let start = data["start"] as? Timestamp ?? Timestamp(date: Date())
+             let end = data["end"] as? Timestamp ?? Timestamp(date: Date())
+             let title = data["title"] as? String ?? ""
+             unbookListing(listing_id: listing_id, start: start.dateValue(), end: end.dateValue())
+             sendRentalStatusMessage(statusMessage: "This request has been declined",messagePreview: "Request Declined", userId: userId, renterId: renterId, title: title)
+         }
+     })
+
+ }
+
+func cancelRentalRequest(listing_id: String, rental_request_id : String, userId: String, renterId: String){
+    let docRef = Firestore.firestore().collection("Listings").document(listing_id).collection("Requests").document(rental_request_id)
+
+    //docRef.updateData(["status": "canceled"])
+
+    docRef.getDocument(completion: { (document, err) in
+        if let document = document {
+            let data = document.data()!
+            let start = data["start"] as? Timestamp ?? Timestamp(date: Date())
+            let end = data["end"] as? Timestamp ?? Timestamp(date: Date())
+            let title = data["title"] as? String ?? ""
+            unbookListing(listing_id: listing_id, start: start.dateValue(), end: end.dateValue())
+            sendRentalStatusMessage(statusMessage: "This request has been cancelled",messagePreview: "Request Cancelled", userId: userId, renterId: renterId, title: title)
+            docRef.delete()
+        }
+    })
+}
+
+func sendRentalStatusMessage(statusMessage: String, messagePreview: String, userId:String, renterId:String, title: String){
+    let msg = ChatMessage(id: nil, fromId: userId, toId: renterId, text: statusMessage, timestamp: Date(), isRequest: false, listingTitle: "", datesRequested: "", listingId: "", requestId: "")
      
     let msgDocument = FirebaseManager.shared.firestore.collection(FirebaseConstants.messages)
          .document(renterId)
@@ -282,10 +322,6 @@ func acceptRentalRequest(listing_id: String, rental_request_id : String, userId:
     
      let userDocRef = Firestore.firestore().collection("User Info").document(renterId)
     
-     userDocRef.getDocument() { (document, err) in
-        if let document = document, document.exists {
-            let data = document.data()!
-            let renterName = data["name"] as? String ?? ""
             let recentMsgDoc = FirebaseManager.shared.firestore
                 .collection(FirebaseConstants.recentMessages)
                 .document(userId)
@@ -298,10 +334,10 @@ func acceptRentalRequest(listing_id: String, rental_request_id : String, userId:
             
             let docData = [
                FirebaseConstants.timestamp: Date(),
-               FirebaseConstants.text: "Rental Request Accepted",
+               FirebaseConstants.text: messagePreview,
                FirebaseConstants.fromId: userId,
                FirebaseConstants.toId: renterId,
-               "name": renterName,
+               "name": title,
                "isRequest": false,
                "listingTitle": "",
                "datesRequested": "",
@@ -343,52 +379,21 @@ func acceptRentalRequest(listing_id: String, rental_request_id : String, userId:
                     return
                 }
             }
-        }
-    }
-     
- }
-
- func denyRentalRequest(listing_id: String, rental_request_id : String){
-     let docRef = Firestore.firestore().collection("Listings").document(listing_id).collection("Requests").document(rental_request_id)
-
-     docRef.updateData(["status": "denied"])
-
-     docRef.getDocument(completion: { (document, err) in
-         if let document = document {
-             let data = document.data()!
-             let start = data["start"] as? Timestamp ?? Timestamp(date: Date())
-             let end = data["end"] as? Timestamp ?? Timestamp(date: Date())
-             unbookListing(listing_id: listing_id, start: start.dateValue(), end: end.dateValue())
-         }
-     })
-     //TODO send deny message
- }
-
-func cancelRentalRequest(listing_id: String, rental_request_id : String){
-    let docRef = Firestore.firestore().collection("Listings").document(listing_id).collection("Requests").document(rental_request_id)
-
-    docRef.updateData(["status": "canceled"])
-
-    docRef.getDocument(completion: { (document, err) in
-        if let document = document {
-            let data = document.data()!
-            let start = data["start"] as? Timestamp ?? Timestamp(date: Date())
-            let end = data["end"] as? Timestamp ?? Timestamp(date: Date())
-            unbookListing(listing_id: listing_id, start: start.dateValue(), end: end.dateValue())
-        }
-    })
-    //TODO send cancelled message
-    //remove option for renter to accept/deny
+        
+    
 }
 
 func isRequestPending(requestId: String, listingId: String, completion: @escaping(Bool)->()){
     let docRef = Firestore.firestore().collection("Listings").document(listingId).collection("Requests").document(requestId)
     docRef.getDocument(completion: { (document, err) in
         if let document = document {
-            let data = document.data()!
-            let status = data["status"] as? String ?? "pending"
-            if(status == "pending"){
-                completion(true)
+            if let data = document.data() {
+                let status = data["status"] as? String ?? "pending"
+                if(status == "pending"){
+                    completion(true)
+                }else{
+                    completion(false)
+                }
             }else{
                 completion(false)
             }

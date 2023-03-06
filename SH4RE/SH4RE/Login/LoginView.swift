@@ -121,7 +121,6 @@ struct LoginView: View {
         }
     }
 }
-
 struct LoginPage_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
