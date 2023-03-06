@@ -39,7 +39,7 @@ class ListingViewModel : ObservableObject{
                 
                 //Assign listing properties here
                 let id = QueryDocumentSnapshot.documentID
-                let uid = data["uid"] as? String ?? ""
+                let uid = data["UID"] as? String ?? ""
                 let title = data["Title"] as? String ?? ""
                 let description = data["Description"] as? String ?? ""
                 let imagepath = data["image_path"] as? [String] ?? []

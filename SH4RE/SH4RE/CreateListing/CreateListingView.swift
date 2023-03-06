@@ -72,7 +72,8 @@ struct CreateListingView: View {
     
     var body: some View {
         ZStack {
-            Color("BackgroundGrey").ignoresSafeArea()
+            Color.backgroundGrey.ignoresSafeArea()
+            
             if (currentUser.isGuest()) {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
@@ -193,10 +194,10 @@ struct CreateListingView: View {
                             VStack{
                                 HStack{
                                     Text(availabilitySelection.isEmpty ? availabilityPlaceholder : availabilitySelection)
-                                        .foregroundColor(availabilitySelection.isEmpty ? Color("TextFieldInputDefault") : Color("Black"))
+                                        .foregroundColor(availabilitySelection.isEmpty ? .textfield : .black)
                                     Spacer()
                                     Image(systemName: "arrowtriangle.left.fill")
-                                        .foregroundColor(Color("TextFieldInputDefault"))
+                                        .foregroundColor(.textfield)
                                 }
                                 .frame(width: screenSize.width * 0.9, height: 30)
                                 .background(.white)

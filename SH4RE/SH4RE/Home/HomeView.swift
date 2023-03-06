@@ -13,7 +13,8 @@ struct HomeView: View {
 
     var body: some View {
         ZStack {
-            Color("BackgroundGrey").ignoresSafeArea()
+            Color.backgroundGrey.ignoresSafeArea()
+            
             VStack {
                 Text("Home View")
             }
