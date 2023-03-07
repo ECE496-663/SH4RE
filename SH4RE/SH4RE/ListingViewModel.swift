@@ -123,7 +123,7 @@ func bookListing(listing_id : String, start: Date, end: Date){
          if let err = err {
              print("Error getting documents: \(err)")
          } else {
-             if (querySnapshot!.isEmpty){
+             //if (querySnapshot!.isEmpty){
                  
               let startTime = Timestamp(date:start)
               let endTime = Timestamp(date:end)
@@ -233,11 +233,11 @@ func bookListing(listing_id : String, start: Date, end: Date){
                  }
             
                  
-             }else{
+             //}else{
                  //Add something to return to front end
                  //probably 0 is success and else a failure code
-                 print("booking request already made")
-             }
+                 //print("booking request already made")
+             //}
          }
          }
      
