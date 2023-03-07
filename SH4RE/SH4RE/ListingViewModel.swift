@@ -48,7 +48,7 @@ class ListingViewModel : ObservableObject{
                 let price = data["Price"] as? String ?? ""
                 let timestampAvailability = data["Availability"] as? [Timestamp] ?? []
                 var availability = [(Date,Date)]()
-                if(timestampAvailability.count > 1){
+                if(timestampAvailability.count % 2 == 0){
                     for i in Swift.stride(from: 0, to: timestampAvailability.count, by:2) {
                         let start = timestampAvailability[i].dateValue()
                         let end = timestampAvailability[i+1].dateValue()
@@ -104,9 +104,11 @@ class ListingViewModel : ObservableObject{
 }
 
 func bookListing(listing_id : String, start: Date, end: Date){
-     let db = Firestore.firestore()
-     db.collection("Listings").document(listing_id).updateData([
-        "Availability": FieldValue.arrayUnion([Timestamp(date: start), Timestamp(date: end)])])
+    let db = Firestore.firestore()
+    Task{
+        try await db.collection("Listings").document(listing_id).updateData([
+            "Availability": FieldValue.arrayUnion([Timestamp(date: start), Timestamp(date: end)])])
+    }
      
  }
 
@@ -128,7 +130,9 @@ func bookListing(listing_id : String, start: Date, end: Date){
               let startTime = Timestamp(date:start)
               let endTime = Timestamp(date:end)
               let requestDoc = collectionRef.document()
-              requestDoc.setData(["UID":uid, "start" : startTime, "end":endTime, "status" : "pending" ])
+             Task{
+                 try await requestDoc.setData(["UID":uid, "start" : startTime, "end":endTime, "status" : "pending" ])
+             }
               bookListing(listing_id: listing_id, start: start, end: end)
 
               let listingDocRef = Firestore.firestore().collection("Listings").document(listing_id)
@@ -387,7 +391,7 @@ func isRequestPending(requestId: String, listingId: String, completion: @escapin
     let docRef = Firestore.firestore().collection("Listings").document(listingId).collection("Requests").document(requestId)
     docRef.getDocument(completion: { (document, err) in
         if let document = document {
-            if let data = document.data() {
+            if let data = document.data(){
                 let status = data["status"] as? String ?? "pending"
                 if(status == "pending"){
                     completion(true)
@@ -397,6 +401,7 @@ func isRequestPending(requestId: String, listingId: String, completion: @escapin
             }else{
                 completion(false)
             }
+            
         }
     })
 }

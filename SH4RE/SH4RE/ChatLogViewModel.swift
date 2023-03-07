@@ -53,11 +53,24 @@ class ChatLogViewModel: ObservableObject {
                         let datesRequested = data["datesRequested"] as? String ?? ""
                         let listingId = data["listingId"] as? String ?? ""
                         let requestId = data["requestId"] as? String ?? ""
+                        
+                
 
                         let cm = ChatMessage(id: change.document.documentID, fromId: fromId, toId: toId, text: text, timestamp: date, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId:requestId)
-                        self.chatMessages.append(cm)
+                        let results = self.chatMessages.filter { $0.id == change.document.documentID }
+                        print(self.chatMessages)
+                        print(change.document.documentID)
+                        
+                        if (results.isEmpty){
+                            print("appending")
+                            self.chatMessages.append(cm)
+                        }else{
+                            print("skipping")
+                        }
                     }
                 })
+                
+                
 
                 DispatchQueue.main.async {
                     self.count += 1

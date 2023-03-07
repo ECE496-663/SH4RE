@@ -205,14 +205,16 @@ struct ViewListingView: View {
                                 .foregroundColor(.white)
                         }
                     }.simultaneousGesture(TapGesture().onEnded{
-                        //TODO Feed in selected start and end dates
-                        let startDate = "2023-03-10"
-                        let endDate = "2023-03-11"
-                        let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "yyyy-MM-dd"
-                        let start = dateFormatter.date(from: startDate)
-                        let end = dateFormatter.date(from: endDate)
-                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, start: start!, end: end!)
+                        let start = myRkManager.selectedDates.first
+                        let end = myRkManager.selectedDates.last
+                        if(start != nil && end != nil){
+                            sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, start: start!, end: end!)
+                        }else{
+                            //TODO add pop up/message
+                            //only allow navigation with valid dates
+                            print("invalid dates selected")
+                        }
+
                     })
                     .fontWeight(.semibold)
                     .frame(width: screenSize.width * 0.8, height: 40)
@@ -237,7 +239,7 @@ struct ViewListingView: View {
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
-            myRkManager.disabledDates = [Date().addingTimeInterval(60*60*24*4), Date().addingTimeInterval(60*60*24*5), Date().addingTimeInterval(60*60*24*6)] // here is where we would add the disabled dates
+            //myRkManager.disabledDates = [Date().addingTimeInterval(60*60*24*4), Date().addingTimeInterval(60*60*24*5), Date().addingTimeInterval(60*60*24*6)] // here is where we would add the disabled dates
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
                 let storageRef = Storage.storage().reference(withPath: path)
@@ -255,6 +257,20 @@ struct ViewListingView: View {
                 //TODO connect listing.avaiability with Calendar once new calendar mergered
                 //lisiting.availability is [(Date,Date)] where each array value is a Start to end of a booking
             }
+            //myRkManager.disabledDates = []
+            for (start, end) in listing.availability{
+                // Formatter for printing the date, adjust it according to your needs:
+                var date = start
+                let fmt = DateFormatter()
+                fmt.dateFormat = "dd/MM/yyyy"
+
+                while date <= end {
+                    fmt.string(from: date)
+                    myRkManager.disabledDates.append(date)
+                    date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
+                }
+            }
+            print(myRkManager.disabledDates)
         }
         .sheet(isPresented: $showCal) {
             RKViewController(isPresented: $showCal, rkManager: myRkManager)

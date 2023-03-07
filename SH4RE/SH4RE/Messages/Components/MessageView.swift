@@ -10,7 +10,7 @@ import SwiftUI
 struct MessageView: View {
     let message: ChatMessage
     @State var requestStatus: Bool = false
-    @State private var requestResponed = false
+    @State private var requestResponed = true
     
     var body: some View {
         VStack {
@@ -112,6 +112,10 @@ struct MessageView: View {
             if (message.isRequest){
                 isRequestPending(requestId: message.requestId, listingId: message.listingId, completion: {isPending in
                     requestStatus = isPending
+                    print(isPending)
+                    print(message.text)
+                    print(message.toId)
+                    print(message.fromId)
                 })
             }
         }
