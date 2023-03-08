@@ -35,14 +35,19 @@ struct SearchView: View {
     @State var maxDistance: String = ""
     @State var minRating = 0.0
     
+    // Manages the three most recent searches made by the user
     func addRecentSearch(searchQuery: String){
-        if let index = recentSearchQueries.firstIndex(of: searchQuery) {
-            recentSearchQueries.remove(at: index)
+        var savedValues = UserDefaults.standard.stringArray(forKey: "RecentSearchQueries") ?? []
+        if let index = savedValues.firstIndex(of: searchQuery) {
+            savedValues.remove(at: index)
         }
-        if recentSearchQueries.count == 3 {
-            recentSearchQueries.removeLast()
+        if savedValues.count == 3 {
+            savedValues.removeLast()
         }
-        recentSearchQueries.insert(searchQuery, at: 0)
+        savedValues.insert(searchQuery, at: 0)
+        UserDefaults.standard.set(savedValues, forKey: "RecentSearchQueries")
+        recentSearchQueries = savedValues
+        print(recentSearchQueries)
     }
 
     var body: some View {

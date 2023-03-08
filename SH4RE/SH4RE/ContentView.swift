@@ -27,7 +27,7 @@ struct ContentView: View {
     @State private var tabSelection = 1
     @ObservedObject var currentUser = CurrentUser()
     @State private var searchQuery: String = ""
-    @State var recentSearchQueries: [String] = [""]
+    @State var recentSearchQueries: [String] = UserDefaults.standard.stringArray(forKey: "RecentSearchQueries") ?? [""]
     init() {
         UITabBar.appearance().backgroundColor = UIColor(.backgroundGrey)
     }

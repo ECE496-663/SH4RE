@@ -11,6 +11,14 @@ import SwiftUI
 //Remove once real listing is here
 let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00")
 
+//This probably shouldnt go here but it will for now, allows for safe and easy bounds checking
+extension Collection {
+    /// Returns the element at the specified index if it is within bounds, otherwise nil.
+    subscript (safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}
+
 struct HomeView: View {
     @Binding var tabSelection: Int
     @Binding var searchQuery: String
@@ -20,12 +28,11 @@ struct HomeView: View {
         NavigationStack{
             ZStack(alignment: .top){
                 Color("BackgroundGrey").ignoresSafeArea()
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 15) {
                     Text("Search")
                         .font(.title.bold())
                     TextField("What are you looking for?", text: $searchQuery)
                         .textFieldStyle(textInputStyle())
-                        .frame(width: .infinity)
                     ScrollView {
                         //Body
                         VStack(alignment: .leading){
@@ -34,15 +41,19 @@ struct HomeView: View {
                                 Text("Recent Searches")
                                     .font(.title2.bold())
                                 HStack(alignment: .center){
-                                    Button(action: {
-                                        searchQuery = recentSearchQueries[0]
-                                        tabSelection = 2
-                                    }) {
-                                        RecentSearchCard(searchText: recentSearchQueries[0])
+                                    ForEach (recentSearchQueries, id: \.self) { query in
+                                        Button(action: {
+                                            searchQuery = query
+                                            tabSelection = 2
+                                            addRecentSearch(searchQuery: query)
+                                        }) {
+                                            RecentSearchCard(searchText: query)
+                                            // match everything but the last
+                                            if query != recentSearchQueries.last {
+                                                Spacer()
+                                            }
+                                        }
                                     }
-                                    RecentSearchCard(searchText:"questionnnn dfasdfasdfcvxcvxfgdfgsdfsgsdfg")
-                                        .frame(maxWidth: .infinity)
-                                    RecentSearchCard(searchText:"questionnnn dfasdfasdfcvxcvxfgdfgsdfsgsdfg")
                                 }
                             }
                             //Recent Posts
