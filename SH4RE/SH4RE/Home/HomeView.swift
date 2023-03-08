@@ -19,10 +19,11 @@ struct HomeView: View {
         NavigationStack{
             ZStack(alignment: .top){
                 Color("BackgroundGrey").ignoresSafeArea()
-                VStack(alignment: .leading) {
-                    TextField("Search", text: $searchQuery)
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Search")
+                        .font(.title.bold())
+                    TextField("What are you looking for?", text: $searchQuery)
                         .textFieldStyle(textInputStyle())
-                        .padding()
                         .frame(width: .infinity)
                     ScrollView {
                         //Body
@@ -101,9 +102,10 @@ struct HomeView: View {
                                 }
                             }
                         }
-                        .padding(.horizontal)
                     }
+                    .scrollIndicators(.hidden)
                 }
+                .padding(.horizontal)
             }
         }
     }

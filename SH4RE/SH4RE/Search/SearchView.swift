@@ -36,52 +36,55 @@ struct SearchView: View {
 
     var body: some View {
         NavigationStack {
-            TextField("Search", text: $searchQuery)
-                .textFieldStyle(textInputStyle())
-                .padding(.horizontal)
-//                .frame(width: screenSize.width)
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 15){
-                    ForEach(listingsView.listings) { listing in
-                        // If theres no image for a listing, just use the placeholder
-                        let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
-                        NavigationLink(destination: {
-                            ViewListingView(tabSelection: $tabSelection, listing: listing).environmentObject(currentUser)
-                        }, label: {
-                            ProductCard(listing: listing, image: productImage)
+            ZStack(alignment: .top) {
+                Color("BackgroundGrey").ignoresSafeArea()
+                VStack(alignment: .leading, spacing: 15) {
+                    Text("Search")
+                        .font(.title.bold())
+                    TextField("What are you looking for?", text: $searchQuery)
+                        .textFieldStyle(textInputStyle())
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: 15){
+                            ForEach(listingsView.listings) { listing in
+                                // If theres no image for a listing, just use the placeholder
+                                let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
+                                NavigationLink(destination: {
+                                    ViewListingView(tabSelection: $tabSelection, listing: listing).environmentObject(currentUser)
+                                }, label: {
+                                    ProductCard(listing: listing, image: productImage)
+                                })
+                            }
+                        }
+                        // Reader to find scroll position to disappear filter button
+                        .background(GeometryReader {
+                            return Color.clear.preference(
+                                key: ViewOffsetKey.self,
+                                value: -$0.frame(in: .named("scroll")).origin.y
+                            )
                         })
-                    }
-                }
-                .padding()
-                // Reader to find scroll position to disappear filter button
-                .background(GeometryReader {
-                    return Color.clear.preference(
-                        key: ViewOffsetKey.self,
-                        value: -$0.frame(in: .named("scroll")).origin.y
-                    )
-                })
-                // Animating the filter button disappear
-                .onPreferenceChange(ViewOffsetKey.self) { offset in
-                    withAnimation {
-                        if offset > 50 {
-                            showFilterButton = offset < scrollOffset
-                        } else  {
-                            showFilterButton = true
+                        // Animating the filter button disappear
+                        .onPreferenceChange(ViewOffsetKey.self) { offset in
+                            withAnimation {
+                                if offset > 50 {
+                                    showFilterButton = offset < scrollOffset
+                                } else  {
+                                    showFilterButton = true
+                                }
+                            }
+                            scrollOffset = offset
                         }
                     }
-                    scrollOffset = offset
+                    // Next two are for the floating filter button
+                    .coordinateSpace(name: "scroll")
+                    .overlay(
+                        showFilterButton ?
+                        createFilterButton()
+                        : nil
+                        , alignment: Alignment.bottom)
                 }
+                .padding(.horizontal)
             }
-            .background(Color.backgroundGrey)
-            // Next two are for the floating filter button
-            .coordinateSpace(name: "scroll")
-            .overlay(
-                showFilterButton ?
-                createFilterButton()
-                : nil
-                , alignment: Alignment.bottom)
         }
-        .backgroundStyle(Color.backgroundGrey)
         .onAppear(){
             self.listingsView.fetchListings(completion: { success in
                 if success{
@@ -131,6 +134,6 @@ struct ContentView_Previews: PreviewProvider {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView(tabSelection: .constant(1))
+        SearchView(tabSelection: .constant(1)).environmentObject(CurrentUser())
     }
 }
