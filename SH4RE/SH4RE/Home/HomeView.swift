@@ -23,6 +23,22 @@ struct HomeView: View {
     @Binding var tabSelection: Int
     @Binding var searchQuery: String
     @Binding var recentSearchQueries: [String]
+    
+    // Manages the three most recent searches made by the user
+    func addRecentSearch(searchQuery: String){
+        if (searchQuery.isEmpty || searchQuery == ""){ return }
+        var savedValues = UserDefaults.standard.stringArray(forKey: "RecentSearchQueries") ?? []
+        if let index = savedValues.firstIndex(of: searchQuery) {
+            savedValues.remove(at: index)
+        }
+        if savedValues.count == 3 {
+            savedValues.removeLast()
+        }
+        savedValues.insert(searchQuery, at: 0)
+        UserDefaults.standard.set(savedValues, forKey: "RecentSearchQueries")
+        recentSearchQueries = savedValues
+        print(recentSearchQueries)
+    }
 
     var body: some View {
         NavigationStack{
@@ -33,6 +49,10 @@ struct HomeView: View {
                         .font(.title.bold())
                     TextField("What are you looking for?", text: $searchQuery)
                         .textFieldStyle(textInputStyle())
+                        .onSubmit {
+                            guard searchQuery.isEmpty == false else{ return }
+                            addRecentSearch(searchQuery: searchQuery)
+                        }
                     ScrollView {
                         //Body
                         VStack(alignment: .leading){
