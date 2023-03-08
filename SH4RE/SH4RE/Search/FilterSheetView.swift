@@ -85,6 +85,13 @@ struct FilterSheetView: View {
                         LocationEntryField(location: $location)
                     }
                     
+                    //Distance
+                    VStack (alignment: .leading) {
+                        Text("Max Distance")
+                            .font(.title2)
+                        NumericTextField(label: "Max Distance", textEntry: $maxDistance)
+                    }
+                    
                     //Categories
                     VStack (alignment: .leading){
                         Text("Category")
@@ -100,13 +107,6 @@ struct FilterSheetView: View {
                             NumericTextField(label: "Min", textEntry: $minPrice, error: minMaxError(min: minPrice, max: maxPrice))
                             NumericTextField(label: "Max", textEntry: $maxPrice, error: minMaxError(min: minPrice, max: maxPrice))
                         }
-                    }
-
-                    //Distance
-                    VStack (alignment: .leading) {
-                        Text("Max Distance")
-                            .font(.title2)
-                        NumericTextField(label: "Max Distance", textEntry: $maxDistance)
                     }
 
                     //Rating
