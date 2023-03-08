@@ -47,6 +47,7 @@ class MainMessagesViewModel: ObservableObject {
                     print(error)
                     return
                 }
+                
                 querySnapshot?.documentChanges.forEach({ change in
                     let docId = change.document.documentID
                     

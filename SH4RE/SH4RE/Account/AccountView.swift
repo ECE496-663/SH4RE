@@ -7,7 +7,6 @@
 
 import SwiftUI
 import FirebaseAuth
-import Firebase
 
 struct AccountView: View {
     @Binding var tabSelection: Int
@@ -25,7 +24,6 @@ struct AccountView: View {
                         tabSelection = 1
                         do {
                             try Auth.auth().signOut()
-
                         }
                         catch {
                             print(error)
