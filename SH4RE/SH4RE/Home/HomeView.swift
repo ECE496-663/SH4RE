@@ -33,19 +33,22 @@ struct HomeView: View {
                                 Text("Recent Searches")
                                     .font(.title2.bold())
                                 HStack(alignment: .center){
+                                    Button(action: {searchQuery = "hii"}) {
+                                        Text("hii")
+                                            .font(.headline)
+                                            .foregroundColor(.black)
+                                            .fixedSize(horizontal: false, vertical: false)
+                                            .multilineTextAlignment(.leading)
+                                            .padding()
+                                            .frame(width: 110, height: 100, alignment: .leading)
+                                            .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
+                                    }
                                     Text("questionnnn dfasdfasdfcvxcvxfgdfgsdfsgsdfg")
                                         .font(.headline)
                                         .fixedSize(horizontal: false, vertical: false)
                                         .multilineTextAlignment(.leading)
                                         .padding()
-                                        .frame(width: 110, height: 110)
-                                        .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
-                                    Text("questionnnn dfasdfasdfcvxcvxfgdfgsdfsgsdfg")
-                                        .font(.headline)
-                                        .fixedSize(horizontal: false, vertical: false)
-                                        .multilineTextAlignment(.leading)
-                                        .padding()
-                                        .frame(width: 110, height: 110)
+                                        .frame(width: 110, height: 100, alignment: .leading)
                                         .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
                                         .frame(maxWidth: .infinity)
                                     Text("questionnnn dfasdfasdfcvxcvxfgdfgsdfsgsdfg")
@@ -53,9 +56,8 @@ struct HomeView: View {
                                         .fixedSize(horizontal: false, vertical: false)
                                         .multilineTextAlignment(.leading)
                                         .padding()
-                                        .frame(width: 110, height: 110)
+                                        .frame(width: 110, height: 100, alignment: .leading)
                                         .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
-                                    
                                 }
                             }
                             //Recent Posts
