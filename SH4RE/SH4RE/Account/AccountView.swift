@@ -30,9 +30,7 @@ struct AccountView: View {
                         catch {
                             print(error)
                         }
-                        print("here")
                         currentUser.hasLoggedIn = false
-                        print("here1")
                     })
                     {
                         Text("Logout")

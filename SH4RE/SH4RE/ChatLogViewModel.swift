@@ -18,7 +18,6 @@ class ChatLogViewModel: ObservableObject {
     
     init(chatUser: ChatUser?) {
         self.chatUser = chatUser
-        
         fetchMessages()
     }
     
@@ -40,7 +39,6 @@ class ChatLogViewModel: ObservableObject {
                     print(error)
                     return
                 }
-
                 querySnapshot?.documentChanges.forEach({ change in
                     if change.type == .added {
                         let data = change.document.data()
@@ -55,6 +53,7 @@ class ChatLogViewModel: ObservableObject {
                         let requestId = data["requestId"] as? String ?? ""
 
                         let cm = ChatMessage(id: change.document.documentID, fromId: fromId, toId: toId, text: text, timestamp: date, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId:requestId)
+                        //print(cm)
                         self.chatMessages.append(cm)
                     }
                 })

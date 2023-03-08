@@ -21,6 +21,7 @@ struct ViewListingView: View {
     
     //parameters passed in from search nav link
     var listing: Listing
+    var chatLogViewModel: ChatLogViewModel
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     @State private var showCal = false
@@ -32,8 +33,8 @@ struct ViewListingView: View {
     @State var numberOfImages = 0
     
     @State private var dates: Set<DateComponents> = []
-    
     var myRkManager = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
+    
 
     private var reviews: some View {
         VStack(alignment: .leading) {
@@ -88,21 +89,6 @@ struct ViewListingView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            //                        NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
-            //                            HStack {
-            //                                Text("Message")
-            //                                    .font(.body)
-            //                                    .foregroundColor(.white)
-            //
-            //                                Image(systemName: "message")
-            //                                    .foregroundColor(.white)
-            //                            }
-            //                        }
-            //                        .frame(alignment: .trailing)
-            //                        .padding()
-            //                        .background(Color.primaryDark)
-            //                        .cornerRadius(40)
-            //                        .padding()
             
             Button(action: {
                 showPopUp.toggle()
@@ -125,7 +111,6 @@ struct ViewListingView: View {
         .padding([.horizontal])
         .background(.white)
     }
-    
     
     var body: some View {
         
@@ -198,21 +183,25 @@ struct ViewListingView: View {
                         Text("\(res)")
                     }
                     
-                    NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title)))) {
+                    NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
                         HStack {
                             Text("Send")
                                 .font(.body)
                                 .foregroundColor(.white)
                         }
                     }.simultaneousGesture(TapGesture().onEnded{
-                        //TODO Feed in selected start and end dates
-                        let startDate = "2023-03-10"
-                        let endDate = "2023-03-11"
-                        let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "yyyy-MM-dd"
-                        let start = dateFormatter.date(from: startDate)
-                        let end = dateFormatter.date(from: endDate)
-                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, start: start!, end: end!)
+                        
+                        let startDate = myRkManager.selectedDates.count > 0 ? myRkManager.selectedDates[0] : nil
+                        let endDate = myRkManager.selectedDates.count > 1 ? myRkManager.selectedDates[myRkManager.selectedDates.count - 1] : nil
+                        if(startDate != nil && endDate != nil){
+                            sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: startDate!, end: endDate!)
+                        }else if(startDate != nil){
+                            print("single day booking not implemented")
+                        }else{
+                            //TODO add pop up/message
+                            //only allow navigation with valid dates
+                            print("invalid dates selected")
+                        }
                     })
                     .fontWeight(.semibold)
                     .frame(width: screenSize.width * 0.8, height: 40)
@@ -252,8 +241,17 @@ struct ViewListingView: View {
                     }
                 }
                 
-                //TODO connect listing.avaiability with Calendar once new calendar mergered
-                //lisiting.availability is [(Date,Date)] where each array value is a Start to end of a booking
+                for (start, end) in listing.availability{
+                    var date = start
+                    let fmt = DateFormatter()
+                    fmt.dateFormat = "dd/MM/yyyy"
+
+                    while date <= end {
+                        fmt.string(from: date)
+                        myRkManager.disabledDates.append(date)
+                        date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
+                    }
+                }
             }
         }
         .sheet(isPresented: $showCal) {

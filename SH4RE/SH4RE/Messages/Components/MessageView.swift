@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MessageView: View {
     let message: ChatMessage
-    @State var requestStatus: Bool = false
+    @State var requestStatus: Int = 0
     @State private var requestResponed = false
     
     var body: some View {
@@ -34,15 +34,22 @@ struct MessageView: View {
                                 Text(message.datesRequested).bold()
                                     .foregroundColor(.white)
                             }
-                            if(requestStatus){
+                            if(requestStatus == 0){
                                 Button(action: {
                                     cancelRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.fromId, renterId: message.toId)
-                                    requestStatus = false
+                                    requestStatus = 3
                                 })
                                 {
                                     Text("Cancel Request")
                                 }
                                 .buttonStyle(secondaryButtonStyle())
+                            }
+                            else if(requestStatus == 1){
+                                Text("Accepted").foregroundColor(.white)
+                            }else if(requestStatus == 2){
+                                Text("Declined").foregroundColor(.white)
+                            }else if(requestStatus == 3){
+                                Text("Cancelled").foregroundColor(.white)
                             }
                         }
                         else {
@@ -72,10 +79,10 @@ struct MessageView: View {
                                 Text(message.datesRequested).bold()
                                     .foregroundColor(.white)
                             }
-                                if(requestStatus){
+                                if(requestStatus == 0){
                                     Button(action: {
                                         acceptRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.toId, renterId: message.fromId)
-                                        requestStatus = false
+                                        requestStatus = 1
                                     })
                                     {
                                         Text("Accept Request")
@@ -84,16 +91,20 @@ struct MessageView: View {
                                     
                                     Button(action: {
                                         denyRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.toId, renterId: message.fromId)
-                                        requestStatus = false
+                                        requestStatus = 2
                                     })
                                     {
                                         Text("Deny Request")
                                     }
                                     .buttonStyle(secondaryButtonStyle())
-                                    }
+                                }else if(requestStatus == 1){
+                                    Text("Accepted").foregroundColor(.white)
+                                }else if(requestStatus == 2){
+                                    Text("Declined").foregroundColor(.white)
+                                }else if(requestStatus == 2){
+                                    Text("Cancelled").foregroundColor(.white)
+                                }
 
-                            
-                            
                         } else {
                             Text(message.text.replacingOccurrences(of: "\n", with: ""))
                                 .foregroundColor(.black)
@@ -110,8 +121,8 @@ struct MessageView: View {
         .padding(.top, 8)
         .onAppear(){
             if (message.isRequest){
-                isRequestPending(requestId: message.requestId, listingId: message.listingId, completion: {isPending in
-                    requestStatus = isPending
+                getStatus(requestId: message.requestId, listingId: message.listingId, completion: {status in
+                    requestStatus = status
                 })
             }
         }
