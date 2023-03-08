@@ -20,6 +20,7 @@ extension Color {
     static let darkGrey = Color("DarkGrey")
     static let textfield = Color("TextFieldInputDefault")
     static let errorColour = Color("Error")
+    static let yellow = Color("Yellow")
 }
 
 struct ContentView: View {
@@ -38,7 +39,7 @@ struct ContentView: View {
                             Label("Home", systemImage: "house.fill")
                         }
                         .tag(1)
-                    SearchView(tabSelection: $tabSelection)
+                    SearchView(tabSelection: $tabSelection).environmentObject(currentUser)
                         .tabItem {
                             Label("Search", systemImage: "safari.fill")
                         }
@@ -48,7 +49,7 @@ struct ContentView: View {
                             Label("Post", systemImage: "plus.square.fill")
                         }
                         .tag(3)
-                    MessagesView(tabSelection: $tabSelection).environmentObject(currentUser)
+                    MessagesInboxView(tabSelection: $tabSelection).environmentObject(currentUser)
                         .tabItem {
                             Label("Messages", systemImage: "message.fill")
                         }

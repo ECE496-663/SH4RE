@@ -29,7 +29,6 @@ struct PopUp<Content: View>: View {
                 VStack(alignment: .center, spacing: 0) {
                     self.content
                 }
-                .frame(maxWidth: 350, maxHeight: 350)
             }
         }
     }
