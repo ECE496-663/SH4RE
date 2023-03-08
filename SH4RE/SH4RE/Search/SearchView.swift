@@ -19,7 +19,7 @@ struct SearchView: View {
     @State private var searchQuery: String = ""
 
     @ObservedObject private var listingsView = ListingViewModel()
-    var columns = [GridItem(.adaptive(minimum: 160), spacing: 20)]
+    var columns = [GridItem(.adaptive(minimum: 160), spacing: 15)]
     
     @State var showingFilterSheet = false
     
@@ -35,8 +35,12 @@ struct SearchView: View {
 
     var body: some View {
         NavigationStack {
+            TextField("Search", text: $searchQuery)
+                .textFieldStyle(textInputStyle())
+                .padding(.horizontal)
+//                .frame(width: screenSize.width)
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 20){
+                LazyVGrid(columns: columns, spacing: 15){
                     ForEach(listingsView.listings) { listing in
                         // If theres no image for a listing, just use the placeholder
                         let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
@@ -69,13 +73,6 @@ struct SearchView: View {
                 }
             }
             .background(Color.backgroundGrey)
-            // Top toolbar
-            .toolbar {
-                TextField("Search", text: $searchQuery)
-                    .textFieldStyle(textInputStyle())
-                    .padding()
-                    .frame(width: screenSize.width)
-            }
             // Next two are for the floating filter button
             .coordinateSpace(name: "scroll")
             .overlay(
@@ -84,6 +81,7 @@ struct SearchView: View {
                 : nil
                 , alignment: Alignment.bottom)
         }
+        .backgroundStyle(Color.backgroundGrey)
         .onAppear(){
             self.listingsView.fetchListings(completion: { success in
                 if success{
