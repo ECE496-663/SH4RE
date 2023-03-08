@@ -13,7 +13,8 @@ let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1m
 
 struct HomeView: View {
     @Binding var tabSelection: Int
-    @State private var searchQuery: String = ""
+    @Binding var searchQuery: String
+    @Binding var recentSearchQueries: [String]
 
     var body: some View {
         NavigationStack{
@@ -33,31 +34,15 @@ struct HomeView: View {
                                 Text("Recent Searches")
                                     .font(.title2.bold())
                                 HStack(alignment: .center){
-                                    Button(action: {searchQuery = "hii"}) {
-                                        Text("hii")
-                                            .font(.headline)
-                                            .foregroundColor(.black)
-                                            .fixedSize(horizontal: false, vertical: false)
-                                            .multilineTextAlignment(.leading)
-                                            .padding()
-                                            .frame(width: 110, height: 100, alignment: .leading)
-                                            .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
+                                    Button(action: {
+                                        searchQuery = recentSearchQueries[0]
+                                        tabSelection = 2
+                                    }) {
+                                        RecentSearchCard(searchText: recentSearchQueries[0])
                                     }
-                                    Text("questionnnn dfasdfasdfcvxcvxfgdfgsdfsgsdfg")
-                                        .font(.headline)
-                                        .fixedSize(horizontal: false, vertical: false)
-                                        .multilineTextAlignment(.leading)
-                                        .padding()
-                                        .frame(width: 110, height: 100, alignment: .leading)
-                                        .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
+                                    RecentSearchCard(searchText:"questionnnn dfasdfasdfcvxcvxfgdfgsdfsgsdfg")
                                         .frame(maxWidth: .infinity)
-                                    Text("questionnnn dfasdfasdfcvxcvxfgdfgsdfsgsdfg")
-                                        .font(.headline)
-                                        .fixedSize(horizontal: false, vertical: false)
-                                        .multilineTextAlignment(.leading)
-                                        .padding()
-                                        .frame(width: 110, height: 100, alignment: .leading)
-                                        .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
+                                    RecentSearchCard(searchText:"questionnnn dfasdfasdfcvxcvxfgdfgsdfsgsdfg")
                                 }
                             }
                             //Recent Posts
@@ -113,8 +98,23 @@ struct HomeView: View {
     }
 }
 
+
+struct RecentSearchCard: View {
+    var searchText: String = ""
+    var body: some View {
+        Text(searchText)
+            .font(.headline)
+            .foregroundColor(.black)
+            .fixedSize(horizontal: false, vertical: false)
+            .multilineTextAlignment(.leading)
+            .padding()
+            .frame(width: 110, height: 100, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
+    }
+}
+
 struct Previews_HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(tabSelection: .constant(1))
+        HomeView(tabSelection: .constant(1), searchQuery: .constant(""), recentSearchQueries: .constant([""]))
     }
 }

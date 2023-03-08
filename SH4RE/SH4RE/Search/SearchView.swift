@@ -16,7 +16,8 @@ import Combine
 
 struct SearchView: View {
     @Binding var tabSelection: Int
-    @State private var searchQuery: String = ""
+    @Binding var searchQuery: String
+    @Binding var recentSearchQueries: [String]
     @EnvironmentObject var currentUser: CurrentUser
 
     @ObservedObject private var listingsView = ListingViewModel()
@@ -33,6 +34,16 @@ struct SearchView: View {
     @State var maxPrice: String = ""
     @State var maxDistance: String = ""
     @State var minRating = 0.0
+    
+    func addRecentSearch(searchQuery: String){
+        if let index = recentSearchQueries.firstIndex(of: searchQuery) {
+            recentSearchQueries.remove(at: index)
+        }
+        if recentSearchQueries.count == 3 {
+            recentSearchQueries.removeLast()
+        }
+        recentSearchQueries.insert(searchQuery, at: 0)
+    }
 
     var body: some View {
         NavigationStack {
@@ -43,6 +54,10 @@ struct SearchView: View {
                         .font(.title.bold())
                     TextField("What are you looking for?", text: $searchQuery)
                         .textFieldStyle(textInputStyle())
+                        .onSubmit {
+                            guard searchQuery.isEmpty == false else{ return }
+                            addRecentSearch(searchQuery: searchQuery)
+                        }
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 15){
                             ForEach(listingsView.listings) { listing in
@@ -134,6 +149,14 @@ struct ContentView_Previews: PreviewProvider {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView(tabSelection: .constant(1)).environmentObject(CurrentUser())
+        SearchView_Previews_Helper()
+    }
+}
+struct SearchView_Previews_Helper: View {
+    @State var searchQuery = ""
+    @State var recentSearchQueries = [""]
+    var body: some View {
+        SearchView(tabSelection: .constant(1), searchQuery: $searchQuery, recentSearchQueries: $recentSearchQueries)
+            .environmentObject(CurrentUser())
     }
 }

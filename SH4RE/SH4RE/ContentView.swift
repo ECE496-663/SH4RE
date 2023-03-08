@@ -26,6 +26,8 @@ extension Color {
 struct ContentView: View {
     @State private var tabSelection = 1
     @ObservedObject var currentUser = CurrentUser()
+    @State private var searchQuery: String = ""
+    @State var recentSearchQueries: [String] = [""]
     init() {
         UITabBar.appearance().backgroundColor = UIColor(.backgroundGrey)
     }
@@ -34,27 +36,31 @@ struct ContentView: View {
         ZStack {
             if (currentUser.hasLoggedIn) {
                 TabView(selection: $tabSelection) {
-                    HomeView(tabSelection: $tabSelection)
+                    HomeView(tabSelection: $tabSelection, searchQuery: $searchQuery, recentSearchQueries: $recentSearchQueries)
                         .tabItem {
                             Label("Home", systemImage: "house.fill")
                         }
                         .tag(1)
-                    SearchView(tabSelection: $tabSelection).environmentObject(currentUser)
+                    SearchView(tabSelection: $tabSelection, searchQuery: $searchQuery, recentSearchQueries: $recentSearchQueries)
+                        .environmentObject(currentUser)
                         .tabItem {
                             Label("Search", systemImage: "safari.fill")
                         }
                         .tag(2)
-                    CreateListingView(tabSelection: $tabSelection).environmentObject(currentUser)
+                    CreateListingView(tabSelection: $tabSelection)
+                        .environmentObject(currentUser)
                         .tabItem {
                             Label("Post", systemImage: "plus.square.fill")
                         }
                         .tag(3)
-                    MessagesInboxView(tabSelection: $tabSelection).environmentObject(currentUser)
+                    MessagesInboxView(tabSelection: $tabSelection)
+                        .environmentObject(currentUser)
                         .tabItem {
                             Label("Messages", systemImage: "message.fill")
                         }
                         .tag(4)
-                    AccountView(tabSelection: $tabSelection).environmentObject(currentUser)
+                    AccountView(tabSelection: $tabSelection)
+                        .environmentObject(currentUser)
                         .tabItem {
                             Label("Account", systemImage: "person.crop.circle.fill")
                         }
