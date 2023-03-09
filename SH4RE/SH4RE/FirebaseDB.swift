@@ -26,7 +26,7 @@ func documentWrite(collectionPath : String, data:Dictionary<String,Any>) -> Stri
 }
 func documentWrite(collectionPath : String, uid: String, data:Dictionary<String,Any>) -> String{
     let db = Firestore.firestore()
-    let ref = db.collection(collectionPath).document()
+    let ref = db.collection(collectionPath).document(uid)
     let id = ref.documentID
     ref.setData(data)
     { err in
@@ -38,7 +38,6 @@ func documentWrite(collectionPath : String, uid: String, data:Dictionary<String,
     }
     return id
 }
-
 
 //Modifies documents data, creates document if not yet created
 func documentSet(collectionPath : String, documentID : String, data:Dictionary<String,Any>) -> Bool{

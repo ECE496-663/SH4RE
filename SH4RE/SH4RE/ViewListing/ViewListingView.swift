@@ -17,28 +17,121 @@ import FirebaseStorage
 
 struct ViewListingView: View {
     @Binding var tabSelection: Int
+    @EnvironmentObject var currentUser: CurrentUser
     
     //parameters passed in from search nav link
     var listing: Listing
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     @State private var showCal = false
-    
+    @State private var showPopUp = false
     
     var numberOfStars: Float = 4
     var hasHalfStar = true
     var numberOfReviews = 3
-    @State var numberOfImages = 0// should become images.length or something
+    @State var numberOfImages = 0
     @State var description:String = ""
     @State var title:String = ""
     @State var price:String = ""
+    @State var name:String = ""
     @State private var dates: Set<DateComponents> = []
+    
+    private var reviews: some View {
+        VStack(alignment: .leading) {
+            Text("Reviews (\(numberOfReviews))")
+                .font(.headline)
+                .padding()
+            
+            HStack(alignment: .top) {
+                Image("placeholder")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(Circle())
+                    .frame(width: 40, height: 40)
+                
+                VStack(alignment: .leading) {
+                    Text("Melissa Lim")
+                        .font(.body)
+                    
+                    StarsView(numberOfStars: 3.5)
+                    Text("Fusce non arcu non nunc ultrices hendrerit. In libero risus, auctor ac turpis in, venenatis tempus erat tincidunt et lorem ipsum.")
+                        .font(.footnote)
+                }
+                
+            }
+            .padding([.horizontal])
+        }
+        
+    }
+    
+    private var bottomBar: some View {
+        HStack {
+            VStack {
+                if (listing.price.isEmpty) {
+                    Text("Message user for more pricing info")
+                        .foregroundColor(.grey)
+                        .font(.caption)
+                }
+                else {
+                    Text("Price")
+                        .font(.callout)
+                        .bold()
+                        .foregroundColor(.grey)
+                        .frame(alignment: .leading)
+                    HStack {
+                        Text("$\(listing.price)")
+                            .font(.headline)
+                            .bold()
+                        Text("/day")
+                            .font(.caption)
+                            .foregroundColor(.grey)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            //                        NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
+            //                            HStack {
+            //                                Text("Message")
+            //                                    .font(.body)
+            //                                    .foregroundColor(.white)
+            //
+            //                                Image(systemName: "message")
+            //                                    .foregroundColor(.white)
+            //                            }
+            //                        }
+            //                        .frame(alignment: .trailing)
+            //                        .padding()
+            //                        .background(Color.primaryDark)
+            //                        .cornerRadius(40)
+            //                        .padding()
+            
+            Button(action: {
+                showPopUp.toggle()
+            }, label: {
+                HStack {
+                    Text("Message")
+                        .font(.body)
+                        .foregroundColor(.white)
+                    
+                    Image(systemName: "message")
+                        .foregroundColor(.white)
+                }
+                .frame(alignment: .trailing)
+                .padding()
+                .background(Color.primaryDark)
+                .cornerRadius(40)
+                .padding()
+            })
+        }
+        .padding([.horizontal])
+        .background(.white)
+    }
     
     
     var body: some View {
         
         ZStack {
-            Color("BackgroundGrey").ignoresSafeArea()
+            Color.backgroundGrey.ignoresSafeArea()
             
             ScrollView {
                 VStack(alignment: .leading) {
@@ -65,7 +158,7 @@ struct ViewListingView: View {
                         
                         Text("(\(numberOfReviews) reviews)")
                             .font(.caption)
-                            .foregroundColor(Color("TextGrey"))
+                            .foregroundColor(.grey)
                     }
                     .padding([.horizontal])
                     
@@ -93,83 +186,52 @@ struct ViewListingView: View {
                         .padding()
                         
                     }
-                    Text("Reviews (\(numberOfReviews))")
-                        .font(.headline)
-                        .padding()
                     
-                    HStack(alignment: .top) {
-                        Image("placeholder")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .clipShape(Circle())
-                            .frame(width: 40, height: 40)
-                        
-                        VStack(alignment: .leading) {
-                            Text("Melissa Lim")
-                                .font(.body)
-                            
-                            StarsView(numberOfStars: 3.5)
-                            Text("Fusce non arcu non nunc ultrices hendrerit. In libero risus, auctor ac turpis in, venenatis tempus erat tincidunt et lorem ipsum.")
-                                .font(.footnote)
-                        }
-                        
-                    }.padding([.horizontal])
-                    
+                    reviews
                 }
             }
             PopUp(show: $showCal) {
                 DatePicker(dates: dates)
             }
-        }
-        
-        ZStack {
-            HStack {
-                VStack {
-                    if (listing.price.isEmpty) {
-                        Text("Message user for more pricing info")
-                            .foregroundColor(Color("TextGrey"))
-                            .font(.caption)
+            PopUp(show: $showPopUp) {
+                VStack(alignment: .leading) {
+                    Text("Send request for “\(listing.title)” for the following dates: ").bold()
+                    ForEach(dates.sorted{$0.date! < $1.date!}, id: \.self) { date in
+                        let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
+                        
+                        Text("\(res)")
                     }
-                    else {
-                        Text("Price")
-                            .font(.callout)
-                            .bold()
-                            .foregroundColor(Color("TextGrey"))
-                            .frame(alignment: .leading)
+                    
+                    NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
                         HStack {
-                            Text("$\(listing.price)")
-                                .font(.headline)
-                                .bold()
-                            Text("/day")
-                                .font(.caption)
-                                .foregroundColor(Color("TextGrey"))
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                NavigationLink(destination: MessagesView(tabSelection: $tabSelection)) {
-                    Button(action: { tabSelection = 4 }) {
-                        HStack {
-                            Text("Message")
+                            Text("Send")
                                 .font(.body)
-                                .foregroundColor(Color("White"))
-                            
-                            Image(systemName: "message")
-                                .foregroundColor(Color("White"))
+                                .foregroundColor(.white)
                         }
                     }
+                    .fontWeight(.semibold)
+                    .frame(width: screenSize.width * 0.8, height: 40)
+                    .foregroundColor(.white)
+                    .background(Color.primaryDark)
+                    .cornerRadius(40)
+                    
+                    Button(action: {
+                        showPopUp.toggle()
+                    })
+                    {
+                        Text("Cancel")
+                    }
+                    .buttonStyle(secondaryButtonStyle())
                 }
-                .frame(alignment: .trailing)
                 .padding()
-                .background(Color.primaryDark)
-                .cornerRadius(40)
-                .padding()
+                .frame(width: 350, height: 180)
+                .background(.white)
+                .cornerRadius(8)
+                
             }
         }
-        .padding([.horizontal])
-        .frame(alignment: .bottom)
+        .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
-            price = listing.price
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
                 let storageRef = Storage.storage().reference(withPath: path)
@@ -184,8 +246,10 @@ struct ViewListingView: View {
                     }
                 }
             }
+            getUserName(uid: listing.uid, completion: { ret in
+                name = ret
+            })
         }
+        
     }
 }
-
-
