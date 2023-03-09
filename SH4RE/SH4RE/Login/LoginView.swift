@@ -7,13 +7,15 @@
 
 import SwiftUI
 import FirebaseAuth
+import AlertX
 
 struct LoginView: View {
     @Environment(\.showCreateAccountScreen) var showCreateAccountScreen
     @EnvironmentObject var currentUser : CurrentUser
     @State private var username: String = ""
     @State private var password: String = ""
-    
+    @State private var errorInField: Bool = false
+    @State private var errorDescription: String = ""
 
     var body: some View {
         ZStack {
@@ -65,19 +67,42 @@ struct LoginView: View {
                         .frame(height: screenSize.height * 0.25)
 
                     Button(action: {
-                        Task{
-                            do  {
-                              try await Auth.auth().signIn(withEmail: username, password: password)
-                              currentUser.hasLoggedIn = true
-                            }
-                            catch {
-                              print(error.localizedDescription)
+                        if (username.isEmpty || password.isEmpty) {
+                            errorInField = true
+                            errorDescription = "Some entries missing"
+                        }
+                        else {
+                            Task {
+                                do {
+                                    try await Auth.auth().signIn(withEmail: username, password: password)
+                                    currentUser.hasLoggedIn = true
+                                }
+                                catch {
+                                    errorInField = true
+                                    errorDescription = "Username and password did not match"
+                                }
                             }
                         }
                     })
                     {
                         Text("Login")
                     }
+                    .alertX(isPresented: $errorInField, content: {
+                        AlertX(
+                            title: Text("ERROR: " + errorDescription),
+                            theme: AlertX.Theme.custom(
+                                windowColor: .grey,
+                                alertTextColor: .errorColour,
+                                enableShadow: true,
+                                enableRoundedCorners: true,
+                                enableTransparency: false,
+                                cancelButtonColor: .white,
+                                cancelButtonTextColor: .white,
+                                defaultButtonColor: .primaryDark,
+                                defaultButtonTextColor: .white
+                            )
+                        )
+                    })
                     .buttonStyle(primaryButtonStyle(tall:true))
                     .padding(.bottom)
                     HStack {

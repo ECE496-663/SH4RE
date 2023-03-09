@@ -293,8 +293,8 @@ struct CreateListingView: View {
                                 AlertX(
                                     title: Text("ERROR: Entries missing"),
                                     theme: AlertX.Theme.custom(
-                                        windowColor: .errorColour,
-                                        alertTextColor: .white,
+                                        windowColor: .grey,
+                                        alertTextColor: .errorColour,
                                         enableShadow: true,
                                         enableRoundedCorners: true,
                                         enableTransparency: false,
