@@ -94,9 +94,7 @@ struct ViewListingView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             Button(action: {
-//                if (startDateText != "") {
-                    showPopUp.toggle()
-//                }
+                showPopUp.toggle()
             }, label: {
                 HStack {
                     Text("Message")
