@@ -79,7 +79,7 @@ struct ViewListingView: View {
                     Text("Price")
                         .font(.callout)
                         .bold()
-                        .foregroundColor(.gray)
+                        .foregroundColor(.darkGrey)
                         .frame(alignment: .leading)
                     HStack {
                         Text("$\(listing.price)")
@@ -87,14 +87,16 @@ struct ViewListingView: View {
                             .bold()
                         Text("/day")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.darkGrey)
                     }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
             Button(action: {
-                showPopUp.toggle()
+//                if (startDateText != "") {
+                    showPopUp.toggle()
+//                }
             }, label: {
                 HStack {
                     Text("Message")
