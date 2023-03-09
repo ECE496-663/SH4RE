@@ -23,11 +23,7 @@ struct ViewListingView: View {
     var listing: Listing
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
-    @State private var showCal = false {
-        didSet {
-            print("set show cal")
-        }
-    }
+    @State private var showCal = false
     @State private var showPopUp = false
     
     var numberOfStars: Float = 4
@@ -41,7 +37,7 @@ struct ViewListingView: View {
         
     @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 1)
     @State var startDateText: String = ""
-    @State var endDateText:String = ""
+    @State var endDateText: String = ""
     
     private var reviews: some View {
         VStack(alignment: .leading) {
@@ -98,7 +94,7 @@ struct ViewListingView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             Button(action: {
-                if (startDateText != "" && endDateText != "") {
+                if (startDateText != "") {
                     showPopUp.toggle()
                 }
             }, label: {
@@ -186,10 +182,17 @@ struct ViewListingView: View {
             }
             PopUp(show: $showPopUp) {
                 VStack(alignment: .leading) {
-                    Text("Send request for “\(listing.title)” for the following days:").bold()
                     
-                    Text("\(startDateText) - \(endDateText)")
-                    
+                    if (endDateText == "") {
+                        Text("Send request for “\(listing.title)” for \(startDateText)")
+                            .fixedSize(horizontal: false, vertical: true)
+                            .bold()
+                    } else {
+                        Text("Send request for “\(listing.title)” for \(startDateText) - \(endDateText)")
+                            .fixedSize(horizontal: false, vertical: true)
+                            .bold()
+                    }
+                    Spacer()
                     NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
                         HStack {
                             Text("Send")
@@ -212,7 +215,7 @@ struct ViewListingView: View {
                     .buttonStyle(secondaryButtonStyle())
                 }
                 .padding()
-                .frame(width: 350, height: 180)
+                .frame(width: screenSize.width * 0.9, height: 180)
                 .background(.white)
                 .cornerRadius(8)
                 
@@ -225,7 +228,7 @@ struct ViewListingView: View {
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath {
                 let storageRef = Storage.storage().reference(withPath: path)
-                //Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
+//                Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
 //                storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
 //                    if let error = error {
 //                        print (error)

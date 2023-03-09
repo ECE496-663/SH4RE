@@ -83,7 +83,6 @@ struct RKMonth: View {
                     self.rkManager.startDate = nil
                 }
                 self.rkManager.mode = 1
-                self.isPresented = false
             case 3:
                 if self.rkManager.selectedDatesContains(date: date) {
                     if let ndx = self.rkManager.selectedDatesFindIndex(date: date) {
