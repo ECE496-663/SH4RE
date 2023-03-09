@@ -138,11 +138,18 @@ struct ViewListingView: View {
                     GeometryReader { geometry in
                         ImageCarouselView(numberOfImages: self.numberOfImages, isEditable: false) {
                             ForEach(images, id:\.self) { image in
-                                Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: geometry.size.width, height: 250)
-                                    .aspectRatio(contentMode: .fill)
+                                HStack {
+                                    Image(uiImage: image ?? (UIImage(named: "placeholder") ?? UIImage()))
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: geometry.size.width * 0.9, height: 250)
+                                        .clipped()
+                                        .cornerRadius(10)
+                                        .overlay(RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(Color.primaryDark, lineWidth: 3))
+
+                                }
+                                .frame(width: geometry.size.width, height: 250)
                             }
                         }
                     }

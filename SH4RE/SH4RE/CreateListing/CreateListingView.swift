@@ -79,154 +79,129 @@ struct CreateListingView: View {
             }
             else {
                 VStack {
-                    GeometryReader { geometry in
-                        ImageCarouselView(numberOfImages: imagesCount, isEditable: true) {
-                            ForEach(pictures, id:\.self) { picture in
-                                Image(uiImage: picture)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: geometry.size.width, height: 250)
-                                    .aspectRatio(contentMode: .fill)
-                            }
-                            if (imagesCount < 6) {
-                                Image("CreateListingBkgPic")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: geometry.size.width, height: 250)
-                                    .aspectRatio(contentMode: .fill)
-                                    .onTapGesture {
-                                        showSheet = true
-                                        if (!showSheet) {
-                                            pictures.append(image)
-                                        }
-                                    }
-                                    .onChange(of: image) { newItem in
-                                        Task {
-                                            pictures.append(image)
-                                        }
-                                        imagesCount += 1
-                                    }
-                            }
-                        }
-                    }
-                    .environment(\.deleteImage, deleteImage)
-                    // this just opens the sheet to select a photo from library
-                    .sheet(isPresented: $showSheet) {
-                        // Pick an image from the photo library:
-                        ImagePicker(sourceType: .photoLibrary, selectedImage: $image)
-                        
-                        //  If you wish to take a photo from camera instead:
-                        // ImagePicker(sourceType: .camera, selectedImage: self.$image)
-                    }
-                    .frame(maxHeight: 300)
-                    
-                    //divider
-                    Color.gray
-                        .frame(width: screenSize.width * 0.95, height: 1 / UIScreen.main.scale)
-                        .padding(.top)
-                    
                     ScrollView([.vertical]) {
-                        // title entry
-                        TextField("Title", text: $title)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: screenSize.width * 0.9, height: 20)
-                            .padding()
+                        Text("New Post")
+                            .font(.title2)
                         
-                        // category entry
-                        Menu {
-                            ForEach(categoryList, id: \.self){ selection in
-                                Button(selection) {
-                                    categorySelection = " " + selection
+                        GeometryReader { geometry in
+                            ImageCarouselView(numberOfImages: imagesCount, isEditable: true) {
+                                ForEach(pictures, id:\.self) { picture in
+                                    HStack {
+                                        Image(uiImage: picture)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: geometry.size.width * 0.9, height: 250)
+                                            .clipped()
+                                            .cornerRadius(10)
+                                            .overlay(RoundedRectangle(cornerRadius: 10)
+                                                        .stroke(Color.primaryDark, lineWidth: 3))
+                                            .shadow(radius: 10)
+
+                                    }
+                                    .frame(width: geometry.size.width, height: 250)
                                 }
-                            }
-                        } label: {
-                            VStack{
-                                HStack{
-                                    Text(categorySelection.isEmpty ? categoryPlaceholder : categorySelection)
-                                        .foregroundColor(categorySelection.isEmpty ? .textfield : .black)
-                                    Spacer()
-                                    Image(systemName: "arrowtriangle.left.fill")
-                                        .foregroundColor(.textfield)
+                                if (imagesCount < 6) {
+                                    HStack {
+                                        Image("CreateListingBkgPic")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: geometry.size.width * 0.9, height: 250)
+                                            .clipped()
+                                            .cornerRadius(10)
+                                            .overlay(RoundedRectangle(cornerRadius: 10)
+                                                        .stroke(Color.primaryDark, lineWidth: 3))
+                                            .onTapGesture {
+                                                showSheet = true
+                                                if (!showSheet) {
+                                                    pictures.append(image)
+                                                }
+                                            }
+                                            .onChange(of: image) { newItem in
+                                                Task {
+                                                    pictures.append(image)
+                                                }
+                                                imagesCount += 1
+                                            }
+                                    }
+                                    .frame(width: geometry.size.width, height: 250)
                                 }
-                                .frame(width: screenSize.width * 0.9, height: 30)
-                                .background(.white)
-                                .cornerRadius(5)
                             }
                         }
-                        
-                        // description entry
-                        TextEditorWithPlaceholder(text: $description)
-                        
-                        // cost per day entry
-                        TextField("Cost per day", text: $cost)
-                            .textFieldStyle(.roundedBorder)
-                            .keyboardType(.numberPad)
-                            .onReceive(Just(cost)) { newValue in
-                                let filtered = newValue.filter { "0123456789".contains($0) }
-                                if filtered != newValue {
-                                    cost = filtered
-                                }
-                            }
-                            .frame(width: screenSize.width * 0.9, height: 20)
-                            .padding()
-                        
-                        // postal code entry
-                        TextField("Postal Code e.g. A1A 1A1", text: $postalCode)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: screenSize.width * 0.9, height: 20)
-                            .padding()
-                        
-                        Text("Availability")
-                            .font(.system(size: 20, weight: .semibold))
-                            .frame(maxWidth: screenSize.width * 0.9, alignment: .leading)
-                            .padding(.bottom)
-                        
-                        // availability
-                        Menu {
-                            ForEach(availabilityList, id: \.self){ selection in
-                                Button(selection) {
-                                    showCal = false
-                                    dates = []
-                                    availabilitySelection = " " + selection
-                                }
-                            }
-                        } label: {
-                            VStack{
-                                HStack{
-                                    Text(availabilitySelection.isEmpty ? availabilityPlaceholder : availabilitySelection)
-                                        .foregroundColor(availabilitySelection.isEmpty ? .textfield : .black)
-                                    Spacer()
-                                    Image(systemName: "arrowtriangle.left.fill")
-                                        .foregroundColor(.textfield)
-                                }
-                                .frame(width: screenSize.width * 0.9, height: 30)
-                                .background(.white)
-                                .cornerRadius(5)
-                            }
+                        .environment(\.deleteImage, deleteImage)
+                        // this just opens the sheet to select a photo from library
+                        .sheet(isPresented: $showSheet) {
+                            // Pick an image from the photo library:
+                            ImagePicker(sourceType: .photoLibrary, selectedImage: $image)
+                            
+                            //  If you wish to take a photo from camera instead:
+                            // ImagePicker(sourceType: .camera, selectedImage: self.$image)
                         }
-                        HStack {
-                            Text("or make a")
-                            Button(action: {
-                                showCal = true
-                                availabilitySelection = ""
-                            }) {
-                                Text("Custom Availability")
-                            }
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.primaryBase)
-                        }
-                        .frame(maxWidth: screenSize.width * 0.85, alignment: .leading)
+                        .frame(height: 300)
                         
-                        // custom availability calendar
-                        if (showCal) {
-                            MultiDatePicker(
-                                "Start Date",
-                                selection: $dates,
-                                in: bounds
-                            )
-                            .datePickerStyle(.graphical)
-                            .frame(maxWidth: screenSize.width * 0.9)
-                            .tint(.primaryBase)
+                        //divider
+                        Color.gray
+                            .frame(width: screenSize.width * 0.95, height: 1 / UIScreen.main.scale)
+                            .padding(.top)
+                        
+                        Group {
+                            // title entry
+                            TextField("Title", text: $title)
+                                .textFieldStyle(textInputStyle())
+                                .frame(width: screenSize.width * 0.9)
+                                .padding()
+                            
+                            // category entry
+                            DropdownMenu(label: "Category", options: categoryList, selection: $categorySelection)
+                                .frame(maxWidth: screenSize.width * 0.9)
+                            
+                            // description entry
+                            TextEditorWithPlaceholder(text: $description)
+                            
+                            // cost per day entry
+                            TextField("Cost per day", text: $cost)
+                                .textFieldStyle(textInputStyle())
+                                .keyboardType(.numberPad)
+                                .onReceive(Just(cost)) { newValue in
+                                    let filtered = newValue.filter { "0123456789".contains($0) }
+                                    if filtered != newValue {
+                                        cost = filtered
+                                    }
+                                }
+                                .frame(width: screenSize.width * 0.9)
+                                .padding()
+                            
+                            // postal code entry
+                            TextField("Postal Code e.g. A1A 1A1", text: $postalCode)
+                                .textFieldStyle(textInputStyle())
+                                .frame(width: screenSize.width * 0.9)
+                                .padding()
+                            
+                            Text("Availability")
+                                .font(.title2)
+                                .frame(maxWidth: screenSize.width * 0.9, alignment: .leading)
+                                .padding(.bottom)
+                            
+                            // availability
+                            DropdownMenu(label: "Availability", options: availabilityList, selection: $availabilitySelection)
+                                .frame(maxWidth: screenSize.width * 0.9)
+                            
+                            HStack {
+                                Text("or make a")
+                                Button(action: {
+                                    showCal = true
+                                    availabilitySelection = ""
+                                }) {
+                                    Text("Custom Availability")
+                                }
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(.primaryBase)
+                            }
+                            .frame(maxWidth: screenSize.width * 0.85, alignment: .leading)
+                            
+                            // custom availability calendar
+                            PopUp(show: $showCal) {
+                                DatePicker(dates: dates)
+                            }
                         }
                         Group {
                             // POST
