@@ -23,7 +23,11 @@ struct ViewListingView: View {
     var listing: Listing
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
-    @State private var showCal = false
+    @State private var showCal = false {
+        didSet {
+            print("set show cal")
+        }
+    }
     @State private var showPopUp = false
     
     var numberOfStars: Float = 4
@@ -35,8 +39,10 @@ struct ViewListingView: View {
     @State var price:String = ""
     @State var name:String = ""
         
-    var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 1)
-
+    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 1)
+    @State var startDateText: String = ""
+    @State var endDateText:String = ""
+    
     private var reviews: some View {
         VStack(alignment: .leading) {
             Text("Reviews (\(numberOfReviews))")
@@ -90,28 +96,8 @@ struct ViewListingView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            //                        NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
-            //                            HStack {
-            //                                Text("Message")
-            //                                    .font(.body)
-            //                                    .foregroundColor(.white)
-            //
-            //                                Image(systemName: "message")
-            //                                    .foregroundColor(.white)
-            //                            }
-            //                        }
-            //                        .frame(alignment: .trailing)
-            //                        .padding()
-            //                        .background(Color.primaryDark)
-            //                        .cornerRadius(40)
-            //                        .padding()
             
             Button(action: {
-                var startDateText = self.getTextFromDate(date: self.availabilityCalendar.startDate)
-                var endDateText = self.getTextFromDate(date: self.availabilityCalendar.endDate)
-                
-                print(startDateText)
-                print(endDateText)
                 if (startDateText != "" && endDateText != "") {
                     showPopUp.toggle()
                 }
@@ -126,7 +112,7 @@ struct ViewListingView: View {
                 }
                 .frame(alignment: .trailing)
                 .padding()
-                .background(self.getTextFromDate(date: self.availabilityCalendar.startDate) == "" ? Color.grey : Color.primaryDark)
+                .background(startDateText == "" ? Color.grey : Color.primaryDark)
                 .cornerRadius(40)
                 .padding()
             })
@@ -201,16 +187,8 @@ struct ViewListingView: View {
             PopUp(show: $showPopUp) {
                 VStack(alignment: .leading) {
                     Text("Send request for “\(listing.title)” for the following days:").bold()
-//                    ForEach(dates.sorted{$0.date! < $1.date!}, id: \.self) { date in
-//                        let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
-//
-//                        Text("\(res)")
-//                    }
-                    HStack {
-                        Text("hi \(self.getTextFromDate(date: self.availabilityCalendar.startDate))")
-                        Text(" - ")
-                        Text(self.getTextFromDate(date: self.availabilityCalendar.endDate))
-                    }
+                    
+                    Text("\(startDateText) - \(endDateText)")
                     
                     NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
                         HStack {
@@ -262,7 +240,7 @@ struct ViewListingView: View {
                 name = ret
             })
         }
-        .sheet(isPresented: $showCal) {
+        .sheet(isPresented: $showCal, onDismiss: didDismiss) {
             RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
         }
     }
@@ -272,6 +250,11 @@ struct ViewListingView: View {
         formatter.locale = .current
         formatter.dateFormat = "MMMM d"
         return date == nil ? "" : formatter.string(from: date)
+    }
+    
+    func didDismiss() {
+        startDateText = self.getTextFromDate(date: self.availabilityCalendar.startDate)
+        endDateText = self.getTextFromDate(date: self.availabilityCalendar.endDate)
     }
 }
 
