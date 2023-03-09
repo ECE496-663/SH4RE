@@ -79,7 +79,7 @@ struct ViewListingView: View {
                     Text("Price")
                         .font(.callout)
                         .bold()
-                        .foregroundColor(.grey)
+                        .foregroundColor(.gray)
                         .frame(alignment: .leading)
                     HStack {
                         Text("$\(listing.price)")
@@ -87,7 +87,7 @@ struct ViewListingView: View {
                             .bold()
                         Text("/day")
                             .font(.caption)
-                            .foregroundColor(.grey)
+                            .foregroundColor(.gray)
                     }
                 }
             }
