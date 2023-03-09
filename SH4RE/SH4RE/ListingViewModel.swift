@@ -21,7 +21,7 @@ struct Listing : Identifiable{
     var imagepath = [String]()
     var price:String
     var imageDict = UIImage()
-    var availability = [(Date,Date)]()
+    var availability = [Date]()
 
 }
 
@@ -46,15 +46,10 @@ class ListingViewModel : ObservableObject{
                 let description = data["Description"] as? String ?? ""
                 let imagepath = data["image_path"] as? [String] ?? []
                 let price = data["Price"] as? String ?? ""
-                let timestampAvailability = data["Availability"] as? [Timestamp] ?? []
-                var availability = [(Date,Date)]()
-                if(timestampAvailability.count > 1){
-                    for i in Swift.stride(from: 0, to: timestampAvailability.count, by:2) {
-                        let start = timestampAvailability[i].dateValue()
-                        let end = timestampAvailability[i+1].dateValue()
-                        let booked = (start, end)
-                        availability.append(booked)
-                    }
+                let timeAvailability = data["Availability"] as? [Timestamp] ?? []
+                var availability:[Date] = []
+                for timestamp in timeAvailability{
+                    availability.append(timestamp.dateValue())
                 }
                 return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability)
             }
@@ -103,30 +98,61 @@ class ListingViewModel : ObservableObject{
     }
 }
 
-func bookListing(listing_id : String, start: Date, end: Date){
-     let db = Firestore.firestore()
-     db.collection("Listings").document(listing_id).updateData([
-        "Availability": FieldValue.arrayUnion([Timestamp(date: start), Timestamp(date: end)])])
+func bookListing(listing_id : String, start: Date, end: Date? = nil){
+    let db = Firestore.firestore()
+    var bookedDates:[Date] = []
+    if(end != nil){
+        var date = start
+        let fmt = DateFormatter()
+        fmt.dateFormat = "dd/MM/yyyy"
+        while date <= end! {
+            fmt.string(from: date)
+            bookedDates.append(date)
+            date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
+        }
+    }else{
+        bookedDates.append(start)
+    }
+    
+    db.collection("Listings").document(listing_id).updateData([
+        "Availability": FieldValue.arrayUnion(bookedDates)])
      
  }
 
- func unbookListing(listing_id : String, start: Date, end: Date){
+ func unbookListing(listing_id : String, start: Date, end: Date? = nil){
      let db = Firestore.firestore()
+     var bookedDates: [Date] = []
+     if(end != nil){
+         var date = start
+         let fmt = DateFormatter()
+         fmt.dateFormat = "dd/MM/yyyy"
+         while date <= end! {
+             fmt.string(from: date)
+             bookedDates.append(date)
+             date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
+         }
+     }else{
+         bookedDates.append(start)
+     }
      db.collection("Listings").document(listing_id).updateData([
-        "Availability": FieldValue.arrayRemove([Timestamp(date: start), Timestamp(date: end)])
+        "Availability": FieldValue.arrayRemove(bookedDates)
      ])
  }
 
-func sendBookingRequest(uid: String, listing_id : String, title:String, start: Date, end: Date){
+func sendBookingRequest(uid: String, listing_id : String, title:String, start: Date, end: Date? = nil){
      let collectionRef = Firestore.firestore().collection("Listings").document(listing_id).collection("Requests")
      collectionRef.whereField("UID", isEqualTo: uid).whereField("start", isEqualTo: Timestamp(date: start)).getDocuments() { (querySnapshot, err) in
          if let err = err {
              print("Error getting documents: \(err)")
          } else {
               let startTime = Timestamp(date:start)
-              let endTime = Timestamp(date:end)
+              let endTime = end != nil ? Timestamp(date:end!): nil
               let requestDoc = collectionRef.document()
-              requestDoc.setData(["UID":uid, "start" : startTime, "end":endTime, "status" : "pending", "title": title ])
+              if(end != nil){
+                 requestDoc.setData(["UID":uid, "start" : startTime, "end":endTime, "status" : "pending", "title": title ])
+              }else{
+                  requestDoc.setData(["UID":uid, "start" : startTime, "end":"nil", "status" : "pending", "title": title ])
+              }
               bookListing(listing_id: listing_id, start: start, end: end)
 
               let listingDocRef = Firestore.firestore().collection("Listings").document(listing_id)
@@ -139,8 +165,14 @@ func sendBookingRequest(uid: String, listing_id : String, title:String, start: D
                          let dateFormatter = DateFormatter()
                          dateFormatter.dateStyle = .short
                          
-                         
-                         let msg = ["fromId": uid, "toId": renterId, "text": "Rental Request", "timestamp": Date(), "isRequest": true, "listingTitle": title, "datesRequested": dateFormatter.string(from: start) + " - " + dateFormatter.string(from: end), "listingId": listing_id, "requestId": requestDoc.documentID]
+                         var dateString: String
+                         if(end != nil){
+                             dateString = dateFormatter.string(from: start) + " - " + dateFormatter.string(from: end!)
+                         }else{
+                             dateString = dateFormatter.string(from: start)
+                         }
+                            
+                         let msg = ["fromId": uid, "toId": renterId, "text": "Rental Request", "timestamp": Date(), "isRequest": true, "listingTitle": title, "datesRequested": dateString, "listingId": listing_id, "requestId": requestDoc.documentID]
                          
                          FirebaseManager.shared.firestore.collection(FirebaseConstants.messages).document(uid).collection(renterId).addDocument(data: msg)
 
@@ -237,9 +269,13 @@ func denyRentalRequest(listing_id: String, rental_request_id : String, userId: S
          if let document = document {
              let data = document.data()!
              let start = data["start"] as? Timestamp ?? Timestamp(date: Date())
-             let end = data["end"] as? Timestamp ?? Timestamp(date: Date())
+             let end = data["end"] as? Timestamp ?? nil
              let title = data["title"] as? String ?? ""
-             unbookListing(listing_id: listing_id, start: start.dateValue(), end: end.dateValue())
+             if(end != nil) {
+                 unbookListing(listing_id: listing_id, start: start.dateValue(), end: end!.dateValue())
+             }else{
+                 unbookListing(listing_id: listing_id, start: start.dateValue())
+             }
              sendRentalStatusMessage(statusMessage: "This request has been declined",messagePreview: "Request Declined", userId: userId, renterId: renterId, title: title)
          }
      })
@@ -253,9 +289,13 @@ func cancelRentalRequest(listing_id: String, rental_request_id : String, userId:
         if let document = document {
             let data = document.data()!
             let start = data["start"] as? Timestamp ?? Timestamp(date: Date())
-            let end = data["end"] as? Timestamp ?? Timestamp(date: Date())
+            let end = data["end"] as? Timestamp ?? nil
             let title = data["title"] as? String ?? ""
-            unbookListing(listing_id: listing_id, start: start.dateValue(), end: end.dateValue())
+            if(end != nil) {
+                unbookListing(listing_id: listing_id, start: start.dateValue(), end: end!.dateValue())
+            }else{
+                unbookListing(listing_id: listing_id, start: start.dateValue())
+            }
             sendRentalStatusMessage(statusMessage: "This request has been cancelled",messagePreview: "Request Cancelled", userId: userId, renterId: renterId, title: title)
             docRef.delete()
         }

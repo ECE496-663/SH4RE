@@ -31,9 +31,10 @@ struct ViewListingView: View {
     var hasHalfStar = true
     var numberOfReviews = 3
     @State var numberOfImages = 0
+    @State var dateString:String = ""
     
     @State private var dates: Set<DateComponents> = []
-    var myRkManager = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
+    @StateObject var myRkManager = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
     
 
     private var reviews: some View {
@@ -89,24 +90,43 @@ struct ViewListingView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Button(action: {
-                showPopUp.toggle()
-            }, label: {
-                HStack {
-                    Text("Message")
-                        .font(.body)
-                        .foregroundColor(.white)
-                    
-                    Image(systemName: "message")
-                        .foregroundColor(.white)
+            if(myRkManager.selectedDates.isEmpty){
+                NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
+                    HStack {
+                        Text("Message")
+                            .font(.body)
+                            .foregroundColor(.white)
+                        
+                        Image(systemName: "message")
+                            .foregroundColor(.white)
+                    }
+                    .frame(alignment: .trailing)
+                    .padding()
+                    .background(Color.primaryDark)
+                    .cornerRadius(40)
+                    .padding()
                 }
-                .frame(alignment: .trailing)
-                .padding()
-                .background(Color.primaryDark)
-                .cornerRadius(40)
-                .padding()
-            })
+            }else{
+                //TODO Front end update to be prettier
+                //hopefully say like send request or something
+                Button(action: {
+                    showPopUp.toggle()
+                }, label: {
+                    HStack {
+                        Text("Send")
+                            .font(.body)
+                            .foregroundColor(.white)
+                        
+                        Image(systemName: "message")
+                            .foregroundColor(.white)
+                    }
+                    .frame(alignment: .trailing)
+                    .padding()
+                    .background(Color.primaryDark)
+                    .cornerRadius(40)
+                    .padding()
+                })
+            }
         }
         .padding([.horizontal])
         .background(.white)
@@ -152,6 +172,13 @@ struct ViewListingView: View {
                         .padding([.top], 10)
                     
                     Button(action: {
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateStyle = .short
+                        if(myRkManager.selectedDates.count > 1){
+                            dateString = dateFormatter.string(from: myRkManager.selectedDates.first!) + " - " + dateFormatter.string(from: myRkManager.selectedDates.last!)
+                        }else if(myRkManager.selectedDates.count == 1){
+                            dateString = dateFormatter.string(from: myRkManager.selectedDates.first!)
+                        }
                         showCal.toggle()
                     }) {
                         HStack {
@@ -177,11 +204,10 @@ struct ViewListingView: View {
             PopUp(show: $showPopUp) {
                 VStack(alignment: .leading) {
                     Text("Send request for “\(listing.title)” for the following dates: ").bold()
-                    ForEach(dates.sorted{$0.date! < $1.date!}, id: \.self) { date in
-                        let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
-                        
-                        Text("\(res)")
-                    }
+                    //TODO date string is not showing even though it is updated correctly
+                    //I believe this is an issue with how pop up is written since it works when i move text elsewhere
+                    //I think we should move the pop up code inside for this case unless anyone know a way
+                    Text(dateString)
                     
                     NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
                         HStack {
@@ -196,12 +222,13 @@ struct ViewListingView: View {
                         if(startDate != nil && endDate != nil){
                             sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: startDate!, end: endDate!)
                         }else if(startDate != nil){
-                            print("single day booking not implemented")
+                            sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: startDate!)
                         }else{
                             //TODO add pop up/message
                             //only allow navigation with valid dates
                             print("invalid dates selected")
                         }
+                        myRkManager.selectedDates = []
                     })
                     .fontWeight(.semibold)
                     .frame(width: screenSize.width * 0.8, height: 40)
@@ -226,7 +253,7 @@ struct ViewListingView: View {
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
-            myRkManager.disabledDates = [Date().addingTimeInterval(60*60*24*4), Date().addingTimeInterval(60*60*24*5), Date().addingTimeInterval(60*60*24*6)] // here is where we would add the disabled dates
+            myRkManager.disabledDates = listing.availability
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath{
                 let storageRef = Storage.storage().reference(withPath: path)
@@ -238,18 +265,6 @@ struct ViewListingView: View {
                         //Image Returned Successfully:
                         let image = UIImage(data: data!)
                         images.append(image)
-                    }
-                }
-                
-                for (start, end) in listing.availability{
-                    var date = start
-                    let fmt = DateFormatter()
-                    fmt.dateFormat = "dd/MM/yyyy"
-
-                    while date <= end {
-                        fmt.string(from: date)
-                        myRkManager.disabledDates.append(date)
-                        date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
                     }
                 }
             }
