@@ -229,15 +229,15 @@ struct ViewListingView: View {
             for path in listing.imagepath {
                 let storageRef = Storage.storage().reference(withPath: path)
 //                Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
-//                storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
-//                    if let error = error {
-//                        print (error)
-//                    } else {
-//                        //Image Returned Successfully:
-//                        let image = UIImage(data: data!)
-//                        images.append(image)
-//                    }
-//                }
+                storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                    if let error = error {
+                        print (error)
+                    } else {
+                        //Image Returned Successfully:
+                        let image = UIImage(data: data!)
+                        images.append(image)
+                    }
+                }
             }
             getUserName(uid: listing.uid, completion: { ret in
                 name = ret
