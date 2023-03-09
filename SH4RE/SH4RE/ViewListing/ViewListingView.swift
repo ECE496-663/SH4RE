@@ -94,9 +94,9 @@ struct ViewListingView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             Button(action: {
-                if (startDateText != "") {
+//                if (startDateText != "") {
                     showPopUp.toggle()
-                }
+//                }
             }, label: {
                 HStack {
                     Text("Message")
@@ -111,7 +111,9 @@ struct ViewListingView: View {
                 .background(startDateText == "" ? Color.grey : Color.primaryDark)
                 .cornerRadius(40)
                 .padding()
+                
             })
+            .disabled(startDateText == "")
         }
         .padding([.horizontal])
         .background(.white)
