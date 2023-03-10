@@ -57,7 +57,7 @@
 		9DB46C59296E56BB005F0216 /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB46C58296E56BB005F0216 /* DatePicker.swift */; };
 		9DB46C5B296E5E31005F0216 /* PopUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB46C5A296E5E31005F0216 /* PopUp.swift */; };
 		CC65FEDA29BB0A2A00007115 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC65FED929BB0A2A00007115 /* AppDelegate.swift */; };
-		CC65FEE129BB0BBE00007115 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC65FEDD29BB0BBD00007115 /* MapView.swift */; };
+		CC65FEE629BBB94A00007115 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC65FEE529BBB94A00007115 /* MapView.swift */; };
 		D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C03D29280D0600E83142 /* CreateListingView.swift */; };
 		D119C04229281DBA00E83142 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C04129281DBA00E83142 /* HomeView.swift */; };
 		D119C0482928313700E83142 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C0472928313700E83142 /* ImagePicker.swift */; };
@@ -137,7 +137,7 @@
 		9DB46C58296E56BB005F0216 /* DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
 		9DB46C5A296E5E31005F0216 /* PopUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUp.swift; sourceTree = "<group>"; };
 		CC65FED929BB0A2A00007115 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		CC65FEDD29BB0BBD00007115 /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapView.swift; path = "../../../../Downloads/maps-ios-swiftui/solution/GoogleMapsSwiftUI/GoogleMapsSwiftUI/MapView.swift"; sourceTree = "<group>"; };
+		CC65FEE529BBB94A00007115 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MapView.swift; path = SH4RE/MapView.swift; sourceTree = SOURCE_ROOT; };
 		D119C03D29280D0600E83142 /* CreateListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
 		D119C04129281DBA00E83142 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		D119C0472928313700E83142 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -390,7 +390,7 @@
 		CCA5477D29BAF0050065A986 /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				CC65FEDD29BB0BBD00007115 /* MapView.swift */,
+				CC65FEE529BBB94A00007115 /* MapView.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -612,7 +612,6 @@
 				1E3D19D3297FB41100251D39 /* TextFieldStyles.swift in Sources */,
 				1EB9FCDA2979CC3A00659C5C /* FilterSheetView.swift in Sources */,
 				9DB46C59296E56BB005F0216 /* DatePicker.swift in Sources */,
-				CC65FEE129BB0BBE00007115 /* MapView.swift in Sources */,
 				9D080594292FE9F400094169 /* AccountView.swift in Sources */,
 				9D16B1ED2995886D007F99D8 /* ChatLogViewModel.swift in Sources */,
 				5939D36029132D7000866FA5 /* ContentView.swift in Sources */,
@@ -634,6 +633,7 @@
 				D119C0482928313700E83142 /* ImagePicker.swift in Sources */,
 				9D0518632998497400366A10 /* RKWeekdayHeader.swift in Sources */,
 				9D05185E2998497400366A10 /* RKMonth.swift in Sources */,
+				CC65FEE629BBB94A00007115 /* MapView.swift in Sources */,
 				9D080596292FF43800094169 /* ViewListingView.swift in Sources */,
 				1E7CB011297DF4B6008E4854 /* DropdownMenu.swift in Sources */,
 				D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */,
