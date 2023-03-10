@@ -22,7 +22,7 @@ class RKColorSettings : ObservableObject {
     @Published var todayBackColor: Color = Color.gray
     @Published var selectedBackColor: Color = Color.primaryLight
     @Published var disabledBackColor: Color = Color.clear
-    @Published var betweenStartAndEndBackColor: Color = Color.blue
+    @Published var betweenStartAndEndBackColor: Color = Color.primaryLight
     // headers foreground colors
     @Published var weekdayHeaderColor: Color = Color.primary
     @Published var monthHeaderColor: Color = Color.primary

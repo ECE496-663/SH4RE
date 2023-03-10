@@ -31,11 +31,14 @@ struct ViewListingView: View {
     var hasHalfStar = true
     var numberOfReviews = 3
     @State var numberOfImages = 0
-    @State var dateString:String = ""
-    
-    @State private var dates: Set<DateComponents> = []
-    @StateObject var myRkManager = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
-    
+    @State var description:String = ""
+    @State var title:String = ""
+    @State var price:String = ""
+    @State var name:String = ""
+        
+    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 1)
+    @State var startDateText: String = ""
+    @State var endDateText: String = ""    
 
     private var reviews: some View {
         VStack(alignment: .leading) {
@@ -77,7 +80,7 @@ struct ViewListingView: View {
                     Text("Price")
                         .font(.callout)
                         .bold()
-                        .foregroundColor(.grey)
+                        .foregroundColor(.darkGrey)
                         .frame(alignment: .leading)
                     HStack {
                         Text("$\(listing.price)")
@@ -85,51 +88,32 @@ struct ViewListingView: View {
                             .bold()
                         Text("/day")
                             .font(.caption)
-                            .foregroundColor(.grey)
+                            .foregroundColor(.darkGrey)
                     }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            if(myRkManager.selectedDates.isEmpty){
-                NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
-                    HStack {
-                        Text("Message")
-                            .font(.body)
-                            .foregroundColor(.white)
-                        
-                        Image(systemName: "message")
-                            .foregroundColor(.white)
-                    }
-                    .frame(alignment: .trailing)
-                    .padding()
-                    .background(Color.primaryDark)
-                    .cornerRadius(40)
-                    .padding()
+            
+            Button(action: {
+                showPopUp.toggle()
+            }, label: {
+                HStack {
+                    Text("Message")
+                        .font(.body)
+                        .foregroundColor(.white)
+                    
+                    Image(systemName: "message")
+                        .foregroundColor(.white)
                 }
-            }else{
-                //TODO Front end update to be prettier
-                //hopefully say like send request or something
-                Button(action: {
-                    showPopUp.toggle()
-                }, label: {
-                    HStack {
-                        Text("Send")
-                            .font(.body)
-                            .foregroundColor(.white)
-                        
-                        Image(systemName: "message")
-                            .foregroundColor(.white)
-                    }
-                    .frame(alignment: .trailing)
-                    .padding()
-                    .background(Color.primaryDark)
-                    .cornerRadius(40)
-                    .padding()
-                })
-            }
-        }
-        .padding([.horizontal])
-        .background(.white)
+                .frame(alignment: .trailing)
+                .padding()
+                .background(startDateText == "" ? Color.grey : Color.primaryDark)
+                .cornerRadius(40)
+                .padding()
+                
+            })
+            .disabled(startDateText == "")
+
     }
     
     var body: some View {
@@ -203,7 +187,16 @@ struct ViewListingView: View {
             }
             PopUp(show: $showPopUp) {
                 VStack(alignment: .leading) {
-                    Text("Send request for “\(listing.title)” for the following dates: ").bold()
+                    if (endDateText == "") {
+                        Text("Send request for “\(listing.title)” for \(startDateText)")
+                            .fixedSize(horizontal: false, vertical: true)
+                            .bold()
+                    } else {
+                        Text("Send request for “\(listing.title)” for \(startDateText) - \(endDateText)")
+                            .fixedSize(horizontal: false, vertical: true)
+                            .bold()
+                    }
+                    Spacer()
                     //TODO date string is not showing even though it is updated correctly
                     //I believe this is an issue with how pop up is written since it works when i move text elsewhere
                     //I think we should move the pop up code inside for this case unless anyone know a way
@@ -245,7 +238,7 @@ struct ViewListingView: View {
                     .buttonStyle(secondaryButtonStyle())
                 }
                 .padding()
-                .frame(width: 350, height: 180)
+                .frame(width: screenSize.width * 0.9, height: 180)
                 .background(.white)
                 .cornerRadius(8)
                 
@@ -255,9 +248,9 @@ struct ViewListingView: View {
         .onAppear() {
             myRkManager.disabledDates = listing.availability
             numberOfImages = listing.imagepath.count
-            for path in listing.imagepath{
+            for path in listing.imagepath {
                 let storageRef = Storage.storage().reference(withPath: path)
-                //Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
+//                Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
                 storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
                     if let error = error {
                         print (error)
@@ -269,8 +262,28 @@ struct ViewListingView: View {
                 }
             }
         }
-        .sheet(isPresented: $showCal) {
-            RKViewController(isPresented: $showCal, rkManager: myRkManager)
+        .sheet(isPresented: $showCal, onDismiss: didDismiss) {
+            RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
         }
+    }
+    
+    func getTextFromDate(date: Date!) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.dateFormat = "MMMM d"
+        return date == nil ? "" : formatter.string(from: date)
+    }
+    
+    func didDismiss() {
+        startDateText = self.getTextFromDate(date: self.availabilityCalendar.startDate)
+        endDateText = self.getTextFromDate(date: self.availabilityCalendar.endDate)
+    }
+}
+
+struct ViewListingView_Previews: PreviewProvider {
+    static var previewListing = Listing(uid: "123", title: "Sample Listing", description: "", price: "10")
+    
+    static var previews: some View {
+        ViewListingView(tabSelection: .constant(2), listing: previewListing)
     }
 }
