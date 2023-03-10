@@ -35,11 +35,11 @@ struct ViewListingView: View {
     @State var title:String = ""
     @State var price:String = ""
     @State var name:String = ""
-        
+    
     @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 1)
     @State var startDateText: String = ""
-    @State var endDateText: String = ""    
-
+    @State var endDateText: String = ""
+    
     private var reviews: some View {
         VStack(alignment: .leading) {
             Text("Reviews (\(numberOfReviews))")
@@ -113,7 +113,9 @@ struct ViewListingView: View {
                 
             })
             .disabled(startDateText == "")
-
+        }
+        .padding([.horizontal])
+        .background(.white)
     }
     
     var body: some View {
@@ -156,13 +158,6 @@ struct ViewListingView: View {
                         .padding([.top], 10)
                     
                     Button(action: {
-                        let dateFormatter = DateFormatter()
-                        dateFormatter.dateStyle = .short
-                        if(myRkManager.selectedDates.count > 1){
-                            dateString = dateFormatter.string(from: myRkManager.selectedDates.first!) + " - " + dateFormatter.string(from: myRkManager.selectedDates.last!)
-                        }else if(myRkManager.selectedDates.count == 1){
-                            dateString = dateFormatter.string(from: myRkManager.selectedDates.first!)
-                        }
                         showCal.toggle()
                     }) {
                         HStack {
@@ -185,6 +180,7 @@ struct ViewListingView: View {
                     reviews
                 }
             }
+            
             PopUp(show: $showPopUp) {
                 VStack(alignment: .leading) {
                     if (endDateText == "") {
@@ -197,10 +193,6 @@ struct ViewListingView: View {
                             .bold()
                     }
                     Spacer()
-                    //TODO date string is not showing even though it is updated correctly
-                    //I believe this is an issue with how pop up is written since it works when i move text elsewhere
-                    //I think we should move the pop up code inside for this case unless anyone know a way
-                    Text(dateString)
                     
                     NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
                         HStack {
@@ -209,19 +201,9 @@ struct ViewListingView: View {
                                 .foregroundColor(.white)
                         }
                     }.simultaneousGesture(TapGesture().onEnded{
-                        
-                        let startDate = myRkManager.selectedDates.count > 0 ? myRkManager.selectedDates[0] : nil
-                        let endDate = myRkManager.selectedDates.count > 1 ? myRkManager.selectedDates[myRkManager.selectedDates.count - 1] : nil
-                        if(startDate != nil && endDate != nil){
-                            sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: startDate!, end: endDate!)
-                        }else if(startDate != nil){
-                            sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: startDate!)
-                        }else{
-                            //TODO add pop up/message
-                            //only allow navigation with valid dates
-                            print("invalid dates selected")
-                        }
-                        myRkManager.selectedDates = []
+                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
+                        availabilityCalendar.startDate = nil
+                        availabilityCalendar.endDate = nil
                     })
                     .fontWeight(.semibold)
                     .frame(width: screenSize.width * 0.8, height: 40)
@@ -246,11 +228,11 @@ struct ViewListingView: View {
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
-            myRkManager.disabledDates = listing.availability
+            availabilityCalendar.disabledDates = listing.availability
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath {
                 let storageRef = Storage.storage().reference(withPath: path)
-//                Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
+                //                Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
                 storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
                     if let error = error {
                         print (error)
@@ -282,8 +264,9 @@ struct ViewListingView: View {
 
 struct ViewListingView_Previews: PreviewProvider {
     static var previewListing = Listing(uid: "123", title: "Sample Listing", description: "", price: "10")
+    static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "123", uid: "123", name: "Random"))
     
     static var previews: some View {
-        ViewListingView(tabSelection: .constant(2), listing: previewListing)
+        ViewListingView(tabSelection: .constant(2), listing: previewListing, chatLogViewModel: previewChatLogModel)
     }
 }
