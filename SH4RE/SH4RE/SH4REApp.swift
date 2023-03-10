@@ -10,6 +10,8 @@ import Firebase
 
 @main
 struct SH4REApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     init(){
         FirebaseConfiguration.shared.setLoggerLevel(.min)
         FirebaseApp.configure()

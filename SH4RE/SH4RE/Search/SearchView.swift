@@ -7,6 +7,8 @@
 import SwiftUI
 import FirebaseStorage
 import Combine
+import CoreLocation
+import GoogleMaps
 
 //Database stuff to know
 //listingView.listings if a list of Listing structs defined in ListingViewModel
@@ -33,12 +35,54 @@ struct SearchView: View {
     @State var maxPrice: String = ""
     @State var maxDistance: String = ""
     @State var minRating = 0.0
+//
+//    @State var lat:Double
+//    @State var lon:Double
+    
+//    func locationHelper(address: String) {
+//        let geoCoder = CLGeocoder()
+//        geoCoder.geocodeAddressString(address) { (placemarks, error) in
+//            guard
+//                let placemarks = placemarks,
+//                let location = placemarks.first?.location
+//            else {
+//                // handle no location found
+//                return
+//            }
+//            
+//            // Use your location
+//            lat = location.coordinate.latitude
+//            lon = location.coordinate.longitude
+//        }
+//    }
+    
+//    viewDidLoad() {
+//        for listing in listingsView.listings {
+//            // make marker on map
+//            locationHelper(address: listing.address)
+//
+//            let position = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+//            let marker = GMSMarker(position: position)
 
+//        }
+//    }
+    
     var body: some View {
+        
         NavigationStack {
+            if (!listingsView.listings.isEmpty) {
+                MapView(listingsView: listingsView)
+                    .frame(width: screenSize.width, height: screenSize.height * 0.4)
+            }
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20){
                     ForEach(listingsView.listings) { listing in
+                        // make marker on map
+//                        locationHelper(address: listing.address)
+                        
+//                        let position = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+//                        let marker = GMSMarker(position: position)
+                        
                         // If theres no image for a listing, just use the placeholder
                         let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                         NavigationLink(destination: {

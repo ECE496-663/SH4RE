@@ -36,6 +36,7 @@ struct CreateListingView: View {
     // text fields
     @State private var title: String = ""
     @State private var postalCode: String = ""
+    @State private var isPostalCodeValid:Bool = false
     @State var cost = ""
     @State private var description: String = ""
 
@@ -173,6 +174,19 @@ struct CreateListingView: View {
                         // postal code entry
                         TextField("Postal Code e.g. A1A 1A1", text: $postalCode)
                             .textFieldStyle(.roundedBorder)
+                            .onReceive(Just(postalCode)) { newValue in
+                                isPostalCodeValid = false
+                                let range = NSRange(location: 0, length: postalCode.utf16.count)
+                                let regex1 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z][0-9][A-Za-z][0-9]")
+                                let res1 = regex1!.firstMatch(in: postalCode, options: [], range: range)
+                                let regex2 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z]-[0-9][A-Za-z][0-9]")
+                                let res2 = regex2!.firstMatch(in: postalCode, options: [], range: range)
+                                let regex3 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]")
+                                let res3 = regex3!.firstMatch(in: postalCode, options: [], range: range)
+                                if (res1 != nil || res2 != nil || res3 != nil) {
+                                    isPostalCodeValid = true
+                                }
+                            }
                             .frame(width: screenSize.width * 0.9, height: 20)
                             .padding()
                         
@@ -234,7 +248,7 @@ struct CreateListingView: View {
                                 // validate entries
                                 if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
                                     pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
-                                    (availabilitySelection.isEmpty && dates.isEmpty)) {
+                                    (availabilitySelection.isEmpty && dates.isEmpty) || !isPostalCodeValid) {
                                     errorInField = true
                                 }
                                 if (!errorInField) {
@@ -291,7 +305,7 @@ struct CreateListingView: View {
                             }
                             .alertX(isPresented: $errorInField, content: {
                                 AlertX(
-                                    title: Text("ERROR: Entries missing"),
+                                    title: Text("ERROR: Entries missing or incorrectly filled"),
                                     theme: AlertX.Theme.custom(
                                         windowColor: .grey,
                                         alertTextColor: .errorColour,

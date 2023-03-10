@@ -262,7 +262,7 @@ struct ViewListingView: View {
 }
 
 struct ViewListingView_Previews: PreviewProvider {
-    static var previewListing = Listing(uid: "123", title: "Sample Listing", description: "", price: "10")
+    static var previewListing = Listing(uid: "123", title: "Sample Listing", description: "", price: "10", address: "M5A2T6")
     
     static var previews: some View {
         ViewListingView(tabSelection: .constant(2), listing: previewListing)

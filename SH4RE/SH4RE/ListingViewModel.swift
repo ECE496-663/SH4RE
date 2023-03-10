@@ -21,6 +21,7 @@ struct Listing : Identifiable{
     var imagepath = [String]()
     var price:String
     var imageDict = UIImage()
+    var address:String
 }
 
 class ListingViewModel : ObservableObject{
@@ -44,7 +45,8 @@ class ListingViewModel : ObservableObject{
                 let description = data["Description"] as? String ?? ""
                 let imagepath = data["image_path"] as? [String] ?? []
                 let price = data["Price"] as? String ?? ""
-                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price)
+                let address = data["Address"] as? String ?? ""
+                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, address:address)
             }
             if QuerySnapshot!.isEmpty{
                 completion(false)
