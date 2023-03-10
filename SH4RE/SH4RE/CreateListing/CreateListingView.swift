@@ -52,6 +52,7 @@ struct CreateListingView: View {
     @Environment(\.calendar) var calendar
     @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
+    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
     @EnvironmentObject var currentUser: CurrentUser
     
     var bounds: PartialRangeFrom<Date> {
@@ -178,6 +179,9 @@ struct CreateListingView: View {
             // availability
             DropdownMenu(label: "Availability", options: availabilityList, selection: $availabilitySelection)
                 .frame(maxWidth: screenSize.width * 0.9)
+                .onChange(of: availabilitySelection) { value in
+                        availabilityCalendar.selectedDates = []
+                    }
             
             HStack {
                 Text("or make a")
@@ -191,11 +195,6 @@ struct CreateListingView: View {
                 .foregroundColor(.primaryBase)
             }
             .frame(maxWidth: screenSize.width * 0.85, alignment: .leading)
-            
-            // custom availability calendar
-            PopUp(show: $showCal) {
-                DatePicker(dates: dates)
-            }
         }
     }
     func resetInputs () {
@@ -207,29 +206,27 @@ struct CreateListingView: View {
         postalCode = ""
         categorySelection = ""
         availabilitySelection = ""
+        availabilityCalendar.selectedDates = []
         showCal = false
     }
     func validatePost () {
         if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
-            (availabilitySelection.isEmpty && dates.isEmpty)) {
+            (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty)) {
             errorInField = true
         }
         if (!errorInField) {
             // upload data fields
-            var calAvail = ""
-            if (showCal) {
-                var stringDates = ""
-                for date in dates {
-                    let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
-                    stringDates += res + ","
+            var calAvail = [Any]()
+            if (!availabilityCalendar.selectedDates.isEmpty) {
+                for date in availabilityCalendar.selectedDates {
+                    calAvail.append(date)
                 }
-                calAvail = String(stringDates.dropLast())
             }
             else {
-                calAvail = availabilitySelection
+                calAvail.append(availabilitySelection)
             }
-            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()]
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
             let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
             
             // upload images and add paths to data fields
@@ -312,6 +309,11 @@ struct CreateListingView: View {
                         .padding(.bottom)
                     }
                 }
+                // custom availability calendar
+                .sheet(isPresented: $showCal) {
+                    RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
+                }
+
                 PopUp(show: $errorInField) {
                     VStack {
                         Text("ERROR: Entries missing")
