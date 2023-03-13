@@ -21,9 +21,7 @@ extension Collection {
 
 struct HomeView: View {
     @Binding var tabSelection: Int
-    @Binding var searchQuery: String
-    @Binding var searchReady: Bool
-    @Binding var recentSearchQueries: [String]
+    @ObservedObject var searchModel: SearchModel
 
     var body: some View {
         NavigationStack{
@@ -32,11 +30,11 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Search")
                         .font(.title.bold())
-                    TextField("What are you looking for?", text: $searchQuery)
+                    TextField("What are you looking for?", text: $searchModel.searchQuery)
                         .textFieldStyle(textInputStyle())
                         .onSubmit {
-                            guard searchQuery.isEmpty == false else{ return }
-                            searchReady = true
+                            guard searchModel.searchQuery.isEmpty == false else{ return }
+                            searchModel.searchReady = true
                             tabSelection = 2
                         }
                     ScrollView {
@@ -47,15 +45,15 @@ struct HomeView: View {
                                 Text("Recent Searches")
                                     .font(.title2.bold())
                                 HStack(alignment: .center){
-                                    ForEach (recentSearchQueries, id: \.self) { query in
+                                    ForEach (searchModel.recentSearchQueries, id: \.self) { query in
                                         Button(action: {
-                                            searchQuery = query
-                                            searchReady = true
+                                            searchModel.searchQuery = query
+                                            searchModel.searchReady = true
                                             tabSelection = 2
                                         }) {
                                             RecentSearchCard(searchText: query)
                                             // match everything but the last
-                                            if query != recentSearchQueries.last {
+                                            if query != searchModel.recentSearchQueries.last {
                                                 Spacer()
                                             }
                                         }
@@ -132,6 +130,6 @@ struct RecentSearchCard: View {
 
 struct Previews_HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(tabSelection: .constant(1), searchQuery: .constant(""), searchReady: .constant(false), recentSearchQueries: .constant([""]))
+        HomeView(tabSelection: .constant(1), searchModel: SearchModel())
     }
 }

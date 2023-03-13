@@ -29,7 +29,7 @@ struct AccountView: View {
                             print(error)
                         }
                         currentUser.hasLoggedIn = false
-                        //Remove soem user specific info
+                        //Remove some user specific info
                         UserDefaults.standard.setValue([""], forKey: "RecentSearchQueries")
                     })
                     {

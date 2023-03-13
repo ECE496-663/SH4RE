@@ -16,12 +16,10 @@ import Combine
 
 struct SearchView: View {
     @Binding var tabSelection: Int
-    @Binding var searchQuery: String
-    @Binding var searchReady: Bool
-    @Binding var recentSearchQueries: [String]
+    @ObservedObject var searchModel: SearchModel
     @EnvironmentObject var currentUser: CurrentUser
-
-    @ObservedObject private var listingsView = ListingViewModel()
+    
+    @StateObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 15)]
     
     @State var showingFilterSheet = false
@@ -29,6 +27,7 @@ struct SearchView: View {
     @State var showFilterButton = true
     @State var scrollOffset: CGFloat = 0.00
     
+    //Possibly move these to a FilterModel or just SearchModel, and add a function that is like FilterModel.reset()
     @State var dropDownSelection: String = ""
     @State var location: String = ""
     @State var minPrice: String = ""
@@ -39,7 +38,7 @@ struct SearchView: View {
     // Manages the three most recent searches made by the user
     func addRecentSearch(searchQuery: String){
         if (searchQuery.isEmpty || searchQuery == ""){ return }
-        var savedValues = UserDefaults.standard.stringArray(forKey: "RecentSearchQueries") ?? []
+        var savedValues = UserDefaults.standard.stringArray(forKey: "RecentSearchQueries") ?? [""]
         if let index = savedValues.firstIndex(of: searchQuery) {
             savedValues.remove(at: index)
         }
@@ -48,7 +47,7 @@ struct SearchView: View {
         }
         savedValues.insert(searchQuery, at: 0)
         UserDefaults.standard.set(savedValues, forKey: "RecentSearchQueries")
-        recentSearchQueries = savedValues
+        searchModel.recentSearchQueries = savedValues
     }
 
     var body: some View {
@@ -58,11 +57,11 @@ struct SearchView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Search")
                         .font(.title.bold())
-                    TextField("What are you looking for?", text: $searchQuery)
+                    TextField("What are you looking for?", text: $searchModel.searchQuery)
                         .textFieldStyle(textInputStyle())
                         .onSubmit {
-                            guard searchQuery.isEmpty == false else{ return }
-                            addRecentSearch(searchQuery: searchQuery)
+                            guard searchModel.searchQuery.isEmpty == false else{ return }
+                            addRecentSearch(searchQuery: searchModel.searchQuery)
                             //doSearch()
                         }
                     ScrollView {
@@ -108,10 +107,12 @@ struct SearchView: View {
             }
         }
         .onAppear(){
-            if (searchReady) {
-                searchReady = false;
+            if (searchModel.searchReady) {
+                searchModel.searchReady = false;
+                //resetFilter()
                 //If search was completed from the homescreen, then when the user clicks enter, searchReady will be set to true, and the tabs will be changed to the search tab. Here, we must call the search function
-                addRecentSearch(searchQuery: searchQuery)
+                //I think that if someone does a search from the home screen, we can be pretty sure they dont want to keep the same filters they had before. So likely a resetFilter() funciton would be useful but depends how search works.
+                addRecentSearch(searchQuery: searchModel.searchQuery)
                 //doSearch(searchQuery)
             }
             self.listingsView.fetchListings(completion: { success in
@@ -124,7 +125,6 @@ struct SearchView: View {
                 } else {
                     print("Failed to query database")
                 }
-                
             })
         }
     }
@@ -162,15 +162,13 @@ struct ContentView_Previews: PreviewProvider {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView_Previews_Helper()
-    }
-}
-struct SearchView_Previews_Helper: View {
-    @State var searchQuery = ""
-    @State var recentSearchQueries = [""]
-    @State private var searchReady = false
-    var body: some View {
-        SearchView(tabSelection: .constant(1), searchQuery: $searchQuery, searchReady: $searchReady, recentSearchQueries: $recentSearchQueries)
+        SearchView(tabSelection: .constant(1), searchModel: SearchModel())
             .environmentObject(CurrentUser())
     }
 }
+//struct SearchView_Previews_Helper: View {
+//    var body: some View {
+//        SearchView(tabSelection: .constant(1), searchModel: SearchModel())
+//            .environmentObject(CurrentUser())
+//    }
+//}
