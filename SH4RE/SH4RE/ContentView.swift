@@ -26,9 +26,6 @@ extension Color {
 struct ContentView: View {
     @State private var tabSelection = 1
     @StateObject var currentUser = CurrentUser()
-    @State private var searchQuery: String = ""
-    @State private var searchReady: Bool = true
-    @State var recentSearchQueries: [String] = UserDefaults.standard.stringArray(forKey: "RecentSearchQueries") ?? [""]
     @ObservedObject var searchModel = SearchModel()
     init() {
         UITabBar.appearance().backgroundColor = UIColor(.backgroundGrey)
