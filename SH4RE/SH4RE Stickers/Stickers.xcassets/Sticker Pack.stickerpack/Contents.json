@@ -1,0 +1,26 @@
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "grid-size" : "regular"
+  },
+  "stickers" : [
+    {
+      "filename" : "3d.sticker"
+    },
+    {
+      "filename" : "Fat 4 S 1.sticker"
+    },
+    {
+      "filename" : "Flat 1.sticker"
+    },
+    {
+      "filename" : "Snakes 1.sticker"
+    },
+    {
+      "filename" : "3d 4s 1.sticker"
+    }
+  ]
+}
