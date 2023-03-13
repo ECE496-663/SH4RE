@@ -22,6 +22,7 @@ extension Collection {
 struct HomeView: View {
     @Binding var tabSelection: Int
     @ObservedObject var searchModel: SearchModel
+    let categories = getCategoriesAndImg()
 
     var body: some View {
         NavigationStack{
@@ -75,31 +76,8 @@ struct HomeView: View {
                                 Text("Categories")
                                     .font(.title2.bold())
                                 VStack(spacing: 15){
-                                    ZStack(alignment: .leading) {
-                                        Image(uiImage: UIImage(named: "CreateListingBkgPic")!)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(height: 160)
-                                            .cornerRadius(20)
-                                            .clipped()
-                                        Text("Tools")
-                                            .font(.title.bold())
-                                            .foregroundColor(.white)
-                                            .shadow(radius: 2)
-                                            .padding(25)
-                                    }
-                                    ZStack(alignment: .leading) {
-                                        Image(uiImage: UIImage(named: "CreateListingBkgPic")!)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(height: 160)
-                                            .cornerRadius(20)
-                                            .clipped()
-                                        Text("Camping\nEquipment")
-                                            .font(.title.bold())
-                                            .foregroundColor(.white)
-                                            .shadow(radius: 2)
-                                            .padding(25)
+                                    ForEach(categories) {category in
+                                        CategoryCardView(tabSelection: $tabSelection, searchModel: searchModel, category: category)
                                     }
                                 }
                             }
@@ -125,6 +103,38 @@ struct RecentSearchCard: View {
             .padding()
             .frame(width: 110, height: 100, alignment: .leading)
             .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
+    }
+}
+
+struct CategoryCardView: View {
+    @Binding var tabSelection: Int
+    @ObservedObject var searchModel: SearchModel
+    var category: Category
+    
+    var body: some View {
+        ZStack(alignment: .leading) {
+            Image(uiImage: category.image)
+                .resizable()
+                .scaledToFill()
+                .frame(height: 160)
+                .overlay(.gray.opacity(0.1))
+                .cornerRadius(20)
+                .clipped()
+            Text(category.name)
+                .font(.title.bold())
+                .foregroundColor(.white)
+                .shadow(color: .black, radius: 2)
+                .padding(25)
+                .frame(width:300, alignment: .leading)
+        }
+        .onTapGesture {
+            searchModel.searchQuery = ""
+            //Not sure how filtersheet is going to interact with search yet, so this is temp
+            //                                            searchModel.category = category.name
+            searchModel.searchQuery = category.name
+            searchModel.searchReady = true
+            tabSelection = 2
+        }
     }
 }
 
