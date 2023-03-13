@@ -41,22 +41,30 @@ struct HomeView: View {
                     ScrollView {
                         //Body
                         VStack(alignment: .leading){
-                            //Recent Searches
-                            VStack (alignment: .leading) {
-                                Text("Recent Searches")
-                                    .font(.title2.bold())
-                                HStack(alignment: .center){
-                                    ForEach (searchModel.recentSearchQueries, id: \.self) { query in
-                                        Button(action: {
-                                            searchModel.searchQuery = query
-                                            searchModel.searchReady = true
-                                            tabSelection = 2
-                                        }) {
-                                            RecentSearchCard(searchText: query)
+                            if(searchModel.recentSearchQueries.count > 1) {
+                                //Recent Searches
+                                VStack (alignment: .leading) {
+                                    Text("Recent Searches")
+                                        .font(.title2.bold())
+                                    HStack(alignment: .center){
+                                        if(searchModel.recentSearchQueries.count == 2){
+                                            Spacer()
+                                        }
+                                        ForEach (searchModel.recentSearchQueries, id: \.self) { query in
+                                            Button(action: {
+                                                searchModel.searchQuery = query
+                                                searchModel.searchReady = true
+                                                tabSelection = 2
+                                            }) {
+                                                RecentSearchCard(searchText: query)
+                                            }
                                             // match everything but the last
                                             if query != searchModel.recentSearchQueries.last {
                                                 Spacer()
                                             }
+                                        }
+                                        if(searchModel.recentSearchQueries.count == 2){
+                                            Spacer()
                                         }
                                     }
                                 }
