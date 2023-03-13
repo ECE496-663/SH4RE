@@ -10,12 +10,13 @@ import SwiftUI
 struct LandingView: View {
     var body: some View {
         ZStack {
-            Color(UIColor(.primaryBase))
+            Color(UIColor(.primaryLight))
                 .ignoresSafeArea()
-            Text("SH4RE")
+            Image(uiImage: UIImage(named:"Logo")!)
+                .resizable()
+                .frame(maxWidth: screenSize.width * 0.75, maxHeight: screenSize.height * 0.3)
                 .foregroundColor(.white)
-                .font(.system(size: 48, weight: .bold))
-                .position(x: screenSize.width * 0.5, y: screenSize.height * 0.25)
+                .position(x: screenSize.width * 0.5, y: screenSize.height * 0.4)
         }
     }
 }
