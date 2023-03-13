@@ -22,23 +22,8 @@ extension Collection {
 struct HomeView: View {
     @Binding var tabSelection: Int
     @Binding var searchQuery: String
+    @Binding var searchReady: Bool
     @Binding var recentSearchQueries: [String]
-    
-    // Manages the three most recent searches made by the user
-    func addRecentSearch(searchQuery: String){
-        if (searchQuery.isEmpty || searchQuery == ""){ return }
-        var savedValues = UserDefaults.standard.stringArray(forKey: "RecentSearchQueries") ?? []
-        if let index = savedValues.firstIndex(of: searchQuery) {
-            savedValues.remove(at: index)
-        }
-        if savedValues.count == 3 {
-            savedValues.removeLast()
-        }
-        savedValues.insert(searchQuery, at: 0)
-        UserDefaults.standard.set(savedValues, forKey: "RecentSearchQueries")
-        recentSearchQueries = savedValues
-        print(recentSearchQueries)
-    }
 
     var body: some View {
         NavigationStack{
@@ -51,7 +36,8 @@ struct HomeView: View {
                         .textFieldStyle(textInputStyle())
                         .onSubmit {
                             guard searchQuery.isEmpty == false else{ return }
-                            addRecentSearch(searchQuery: searchQuery)
+                            searchReady = true
+                            tabSelection = 2
                         }
                     ScrollView {
                         //Body
@@ -64,8 +50,8 @@ struct HomeView: View {
                                     ForEach (recentSearchQueries, id: \.self) { query in
                                         Button(action: {
                                             searchQuery = query
+                                            searchReady = true
                                             tabSelection = 2
-                                            addRecentSearch(searchQuery: query)
                                         }) {
                                             RecentSearchCard(searchText: query)
                                             // match everything but the last
@@ -146,6 +132,6 @@ struct RecentSearchCard: View {
 
 struct Previews_HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(tabSelection: .constant(1), searchQuery: .constant(""), recentSearchQueries: .constant([""]))
+        HomeView(tabSelection: .constant(1), searchQuery: .constant(""), searchReady: .constant(false), recentSearchQueries: .constant([""]))
     }
 }

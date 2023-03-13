@@ -27,6 +27,7 @@ struct ContentView: View {
     @State private var tabSelection = 1
     @ObservedObject var currentUser = CurrentUser()
     @State private var searchQuery: String = ""
+    @State private var searchReady: Bool = true
     @State var recentSearchQueries: [String] = UserDefaults.standard.stringArray(forKey: "RecentSearchQueries") ?? [""]
     init() {
         UITabBar.appearance().backgroundColor = UIColor(.backgroundGrey)
@@ -36,12 +37,12 @@ struct ContentView: View {
         ZStack {
             if (currentUser.hasLoggedIn) {
                 TabView(selection: $tabSelection) {
-                    HomeView(tabSelection: $tabSelection, searchQuery: $searchQuery, recentSearchQueries: $recentSearchQueries)
+                    HomeView(tabSelection: $tabSelection, searchQuery: $searchQuery, searchReady: $searchReady, recentSearchQueries: $recentSearchQueries)
                         .tabItem {
                             Label("Home", systemImage: "house.fill")
                         }
                         .tag(1)
-                    SearchView(tabSelection: $tabSelection, searchQuery: $searchQuery, recentSearchQueries: $recentSearchQueries)
+                    SearchView(tabSelection: $tabSelection, searchQuery: $searchQuery, searchReady: $searchReady, recentSearchQueries: $recentSearchQueries)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Search", systemImage: "safari.fill")

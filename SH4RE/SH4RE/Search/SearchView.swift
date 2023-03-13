@@ -17,6 +17,7 @@ import Combine
 struct SearchView: View {
     @Binding var tabSelection: Int
     @Binding var searchQuery: String
+    @Binding var searchReady: Bool
     @Binding var recentSearchQueries: [String]
     @EnvironmentObject var currentUser: CurrentUser
 
@@ -34,8 +35,7 @@ struct SearchView: View {
     @State var maxPrice: String = ""
     @State var maxDistance: String = ""
     @State var minRating = 0.0
-    
-    //This function is repeated and I dont like it but I also dont know how to solve it.
+
     // Manages the three most recent searches made by the user
     func addRecentSearch(searchQuery: String){
         if (searchQuery.isEmpty || searchQuery == ""){ return }
@@ -49,7 +49,6 @@ struct SearchView: View {
         savedValues.insert(searchQuery, at: 0)
         UserDefaults.standard.set(savedValues, forKey: "RecentSearchQueries")
         recentSearchQueries = savedValues
-        print(recentSearchQueries)
     }
 
     var body: some View {
@@ -64,6 +63,7 @@ struct SearchView: View {
                         .onSubmit {
                             guard searchQuery.isEmpty == false else{ return }
                             addRecentSearch(searchQuery: searchQuery)
+                            //doSearch()
                         }
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 15){
@@ -108,6 +108,12 @@ struct SearchView: View {
             }
         }
         .onAppear(){
+            if (searchReady) {
+                searchReady = false;
+                //If search was completed from the homescreen, then when the user clicks enter, searchReady will be set to true, and the tabs will be changed to the search tab. Here, we must call the search function
+                addRecentSearch(searchQuery: searchQuery)
+                //doSearch(searchQuery)
+            }
             self.listingsView.fetchListings(completion: { success in
                 if success{
                     self.listingsView.fetchProductMainImage( completion: { success in
@@ -162,8 +168,9 @@ struct SearchView_Previews: PreviewProvider {
 struct SearchView_Previews_Helper: View {
     @State var searchQuery = ""
     @State var recentSearchQueries = [""]
+    @State private var searchReady = false
     var body: some View {
-        SearchView(tabSelection: .constant(1), searchQuery: $searchQuery, recentSearchQueries: $recentSearchQueries)
+        SearchView(tabSelection: .constant(1), searchQuery: $searchQuery, searchReady: $searchReady, recentSearchQueries: $recentSearchQueries)
             .environmentObject(CurrentUser())
     }
 }
