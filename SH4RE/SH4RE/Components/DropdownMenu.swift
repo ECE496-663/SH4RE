@@ -92,6 +92,8 @@ struct DropdownMenu: View {
                         }
                     }
                     Divider()
+                } else {
+                    Divider().opacity(0)
                 }
                 ForEach(options, id: \.self){ category in
                     HStack{
