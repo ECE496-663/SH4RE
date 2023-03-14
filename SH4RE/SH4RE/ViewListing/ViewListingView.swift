@@ -232,7 +232,6 @@ struct ViewListingView: View {
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath {
                 let storageRef = Storage.storage().reference(withPath: path)
-                //                Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
                 storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
                     if let error = error {
                         print (error)

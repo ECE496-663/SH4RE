@@ -161,81 +161,88 @@ func sendBookingRequest(uid: String, listing_id : String, title:String, start: D
                      if let document = document, document.exists {
                          let data = document.data()!
                          let renterId = data["UID"] as? String ?? ""
-                         let title = data["Title"] as? String ?? ""
-                         let dateFormatter = DateFormatter()
-                         dateFormatter.dateStyle = .short
                          
-                         var dateString: String
-                         if(end != nil){
-                             dateString = dateFormatter.string(from: start) + " - " + dateFormatter.string(from: end!)
+                         if renterId != uid{
+                             let title = data["Title"] as? String ?? ""
+                             let dateFormatter = DateFormatter()
+                             dateFormatter.dateStyle = .short
+                             
+                             var dateString: String
+                             if(end != nil){
+                                 dateString = dateFormatter.string(from: start) + " - " + dateFormatter.string(from: end!)
+                             }else{
+                                 dateString = dateFormatter.string(from: start)
+                             }
+                             
+                             let msg = ["fromId": uid, "toId": renterId, "text": "Rental Request", "timestamp": Date(), "isRequest": true, "listingTitle": title, "datesRequested": dateString, "listingId": listing_id, "requestId": requestDoc.documentID]
+                             
+                             FirebaseManager.shared.firestore.collection(FirebaseConstants.messages).document(uid).collection(renterId).addDocument(data: msg)
+                             
+                             let recipientMessageDocument = FirebaseManager.shared.firestore.collection("messages")
+                                 .document(renterId)
+                                 .collection(uid)
+                                 .addDocument(data: msg)
+                             
+                             let renterName = title
+                             let recentMsgDoc = FirebaseManager.shared.firestore
+                                 .collection(FirebaseConstants.recentMessages)
+                                 .document(uid)
+                                 .collection(FirebaseConstants.messages)
+                                 .document(renterId)
+                             
+                             let docData = [
+                                FirebaseConstants.timestamp: Date(),
+                                FirebaseConstants.text: "Rental Request",
+                                FirebaseConstants.fromId: uid,
+                                FirebaseConstants.toId: renterId,
+                                "name": renterName,
+                                "isRequest": false,
+                                "listingTitle": "",
+                                "datesRequested": "",
+                                "listingId": "",
+                                "requestId": ""
+                                
+                             ] as [String : Any]
+                             
+                             recentMsgDoc.setData(docData) { error in
+                                 if let error = error {
+                                     print("Failed to save recent message: \(error)")
+                                     return
+                                 }
+                             }
+                             guard let currentUser = FirebaseManager.shared.currentUser else {
+                                 return
+                             }
+                             let recipientRecentMessageDictionary = [
+                                FirebaseConstants.timestamp: Date(),
+                                FirebaseConstants.text: "Rental Request",
+                                FirebaseConstants.fromId: renterId,
+                                FirebaseConstants.toId: uid,
+                                "name": currentUser.name,
+                                "isRequest": false,
+                                "listingTitle": "",
+                                "datesRequested": "",
+                                "listingId": "",
+                                "requestId": ""
+                                
+                             ] as [String : Any]
+                             
+                             let recipDoc = FirebaseManager.shared.firestore
+                                 .collection(FirebaseConstants.recentMessages)
+                                 .document(renterId)
+                                 .collection(FirebaseConstants.messages)
+                                 .document(uid)
+                             
+                             recipDoc.setData(recipientRecentMessageDictionary) { error in
+                                 if let error = error {
+                                     print("Failed to save recent message: \(error)")
+                                     return
+                                 }
+                             }
+                             
                          }else{
-                             dateString = dateFormatter.string(from: start)
-                         }
-                            
-                         let msg = ["fromId": uid, "toId": renterId, "text": "Rental Request", "timestamp": Date(), "isRequest": true, "listingTitle": title, "datesRequested": dateString, "listingId": listing_id, "requestId": requestDoc.documentID]
-                         
-                         FirebaseManager.shared.firestore.collection(FirebaseConstants.messages).document(uid).collection(renterId).addDocument(data: msg)
-
-                         let recipientMessageDocument = FirebaseManager.shared.firestore.collection("messages")
-                             .document(renterId)
-                             .collection(uid)
-                             .addDocument(data: msg)
-                         
-                         let renterName = title
-                         let recentMsgDoc = FirebaseManager.shared.firestore
-                             .collection(FirebaseConstants.recentMessages)
-                             .document(uid)
-                             .collection(FirebaseConstants.messages)
-                             .document(renterId)
-                         
-                         let docData = [
-                            FirebaseConstants.timestamp: Date(),
-                            FirebaseConstants.text: "Rental Request",
-                            FirebaseConstants.fromId: uid,
-                            FirebaseConstants.toId: renterId,
-                            "name": renterName,
-                            "isRequest": false,
-                            "listingTitle": "",
-                            "datesRequested": "",
-                            "listingId": "",
-                            "requestId": ""
-                            
-                         ] as [String : Any]
-                         
-                         recentMsgDoc.setData(docData) { error in
-                             if let error = error {
-                                 print("Failed to save recent message: \(error)")
-                                 return
-                             }
-                         }
-                         guard let currentUser = FirebaseManager.shared.currentUser else {
-                             return
-                         }
-                         let recipientRecentMessageDictionary = [
-                            FirebaseConstants.timestamp: Date(),
-                            FirebaseConstants.text: "Rental Request",
-                            FirebaseConstants.fromId: renterId,
-                            FirebaseConstants.toId: uid,
-                            "name": currentUser.name,
-                            "isRequest": false,
-                            "listingTitle": "",
-                            "datesRequested": "",
-                            "listingId": "",
-                            "requestId": ""
-                            
-                         ] as [String : Any]
-                         
-                         let recipDoc = FirebaseManager.shared.firestore
-                             .collection(FirebaseConstants.recentMessages)
-                             .document(renterId)
-                             .collection(FirebaseConstants.messages)
-                             .document(uid)
-                         
-                         recipDoc.setData(recipientRecentMessageDictionary) { error in
-                             if let error = error {
-                                 print("Failed to save recent message: \(error)")
-                                 return
-                             }
+                             //TODO probably just don't show user there listing in search
+                             print("Can't send rental request for your own booking")
                          }
                      }else{
                          print("Document does not exist")
