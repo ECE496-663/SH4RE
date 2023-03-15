@@ -21,6 +21,7 @@ struct ViewListingView: View {
     
     //parameters passed in from search nav link
     var listing: Listing
+    var chatLogViewModel: ChatLogViewModel
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     @State private var showCal = false
@@ -34,7 +35,7 @@ struct ViewListingView: View {
     @State var title:String = ""
     @State var price:String = ""
     @State var name:String = ""
-        
+    
     @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 1)
     @State var startDateText: String = ""
     @State var endDateText: String = ""
@@ -117,7 +118,6 @@ struct ViewListingView: View {
         .background(.white)
     }
     
-    
     var body: some View {
         
         ZStack {
@@ -180,9 +180,9 @@ struct ViewListingView: View {
                     reviews
                 }
             }
+            
             PopUp(show: $showPopUp) {
                 VStack(alignment: .leading) {
-                    
                     if (endDateText == "") {
                         Text("Send request for “\(listing.title)” for \(startDateText)")
                             .fixedSize(horizontal: false, vertical: true)
@@ -193,13 +193,18 @@ struct ViewListingView: View {
                             .bold()
                     }
                     Spacer()
-                    NavigationLink(destination: MessagesChat(vm:ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: name)))) {
+                    
+                    NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
                         HStack {
                             Text("Send")
                                 .font(.body)
                                 .foregroundColor(.white)
                         }
-                    }
+                    }.simultaneousGesture(TapGesture().onEnded{
+                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
+                        availabilityCalendar.startDate = nil
+                        availabilityCalendar.endDate = nil
+                    })
                     .fontWeight(.semibold)
                     .frame(width: screenSize.width * 0.8, height: 40)
                     .foregroundColor(.white)
@@ -223,12 +228,10 @@ struct ViewListingView: View {
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
-            availabilityCalendar.disabledDates = [Date().addingTimeInterval(60*60*24*4), Date().addingTimeInterval(60*60*24*5), Date().addingTimeInterval(60*60*24*6)] // here is where we would add the disabled dates
-            
+            availabilityCalendar.disabledDates = listing.availability
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath {
                 let storageRef = Storage.storage().reference(withPath: path)
-//                Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
                 storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
                     if let error = error {
                         print (error)
@@ -239,9 +242,6 @@ struct ViewListingView: View {
                     }
                 }
             }
-            getUserName(uid: listing.uid, completion: { ret in
-                name = ret
-            })
         }
         .sheet(isPresented: $showCal, onDismiss: didDismiss) {
             RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
@@ -263,8 +263,9 @@ struct ViewListingView: View {
 
 struct ViewListingView_Previews: PreviewProvider {
     static var previewListing = Listing(uid: "123", title: "Sample Listing", description: "", price: "10")
+    static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "123", uid: "123", name: "Random"))
     
     static var previews: some View {
-        ViewListingView(tabSelection: .constant(2), listing: previewListing)
+        ViewListingView(tabSelection: .constant(2), listing: previewListing, chatLogViewModel: previewChatLogModel)
     }
 }
