@@ -70,7 +70,7 @@ struct SearchView: View {
                                 // If theres no image for a listing, just use the placeholder
                                 let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                                 NavigationLink(destination: {
-                                    ViewListingView(tabSelection: $tabSelection, listing: listing).environmentObject(currentUser)
+                                    ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title))).environmentObject(currentUser)
                                 }, label: {
                                     ProductCard(listing: listing, image: productImage)
                                 })
