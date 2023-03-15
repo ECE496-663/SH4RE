@@ -10,6 +10,9 @@ import SwiftUI
 struct ProductCard: View {
     var listing: Listing;
     var image:UIImage
+    private let width:CGFloat = 170
+    private let height:CGFloat = 175
+
         
     var body: some View {
         
@@ -19,7 +22,7 @@ struct ProductCard: View {
                 Image(uiImage: self.image)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 180 , height: 175)
+                    .frame(width: width , height: height)
                     .clipped()
             
                 VStack (alignment: .leading) {
@@ -31,11 +34,11 @@ struct ProductCard: View {
                         .font(.caption)
                 }
                 .padding()
-                .frame(width: 180, height: 75, alignment: .leading)
+                .frame(width: width, height: 75, alignment: .leading)
                 .background(.white)
             }
         }
-        .frame(width: 180, height: 250)
+        .frame(width: width, height: height + 75)
         .background(.white)
         .cornerRadius(20)
     }
