@@ -242,7 +242,7 @@ struct CreateListingView: View {
                                     // upload data fields
                                     var calAvail = ""
                                     if (showCal) {
-                                var stringDates = ""
+                                    var stringDates = ""
                                         for date in dates {
                                             let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
                                             stringDates += res + ","
