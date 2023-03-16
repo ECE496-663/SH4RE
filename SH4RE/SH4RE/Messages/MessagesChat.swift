@@ -11,6 +11,10 @@ struct MessagesChat: View {
     
     @ObservedObject var vm: ChatLogViewModel
     static let emptyScrollToString = "Empty"
+    @State private var showPopUp = false
+    @State private var reviewRating = 0.0
+    @State private var review: String = ""
+
     
     var body: some View {
         ZStack {
@@ -20,6 +24,7 @@ struct MessagesChat: View {
                 chatBottomBar
                     .background(Color.white.ignoresSafeArea())
             }
+            leaveReview
         }
         .navigationTitle(vm.chatUser?.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
@@ -34,7 +39,7 @@ struct MessagesChat: View {
                 ScrollViewReader { scrollViewProxy in
                     VStack {
                         ForEach(vm.chatMessages) { message in
-                            MessageView(message: message)
+                            MessageView(message: message, showPopUp: $showPopUp)
                         }
                         
                         HStack{ Spacer() }
@@ -85,6 +90,49 @@ struct MessagesChat: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
+    }
+    
+    private var leaveReview: some View {
+        PopUp(show: $showPopUp) {
+            VStack {
+                Text("Leave review for \(vm.chatUser?.name ?? "")!")
+                    .fixedSize(horizontal: false, vertical: true)
+                    .bold()
+                Spacer()
+                
+                RatingsView(rating: $reviewRating)
+                    .scaleEffect(2)
+                
+                Spacer()
+                
+                TextField("Description", text: $review,  axis: .vertical)
+                    .lineLimit(5...10)
+                    .textFieldStyle(textInputStyle())
+                    .padding()
+                
+                Button(action: {
+                    showPopUp.toggle()
+                    
+                    // TODO: bryan add send review
+                })
+                {
+                    Text("Send")
+                }
+                .buttonStyle(primaryButtonStyle())
+            
+                Button(action: {
+                    showPopUp.toggle()
+                })
+                {
+                    Text("Cancel")
+                }
+                .buttonStyle(secondaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 420)
+            .background(.white)
+            .cornerRadius(8)
+        }
     }
 }
 

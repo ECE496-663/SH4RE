@@ -181,50 +181,7 @@ struct ViewListingView: View {
                 }
             }
             
-            PopUp(show: $showPopUp) {
-                VStack(alignment: .leading) {
-                    if (endDateText == "") {
-                        Text("Send request for “\(listing.title)” for \(startDateText)")
-                            .fixedSize(horizontal: false, vertical: true)
-                            .bold()
-                    } else {
-                        Text("Send request for “\(listing.title)” for \(startDateText) - \(endDateText)")
-                            .fixedSize(horizontal: false, vertical: true)
-                            .bold()
-                    }
-                    Spacer()
-                    
-                    NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
-                        HStack {
-                            Text("Send")
-                                .font(.body)
-                                .foregroundColor(.white)
-                        }
-                    }.simultaneousGesture(TapGesture().onEnded{
-                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
-                        availabilityCalendar.startDate = nil
-                        availabilityCalendar.endDate = nil
-                    })
-                    .fontWeight(.semibold)
-                    .frame(width: screenSize.width * 0.8, height: 40)
-                    .foregroundColor(.white)
-                    .background(Color.primaryDark)
-                    .cornerRadius(40)
-                    
-                    Button(action: {
-                        showPopUp.toggle()
-                    })
-                    {
-                        Text("Cancel")
-                    }
-                    .buttonStyle(secondaryButtonStyle())
-                }
-                .padding()
-                .frame(width: screenSize.width * 0.9, height: 180)
-                .background(.white)
-                .cornerRadius(8)
-                
-            }
+            sendMessagePopUp
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
@@ -245,6 +202,53 @@ struct ViewListingView: View {
         }
         .sheet(isPresented: $showCal, onDismiss: didDismiss) {
             RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
+        }
+    }
+    
+    private var sendMessagePopUp: some View {
+        PopUp(show: $showPopUp) {
+            VStack(alignment: .leading) {
+                if (endDateText == "") {
+                    Text("Send request for “\(listing.title)” for \(startDateText)")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .bold()
+                } else {
+                    Text("Send request for “\(listing.title)” for \(startDateText) - \(endDateText)")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .bold()
+                }
+                Spacer()
+                
+                NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
+                    HStack {
+                        Text("Send")
+                            .font(.body)
+                            .foregroundColor(.white)
+                    }
+                }.simultaneousGesture(TapGesture().onEnded{
+                    sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
+                    availabilityCalendar.startDate = nil
+                    availabilityCalendar.endDate = nil
+                })
+                .fontWeight(.semibold)
+                .frame(width: screenSize.width * 0.8, height: 40)
+                .foregroundColor(.white)
+                .background(Color.primaryDark)
+                .cornerRadius(40)
+                
+                Button(action: {
+                    showPopUp.toggle()
+                })
+                {
+                    Text("Cancel")
+                }
+                .buttonStyle(secondaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 180)
+            .background(.white)
+            .cornerRadius(8)
+            
         }
     }
     

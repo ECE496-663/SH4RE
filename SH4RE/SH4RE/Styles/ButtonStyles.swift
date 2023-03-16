@@ -59,6 +59,26 @@ struct secondaryButtonStyle: ButtonStyle{
     }
 }
 
+struct disabledButtonStyle: ButtonStyle{
+    private var width: CGFloat = screenSize.width * 0.8
+    private var height: CGFloat
+
+    init(width: CGFloat = screenSize.width * 0.8, tall: Bool = false) {
+        self.width = width
+        self.height = tall ? 60 : 40
+    }
+    
+    func makeBody(configuration: Self.Configuration) -> some View {
+        return configuration.label
+            .fontWeight(.semibold)
+            .frame(width: width, height: height)
+            .foregroundColor(.white)
+            .opacity(0.5)
+            .background(Color.gray)
+            .cornerRadius(40)
+    }
+}
+
 
 
 struct ButtonStyles_Previews: PreviewProvider {
