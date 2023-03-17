@@ -10,7 +10,9 @@ import FirebaseAuth
 
 struct AccountView: View {
     @Binding var tabSelection: Int
+    @ObservedObject var favouritesModel: FavouritesModel
     @EnvironmentObject var currentUser: CurrentUser
+    
     var body: some View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
@@ -36,7 +38,19 @@ struct AccountView: View {
                         Text("Logout")
                     }
                     .buttonStyle(secondaryButtonStyle())
+                    
+                    //Favourites
+                    VStack (alignment: .leading) {
+                        Text("Favourites")
+                            .font(.title)
+                        HStack(){
+                            //This needs an enpoint to get listings that have been liked
+                            ProductCard(favouritesModel: FavouritesModel(), listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+                            Spacer()
+                        }
+                    }
                 }
+                .padding()
             }
         }
     }
@@ -44,6 +58,7 @@ struct AccountView: View {
 
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountView(tabSelection: .constant(1))
+        AccountView(tabSelection: .constant(1), favouritesModel: FavouritesModel())
+            .environmentObject(CurrentUser())
     }
 }
