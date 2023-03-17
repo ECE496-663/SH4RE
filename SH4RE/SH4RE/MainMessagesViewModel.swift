@@ -63,7 +63,12 @@ class MainMessagesViewModel: ObservableObject {
                         let fromId = data["fromId"] as? String ?? ""
                         let toId = data["toId"] as? String ?? ""
                         let timestamp = (data["timestamp"] as? Timestamp)?.dateValue() ?? Date()
-                        let rm = RecentMessage(id: docId, text: text, name:name, fromId: fromId, toId: toId, timestamp: timestamp)
+                        let isRequest = data["isRequest"] as? Bool ?? false
+                        let listingTitle = data["listingTitle"] as? String ?? ""
+                        let datesRequested = data["datesRequested"] as? String ?? ""
+                        let listingId = data["listingId"] as? String ?? ""
+                        let requestId = data["requestId"] as? String ?? ""
+                        let rm = RecentMessage(id: docId, text: text, name:name, fromId: fromId, toId: toId, timestamp: timestamp, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId: requestId)
                         self.recentMessages.insert(rm, at: 0)
                     }
                 })

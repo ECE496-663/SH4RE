@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import AlertX
+import Firebase
 import FirebaseAuth
 
 struct ParentFunctionKey: EnvironmentKey {
