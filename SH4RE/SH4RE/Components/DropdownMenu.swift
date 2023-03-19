@@ -36,7 +36,7 @@ struct DropdownStyle: DisclosureGroupStyle {
             }
             HStack {
                 configuration.label
-                    .foregroundColor(noSelection ? .gray : .black)
+                    .foregroundColor(noSelection ? .textfield : .black)
                 Spacer()
                 button
                     .rotationEffect(.degrees(configuration.isExpanded ? 180 : 0))
@@ -92,6 +92,8 @@ struct DropdownMenu: View {
                         }
                     }
                     Divider()
+                } else {
+                    Divider().opacity(0)
                 }
                 ForEach(options, id: \.self){ category in
                     HStack{

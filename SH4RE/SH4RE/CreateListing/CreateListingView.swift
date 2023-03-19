@@ -43,7 +43,7 @@ struct CreateListingView: View {
     // drop down fields
     @State var categorySelection = ""
     var categoryPlaceholder = " Category"
-    var categoryList = ["Tools", "Sporting Equipment", "Cameras", "Cooking"]
+    var categoryList = ["Film & Photography", "Audio Visual Equipment", "Projectors & Screens", "Drones", "DJ Equipment", "Transport", "Storage", "Electronics", "Party & Events", "Sports", "Musical Instruments", "Home, Office & Garden", "Holiday & Travel", "Clothing"]
     @State var availabilitySelection = ""
     var availabilityPlaceholder = " Availability"
     var availabilityList = ["Everyday", "Weekdays", "Weekends"]
@@ -53,6 +53,7 @@ struct CreateListingView: View {
     @Environment(\.calendar) var calendar
     @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
+    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
     @EnvironmentObject var currentUser: CurrentUser
     
     var bounds: PartialRangeFrom<Date> {
@@ -71,6 +72,184 @@ struct CreateListingView: View {
     @State var showCancelAlertX: Bool = false
     @State var errorInField: Bool = false
     
+    // componnents
+    private var imageView: some View {
+        Group {
+            GeometryReader { geometry in
+                ImageCarouselView(numberOfImages: imagesCount, isEditable: true) {
+                    ForEach(pictures, id:\.self) { picture in
+                        HStack {
+                            Image(uiImage: picture)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: geometry.size.width * 0.9, height: 250)
+                                .clipped()
+                                .cornerRadius(10)
+                                .overlay(RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.primaryDark, lineWidth: 3))
+                                .shadow(radius: 10)
+                            
+                        }
+                        .frame(width: geometry.size.width, height: 250)
+                    }
+                    if (imagesCount < 6) {
+                        HStack {
+                            Image("CreateListingBkgPic")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: geometry.size.width * 0.9, height: 250)
+                                .clipped()
+                                .cornerRadius(10)
+                                .overlay(RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.primaryDark, lineWidth: 3))
+                                .onTapGesture {
+                                    showSheet = true
+                                    if (!showSheet) {
+                                        pictures.append(image)
+                                    }
+                                }
+                                .onChange(of: image) { newItem in
+                                    Task {
+                                        pictures.append(image)
+                                    }
+                                    imagesCount += 1
+                                }
+                        }
+                        .frame(width: geometry.size.width, height: 250)
+                    }
+                }
+            }
+            .environment(\.deleteImage, deleteImage)
+            .sheet(isPresented: $showSheet) {
+                ImagePicker(sourceType: .photoLibrary, selectedImage: $image)
+            }
+            .frame(height: 275)
+            
+            //divider
+            Color.gray
+                .frame(width: screenSize.width * 0.95, height: 1 / UIScreen.main.scale)
+                .padding(.top)
+        }
+    }
+    private var fieldEntriesView: some View {
+        Group {
+            // title entry
+            TextField("Title", text: $title)
+                .textFieldStyle(textInputStyle())
+                .frame(width: screenSize.width * 0.9)
+                .padding()
+            
+            // category entry
+            DropdownMenu(label: "Category", options: categoryList, selection: $categorySelection)
+                .frame(maxWidth: screenSize.width * 0.9)
+            
+            // description entry
+            TextField("Description", text: $description,  axis: .vertical)
+                .lineLimit(5...10)
+                .textFieldStyle(textInputStyle())
+                .frame(width: screenSize.width * 0.9)
+                .padding()
+            
+            // cost per day entry
+            TextField("Cost per day", text: $cost)
+                .textFieldStyle(textInputStyle())
+                .keyboardType(.numberPad)
+                .onReceive(Just(cost)) { newValue in
+                    let filtered = newValue.filter { "0123456789".contains($0) }
+                    if filtered != newValue {
+                        cost = filtered
+                    }
+                }
+                .frame(width: screenSize.width * 0.9)
+                .padding()
+            
+            // postal code entry
+            TextField("Postal Code e.g. A1A 1A1", text: $postalCode)
+                .textFieldStyle(textInputStyle())
+                .frame(width: screenSize.width * 0.9)
+                .padding()
+        }
+    }
+    private var availabilityView: some View {
+        Group {
+            Text("Availability")
+                .font(.title2)
+                .frame(maxWidth: screenSize.width * 0.9, alignment: .leading)
+                .padding(.bottom)
+            
+            // availability
+            DropdownMenu(label: "Availability", options: availabilityList, selection: $availabilitySelection)
+                .frame(maxWidth: screenSize.width * 0.9)
+                .onChange(of: availabilitySelection) { value in
+                        availabilityCalendar.selectedDates = []
+                    }
+            
+            HStack {
+                Text("or make a")
+                Button(action: {
+                    showCal = true
+                    availabilitySelection = ""
+                }) {
+                    Text("Custom Availability")
+                }
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(.primaryBase)
+            }
+            .frame(maxWidth: screenSize.width * 0.85, alignment: .leading)
+        }
+    }
+    func resetInputs () {
+        pictures = []
+        imagesCount = 1
+        title = ""
+        description = ""
+        cost = ""
+        postalCode = ""
+        categorySelection = ""
+        availabilitySelection = ""
+        availabilityCalendar.selectedDates = []
+        showCal = false
+    }
+    func validatePost () {
+        if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
+            pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
+            (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty)) {
+            errorInField = true
+        }
+        if (!errorInField) {
+            // upload data fields
+            var calAvail = [Any]()
+            if (!availabilityCalendar.selectedDates.isEmpty) {
+                for date in availabilityCalendar.selectedDates {
+                    calAvail.append(date)
+                }
+            }
+            else {
+                calAvail.append(availabilitySelection)
+            }
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
+            let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
+            
+            // upload images and add paths to data fields
+            var index = 1
+            var imgPath = ""
+            var arrayImgs:[String] = []
+            for pic in pictures {
+                imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
+                arrayImgs.append(imgPath)
+                storageManager.upload(image: pic, path: imgPath)
+                index += 1
+            }
+            if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
+                NSLog("error");
+            }
+            showPostAlertX = true
+
+            //reset inputs
+            resetInputs()
+        }
+    }
+    
     var body: some View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
@@ -79,334 +258,125 @@ struct CreateListingView: View {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
             else {
-                VStack {
-                    GeometryReader { geometry in
-                        ImageCarouselView(numberOfImages: imagesCount, isEditable: true) {
-                            ForEach(pictures, id:\.self) { picture in
-                                Image(uiImage: picture)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: geometry.size.width, height: 250)
-                                    .aspectRatio(contentMode: .fill)
-                            }
-                            if (imagesCount < 6) {
-                                Image("CreateListingBkgPic")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: geometry.size.width, height: 250)
-                                    .aspectRatio(contentMode: .fill)
-                                    .onTapGesture {
-                                        showSheet = true
-                                        if (!showSheet) {
-                                            pictures.append(image)
-                                        }
-                                    }
-                                    .onChange(of: image) { newItem in
-                                        Task {
-                                            pictures.append(image)
-                                        }
-                                        imagesCount += 1
-                                    }
-                            }
-                        }
-                    }
-                    .environment(\.deleteImage, deleteImage)
-                    // this just opens the sheet to select a photo from library
-                    .sheet(isPresented: $showSheet) {
-                        // Pick an image from the photo library:
-                        ImagePicker(sourceType: .photoLibrary, selectedImage: $image)
-                        
-                        //  If you wish to take a photo from camera instead:
-                        // ImagePicker(sourceType: .camera, selectedImage: self.$image)
-                    }
-                    .frame(maxHeight: 300)
-                    
-                    //divider
-                    Color.gray
-                        .frame(width: screenSize.width * 0.95, height: 1 / UIScreen.main.scale)
-                        .padding(.top)
-                    
+                ScrollViewReader { value in
                     ScrollView([.vertical]) {
-                        // title entry
-                        TextField("Title", text: $title)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: screenSize.width * 0.9, height: 20)
-                            .padding()
+                        Text("New Post")
+                            .font(.title2)
+                            .bold()
+                            .id(1)
                         
-                        // category entry
-                        Menu {
-                            ForEach(categoryList, id: \.self){ selection in
-                                Button(selection) {
-                                    categorySelection = " " + selection
-                                }
-                            }
-                        } label: {
-                            VStack{
-                                HStack{
-                                    Text(categorySelection.isEmpty ? categoryPlaceholder : categorySelection)
-                                        .foregroundColor(categorySelection.isEmpty ? .textfield : .black)
-                                    Spacer()
-                                    Image(systemName: "arrowtriangle.left.fill")
-                                        .foregroundColor(.textfield)
-                                }
-                                .frame(width: screenSize.width * 0.9, height: 30)
-                                .background(.white)
-                                .cornerRadius(5)
-                            }
-                        }
+                        imageView
                         
-                        // description entry
-                        TextEditorWithPlaceholder(text: $description)
-                        
-                        // cost per day entry
-                        TextField("Cost per day", text: $cost)
-                            .textFieldStyle(.roundedBorder)
-                            .keyboardType(.numberPad)
-                            .onReceive(Just(cost)) { newValue in
-                                let filtered = newValue.filter { "0123456789".contains($0) }
-                                if filtered != newValue {
-                                    cost = filtered
-                                }
-                            }
-                            .frame(width: screenSize.width * 0.9, height: 20)
-                            .padding()
-                        
-                        // postal code entry
-                        TextField("Postal Code e.g. A1A 1A1", text: $postalCode)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: screenSize.width * 0.9, height: 20)
-                            .padding()
-                        
-                        Text("Availability")
-                            .font(.system(size: 20, weight: .semibold))
-                            .frame(maxWidth: screenSize.width * 0.9, alignment: .leading)
-                            .padding(.bottom)
-                        
-                        // availability
-                        Menu {
-                            ForEach(availabilityList, id: \.self){ selection in
-                                Button(selection) {
-                                    showCal = false
-                                    dates = []
-                                    availabilitySelection = " " + selection
-                                }
-                            }
-                        } label: {
-                            VStack{
-                                HStack{
-                                    Text(availabilitySelection.isEmpty ? availabilityPlaceholder : availabilitySelection)
-                                        .foregroundColor(availabilitySelection.isEmpty ? .textfield : .black)
-                                    Spacer()
-                                    Image(systemName: "arrowtriangle.left.fill")
-                                        .foregroundColor(.textfield)
-                                }
-                                .frame(width: screenSize.width * 0.9, height: 30)
-                                .background(.white)
-                                .cornerRadius(5)
-                            }
-                        }
-                        HStack {
-                            Text("or make a")
-                            Button(action: {
-                                showCal = true
-                                availabilitySelection = ""
-                            }) {
-                                Text("Custom Availability")
-                            }
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.primaryBase)
-                        }
-                        .frame(maxWidth: screenSize.width * 0.85, alignment: .leading)
-                        
-                        // custom availability calendar
-                        if (showCal) {
-                            MultiDatePicker(
-                                "Start Date",
-                                selection: $dates,
-                                in: bounds
-                            )
-                            .datePickerStyle(.graphical)
-                            .frame(maxWidth: screenSize.width * 0.9)
-                            .tint(.primaryBase)
-                        }
-                        Group {
-                            // POST
-                            Button(action: {
-                                // validate entries
-                                if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
-                                    pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
-                                    (availabilitySelection.isEmpty && dates.isEmpty)) {
-                                    errorInField = true
-                                }
-                                if (!errorInField) {
-                                    // upload data fields
-                                    var calAvail = ""
-                                    if (showCal) {
-                                        var stringDates = ""
-                                        for date in dates {
-                                            let res = String(date.year!) + "-" + String(date.month!) + "-" + String(date.day!)
-                                            stringDates += res + ","
-                                        }
-                                        calAvail = String(stringDates.dropLast())
-                                    }
-                                    else {
-                                        calAvail = availabilitySelection
-                                    }
-                                    
-                                     //TODO need front end to populate this array based on selections
-                                     //Example of how to create a date
-                                     //let stringDate = "2019-10-10"
-                                     //let dateFormatter = DateFormatter()
-                                     //dateFormatter.dateFormat = "yyyy-MM-dd"
-                                     //let date = dateFormatter.date(from: stringDate)
-                                     //let timestamp = Timestamp(date:date)
-                                     
-                                     var availability = [Timestamp]()
-
-                                     let listingFields: [String: Any] = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": availability, "Address": postalCode, "UID": getCurrentUserUid()]
-
-                                    let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
-                                    
-                                    // upload images and add paths to data fields
-                                    var index = 1
-                                    var imgPath = ""
-                                    var arrayImgs:[String] = []
-                                    for pic in pictures {
-                                        imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
-                                        arrayImgs.append(imgPath)
-                                        storageManager.upload(image: pic, path: imgPath)
-                                        index += 1
-                                    }
-                                    if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
-                                        NSLog("error");
-                                    }
-                                    
-                                    //reset inputs
-                                    pictures = []
-                                    imagesCount = 1
-                                    title = ""
-                                    description = ""
-                                    cost = ""
-                                    postalCode = ""
-                                    categorySelection = ""
-                                    availabilitySelection = ""
-                                    showCal = false
-                                    showPostAlertX = true
-                                }
-                            }) {
-                                Text("Post")
-                                    .fontWeight(.semibold)
-                                    .frame(width: screenSize.width * 0.9, height: 20)
-                                    .padding()
-                                    .foregroundColor(.white)
-                                    .background(Color.primaryDark)
-                                    .cornerRadius(40)
-                            }
-                            .alertX(isPresented: $errorInField, content: {
-                                AlertX(
-                                    title: Text("ERROR: Entries missing"),
-                                    theme: AlertX.Theme.custom(
-                                        windowColor: .grey,
-                                        alertTextColor: .errorColour,
-                                        enableShadow: true,
-                                        enableRoundedCorners: true,
-                                        enableTransparency: false,
-                                        cancelButtonColor: .white,
-                                        cancelButtonTextColor: .white,
-                                        defaultButtonColor: .primaryDark,
-                                        defaultButtonTextColor: .white
-                                    )
-                                )
-                            })
-                            .alertX(isPresented: $showPostAlertX, content: {
-                                AlertX(
-                                    title: Text("Listing Posted!"),
-                                    theme: AlertX.Theme.custom(
-                                        windowColor: .white,
-                                        alertTextColor: .primaryDark,
-                                        enableShadow: true,
-                                        enableRoundedCorners: true,
-                                        enableTransparency: false,
-                                        cancelButtonColor: .white,
-                                        cancelButtonTextColor: .white,
-                                        defaultButtonColor: .primaryDark,
-                                        defaultButtonTextColor: .white
-                                    )
-                                )
-                            })
+                        fieldEntriesView
                             
-                            // Cancel
-                            Button(action: {
-                                pictures = []
-                                imagesCount = 1
-                                title = ""
-                                description = ""
-                                cost = ""
-                                postalCode = ""
-                                categorySelection = ""
-                                availabilitySelection = ""
-                                showCal = false
-                                showCancelAlertX.toggle()
-                            })
-                            {
-                                Text("Cancel")
-                                    .fontWeight(.semibold)
-                                    .frame(width: screenSize.width * 0.9, height: 10)
-                                    .padding()
-                                    .foregroundColor(.primaryDark)
-                                    .background(.white)
-                                    .cornerRadius(40)
-                                    .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.primaryDark, lineWidth: 2))
+                        availabilityView
+                        
+                        // Post button
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 1)) {
+                                value.scrollTo(1)
                             }
-                            .padding(.bottom)
-                            .alertX(isPresented: $showCancelAlertX, content: {
-                                AlertX(
-                                    title: Text("Listing Cleared"),
-                                    theme: AlertX.Theme.custom(
-                                        windowColor: .white,
-                                        alertTextColor: .primaryDark,
-                                        enableShadow: true,
-                                        enableRoundedCorners: true,
-                                        enableTransparency: false,
-                                        cancelButtonColor: .white,
-                                        cancelButtonTextColor: .white,
-                                        defaultButtonColor: .primaryDark,
-                                        defaultButtonTextColor: .white
-                                    )
-                                )
-                            })
+                            // validate entries
+                            validatePost()
+                            
+                        }) {
+                            Text("Post")
+                                .fontWeight(.semibold)
+                                .frame(width: screenSize.width * 0.9, height: 20)
+                                .padding()
+                                .foregroundColor(.white)
+                                .background(Color.primaryDark)
+                                .cornerRadius(40)
                         }
+                        
+                        // Cancel button
+                        Button(action: {
+                            resetInputs()
+                            showCancelAlertX.toggle()
+                            withAnimation(.easeInOut(duration: 1)) {
+                                value.scrollTo(1)
+                            }
+                        })
+                        {
+                            Text("Cancel")
+                                .fontWeight(.semibold)
+                                .frame(width: screenSize.width * 0.9, height: 10)
+                                .padding()
+                                .foregroundColor(.primaryDark)
+                                .background(.white)
+                                .cornerRadius(40)
+                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.primaryDark, lineWidth: 2))
+                        }
+                        .padding(.bottom)
                     }
+                }
+                // custom availability calendar
+                .sheet(isPresented: $showCal) {
+                    RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
+                }
+
+                PopUp(show: $errorInField) {
+                    VStack {
+                        Text("ERROR: Entries missing")
+                            .foregroundColor(.errorColour)
+                            .bold()
+                            .padding(.bottom)
+                        Button(action: {
+                            errorInField.toggle()
+                        })
+                        {
+                            Text("OK")
+                        }
+                        .buttonStyle(primaryButtonStyle())
+                    }
+                    .padding()
+                    .frame(width: screenSize.width * 0.9, height: 130)
+                    .background(.white)
+                    .cornerRadius(30)
+                    
+                }
+                PopUp(show: $showPostAlertX) {
+                    VStack {
+                        Text("Listing Posted!")
+                            .foregroundColor(.primaryDark)
+                            .bold()
+                            .padding(.bottom)
+                        Button(action: {
+                            showPostAlertX.toggle()
+                        })
+                        {
+                            Text("OK")
+                        }
+                        .buttonStyle(primaryButtonStyle())
+                    }
+                    .padding()
+                    .frame(width: screenSize.width * 0.9, height: 130)
+                    .background(.white)
+                    .cornerRadius(30)
+                    
+                }
+                PopUp(show: $showCancelAlertX) {
+                    VStack {
+                        Text("Listing Cleared")
+                            .foregroundColor(.primaryDark)
+                            .bold()
+                            .padding(.bottom)
+                        Button(action: {
+                            showCancelAlertX.toggle()
+                        })
+                        {
+                            Text("OK")
+                        }
+                        .buttonStyle(primaryButtonStyle())
+                    }
+                    .padding()
+                    .frame(width: screenSize.width * 0.9, height: 130)
+                    .background(.white)
+                    .cornerRadius(30)
+                    
                 }
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-    }
-}
-
-struct TextEditorWithPlaceholder: View {
-    @Binding var text: String
-
-    var body: some View {
-        ZStack(alignment: .leading) {
-            if text.isEmpty {
-                VStack {
-                    Text("Description")
-                        .padding(.top, 10)
-                        .padding(.leading, 6)
-                        .opacity(1)
-                        .foregroundColor(.black)
-                        .padding()
-                }
-            }
-
-            VStack {
-                TextEditor(text: $text)
-                    .frame(width: screenSize.width * 0.9, height: 100)
-                    .opacity(text.isEmpty ? 0.8 : 1)
-                    .cornerRadius(5)
-                    .padding()
-            }
-        }
     }
 }
