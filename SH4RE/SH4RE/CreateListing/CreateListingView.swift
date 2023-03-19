@@ -43,7 +43,7 @@ struct CreateListingView: View {
     // drop down fields
     @State var categorySelection = ""
     var categoryPlaceholder = " Category"
-    var categoryList = ["Tools", "Sporting Equipment", "Cameras", "Cooking"]
+    var categoryList = ["Film & Photography", "Audio Visual Equipment", "Projectors & Screens", "Drones", "DJ Equipment", "Transport", "Storage", "Electronics", "Party & Events", "Sports", "Musical Instruments", "Home, Office & Garden", "Holiday & Travel", "Clothing"]
     @State var availabilitySelection = ""
     var availabilityPlaceholder = " Availability"
     var availabilityList = ["Everyday", "Weekdays", "Weekends"]
