@@ -11,6 +11,7 @@ import Combine
 import AlertX
 import Firebase
 import FirebaseAuth
+import FirebaseStorage
 
 struct ParentFunctionKey: EnvironmentKey {
     static let defaultValue: ((Int) -> Void)? = nil
@@ -23,8 +24,12 @@ extension EnvironmentValues {
 }
 
 struct CreateListingView: View {
-    var storageManager = StorageManager()
     @Binding var tabSelection: Int
+    @Binding var editListing: Listing
+    @State var isEditing:Bool = false
+    var storageManager = StorageManager()
+    
+    // images
     @State private var image = UIImage(named: "CreateListingBkgPic")!
     @State private var pictures:[UIImage] = []
     @State private var imagesCount = 1
@@ -253,6 +258,30 @@ struct CreateListingView: View {
     var body: some View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
+                .onAppear() {
+                    isEditing = editListing.title != ""
+                    if (isEditing) {
+                        title = editListing.title
+                        description = editListing.description
+                        cost = editListing.price
+                        postalCode = editListing.address
+                        availabilityCalendar.selectedDates = editListing.availability
+                        imagesCount = editListing.imagepath.count
+                        imagesCount = (imagesCount <  5) ? imagesCount + 1 : imagesCount
+                        for path in editListing.imagepath {
+                            let storageRef = Storage.storage().reference(withPath: path)
+                            storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                                if let error = error {
+                                    print (error)
+                                } else {
+                                    //Image Returned Successfully:
+                                    let image = UIImage(data: data!)
+                                    pictures.append(image!)
+                                }
+                            }
+                        }
+                    }
+                }
             
             if (currentUser.isGuest()) {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
@@ -260,7 +289,7 @@ struct CreateListingView: View {
             else {
                 ScrollViewReader { value in
                     ScrollView([.vertical]) {
-                        Text("New Post")
+                        Text(isEditing ? "Edit Listing" : "New Post")
                             .font(.title2)
                             .bold()
                             .id(1)
@@ -271,16 +300,25 @@ struct CreateListingView: View {
                             
                         availabilityView
                         
-                        // Post button
+                        // update button is editing, else Post button
                         Button(action: {
-                            withAnimation(.easeInOut(duration: 1)) {
-                                value.scrollTo(1)
+                            if (isEditing) {
+                                // bryan TODO: update listing
+                                if (title == editListing.title && description == editListing.description
+                                    && cost == editListing.price && postalCode == editListing.address
+                                    && availabilityCalendar.selectedDates == editListing.availability) {
+                                    errorInField.toggle()
+                                }
                             }
-                            // validate entries
-                            validatePost()
-                            
+                            else {
+                                withAnimation(.easeInOut(duration: 1)) {
+                                    value.scrollTo(1)
+                                }
+                                // validate entries
+                                validatePost()
+                            }
                         }) {
-                            Text("Post")
+                            Text((isEditing) ? "Update" : "Post")
                                 .fontWeight(.semibold)
                                 .frame(width: screenSize.width * 0.9, height: 20)
                                 .padding()
@@ -289,23 +327,29 @@ struct CreateListingView: View {
                                 .cornerRadius(40)
                         }
                         
-                        // Cancel button
+                        // delete listing if editing, else Cancel button
                         Button(action: {
-                            resetInputs()
-                            showCancelAlertX.toggle()
-                            withAnimation(.easeInOut(duration: 1)) {
-                                value.scrollTo(1)
+                            // bryan TODO: delete listing
+                            if (isEditing) {
+                                
+                            }
+                            else {
+                                resetInputs()
+                                showCancelAlertX.toggle()
+                                withAnimation(.easeInOut(duration: 1)) {
+                                    value.scrollTo(1)
+                                }
                             }
                         })
                         {
-                            Text("Cancel")
+                            Text((isEditing) ? "Delete" : "Cancel")
                                 .fontWeight(.semibold)
                                 .frame(width: screenSize.width * 0.9, height: 10)
                                 .padding()
-                                .foregroundColor(.primaryDark)
+                                .foregroundColor(.errorColour)
                                 .background(.white)
                                 .cornerRadius(40)
-                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.primaryDark, lineWidth: 2))
+                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.errorColour, lineWidth: 2))
                         }
                         .padding(.bottom)
                     }
@@ -317,7 +361,7 @@ struct CreateListingView: View {
 
                 PopUp(show: $errorInField) {
                     VStack {
-                        Text("ERROR: Entries missing")
+                        Text((isEditing) ? "ERROR: No listing values changed" : "ERROR: Entries missing")
                             .foregroundColor(.errorColour)
                             .bold()
                             .padding(.bottom)

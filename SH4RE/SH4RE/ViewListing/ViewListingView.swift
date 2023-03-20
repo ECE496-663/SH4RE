@@ -20,7 +20,7 @@ struct ViewListingView: View {
     @EnvironmentObject var currentUser: CurrentUser
     
     //parameters passed in from search nav link
-    var listing: Listing
+    @State var listing: Listing
     var chatLogViewModel: ChatLogViewModel
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
@@ -94,25 +94,66 @@ struct ViewListingView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            Button(action: {
-                showPopUp.toggle()
-            }, label: {
-                HStack {
-                    Text("Message")
-                        .font(.body)
-                        .foregroundColor(.white)
+            if (listing.uid != getCurrentUserUid()) {
+                Button(action: {
+                    showPopUp.toggle()
+                }, label: {
+                    HStack {
+                        Text("Message")
+                            .font(.body)
+                            .foregroundColor(.white)
+                        
+                        Image(systemName: "message")
+                            .foregroundColor(.white)
+                    }
+                    .frame(alignment: .trailing)
+                    .padding()
+                    .background(startDateText == "" ? Color.grey : Color.primaryDark)
+                    .cornerRadius(40)
+                    .padding()
                     
-                    Image(systemName: "message")
-                        .foregroundColor(.white)
-                }
-                .frame(alignment: .trailing)
-                .padding()
-                .background(startDateText == "" ? Color.grey : Color.primaryDark)
-                .cornerRadius(40)
-                .padding()
-                
-            })
-            .disabled(startDateText == "")
+                })
+                .disabled(startDateText == "")
+            }
+            else {
+                NavigationLink(destination: {
+                    CreateListingView(tabSelection: $tabSelection, editListing: $listing)
+                }, label: {
+                    HStack {
+                        Text("Edit")
+                            .font(.body)
+                            .foregroundColor(.white)
+                        
+                        Image(systemName: "pencil.tip.crop.circle")
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: screenSize.width * 0.2)
+                    .padding()
+                    .background(Color.primaryDark)
+                    .cornerRadius(40)
+                    .padding([.top, .bottom])
+                })
+                Button(action: {
+                    // Bryan TODO: delete listing
+                }, label: {
+                    HStack {
+                        Text("Delete")
+                            .font(.body)
+                            .foregroundColor(.red)
+                        
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                    }
+                    .frame(width: screenSize.width * 0.2, alignment: .trailing)
+                    .padding()
+                    .background(Color.backgroundGrey)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 40)
+                            .stroke(.red, lineWidth: 2)
+                    )
+                    .padding([.top, .bottom])
+                })
+            }
         }
         .padding([.horizontal])
         .background(.white)

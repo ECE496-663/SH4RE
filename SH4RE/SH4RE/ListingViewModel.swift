@@ -15,14 +15,14 @@ import FirebaseStorage
 //Struct for listing TODO add more properties
 struct Listing : Identifiable{
     var id :String =  UUID().uuidString
-    var uid : String
-    var title:String
-    var description:String
+    var uid : String = ""
+    var title:String = ""
+    var description:String = ""
     var imagepath = [String]()
-    var price:String
+    var price:String = ""
     var imageDict = UIImage()
     var availability = [Date]()
-
+    var address = ""
 }
 
 class ListingViewModel : ObservableObject{
@@ -48,10 +48,11 @@ class ListingViewModel : ObservableObject{
                 let price = data["Price"] as? String ?? ""
                 let timeAvailability = data["Availability"] as? [Timestamp] ?? []
                 var availability:[Date] = []
+                let address = data["Address"] as? String ?? ""
                 for timestamp in timeAvailability{
                     availability.append(timestamp.dateValue())
                 }
-                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability)
+                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, address: address)
             }
             if QuerySnapshot!.isEmpty{
                 completion(false)

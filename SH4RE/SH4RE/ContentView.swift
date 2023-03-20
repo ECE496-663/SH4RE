@@ -25,6 +25,7 @@ extension Color {
 
 struct ContentView: View {
     @State private var tabSelection = 1
+    @State var listing: Listing = Listing()
     @StateObject var currentUser = CurrentUser()
     @ObservedObject var searchModel = SearchModel()
     init() {
@@ -46,7 +47,7 @@ struct ContentView: View {
                             Label("Search", systemImage: "safari.fill")
                         }
                         .tag(2)
-                    CreateListingView(tabSelection: $tabSelection)
+                    CreateListingView(tabSelection: $tabSelection, editListing: $listing)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Post", systemImage: "plus.square.fill")
