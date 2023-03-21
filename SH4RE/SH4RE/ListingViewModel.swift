@@ -117,10 +117,12 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void){
             let price = data["Price"] as? String ?? ""
             let timeAvailability = data["Availability"] as? [Timestamp] ?? []
             var availability:[Date] = []
+            let address = data["Address"] as? String ?? ""
+            let category = data["Category"] as? String ?? ""
             for timestamp in timeAvailability{
                 availability.append(timestamp.dateValue())
             }
-            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability)
+            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, address: address, category: category)
             listings.append(listing)
             if listings.count == snapshot?.documents.count {
                 completion(listings)
