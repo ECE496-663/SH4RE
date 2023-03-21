@@ -251,6 +251,35 @@ struct CreateListingView: View {
         //reset inputs
         resetInputs()
     }
+    func update() {
+        var calAvail = [Any]()
+        if (!availabilityCalendar.selectedDates.isEmpty) {
+            for date in availabilityCalendar.selectedDates {
+                calAvail.append(date)
+            }
+        }
+        else {
+            calAvail.append(availabilitySelection)
+        }
+        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
+        if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: listingFields)) {
+            NSLog("error");
+        }
+        // upload images and add paths to data fields
+        var index = 1
+        var imgPath = ""
+        var arrayImgs:[String] = []
+        for pic in pictures {
+            imgPath = "listingimages/" + editListing.id + "/" + String(index) + ".jpg"
+            arrayImgs.append(imgPath)
+            storageManager.upload(image: pic, path: imgPath)
+            index += 1
+        }
+        if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: ["image_path" : arrayImgs])) {
+            NSLog("error");
+        }
+        showPostAlertX = true
+    }
     func validatePost () -> Bool {
         if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
@@ -318,7 +347,7 @@ struct CreateListingView: View {
                                     return
                                 }
                                 if (validatePost()) {
-                                    // bryan TODO: update listing
+                                    update()
                                 }
                             }
                             else {
@@ -416,6 +445,9 @@ struct CreateListingView: View {
                             .bold()
                             .padding(.bottom)
                         Button(action: {
+                            if (isEditing) {
+                                self.presentationMode.wrappedValue.dismiss()
+                            }
                             showPostAlertX.toggle()
                         })
                         {

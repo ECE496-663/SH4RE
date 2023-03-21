@@ -131,6 +131,32 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void){
     }
 }
 
+func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
+    let db = Firestore.firestore()
+    let docRef = db.collection("Listings").document(lid)
+    var listing = Listing()
+
+    docRef.getDocument { (document, error) in
+        let data = document!.data()
+        //Assign listing properties here
+        let id = lid
+        let uid = data!["UID"] as? String ?? ""
+        let title = data!["Title"] as? String ?? ""
+        let description = data!["Description"] as? String ?? ""
+        let imagepath = data!["image_path"] as? [String] ?? []
+        let price = data!["Price"] as? String ?? ""
+        let timeAvailability = data!["Availability"] as? [Timestamp] ?? []
+        var availability:[Date] = []
+        let address = data!["Address"] as? String ?? ""
+        let category = data!["Category"] as? String ?? ""
+        for timestamp in timeAvailability{
+            availability.append(timestamp.dateValue())
+        }
+        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, address: address, category: category)
+        completion(listing)
+    }
+}
+
 func deleteListing(lid:String){
     let db = Firestore.firestore()
     db.collection("Listings").document(lid).delete() { err in
