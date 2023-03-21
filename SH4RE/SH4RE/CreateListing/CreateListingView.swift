@@ -194,12 +194,12 @@ struct CreateListingView: View {
                     }
             
             HStack {
-                Text("or make a")
+                Text("or set")
                 Button(action: {
                     showCal = true
                     availabilitySelection = ""
                 }) {
-                    Text("Custom Availability")
+                    Text("Custom Unavailable Dates")
                 }
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.primaryBase)
