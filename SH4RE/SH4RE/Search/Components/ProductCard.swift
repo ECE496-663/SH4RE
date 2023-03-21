@@ -58,15 +58,18 @@ struct ProductCard: View {
                 .background(.white)
                 
             }
-            Button(action: {toggleFav()}){
-                Image(systemName: favourited ? "heart.fill" : "heart")
-                    .padding(6)
-                    .foregroundColor(.black)
-                    .background(.white)
-                    .cornerRadius(50)
-                    .padding()
+            //Don't show the fav button for their own listing
+            if (listing.uid != getCurrentUserUid()) {
+                Button(action: {toggleFav()}){
+                    Image(systemName: favourited ? "heart.fill" : "heart")
+                        .padding(6)
+                        .foregroundColor(.black)
+                        .background(.white)
+                        .cornerRadius(50)
+                        .padding()
+                }
+                .buttonStyle(FavButtonBounce())
             }
-            .buttonStyle(FavButtonBounce())
         }
         .frame(width: width, height: height + 75)
         .background(.white)

@@ -38,19 +38,7 @@ struct AccountView: View {
                         Text("Logout")
                     }
                     .buttonStyle(secondaryButtonStyle())
-                    
-                    //Favourites
-                    VStack (alignment: .leading) {
-                        Text("Favourites")
-                            .font(.title)
-                        HStack(){
-                            //This needs an enpoint to get listings that have been liked
-                            ProductCard(favouritesModel: FavouritesModel(), listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
-                            Spacer()
-                        }
-                    }
                 }
-                .padding()
             }
         }
     }
