@@ -36,16 +36,13 @@ struct MyListingsView: View {
         .navigationTitle("My Listings")
         .onAppear(){
             // TODO: change this to fetch current user listings (not all)
-            self.listingsView.fetchListings(completion: { success in
-                if success{
-                    self.listingsView.fetchProductMainImage( completion: { success in
-                        if !success {
-                            print("Failed to load images")
-                        }
-                    })
-                } else {
-                    print("Failed to query database")
-                }
+            fetchUsersListings(uid: getCurrentUserUid(), completion: { listings in
+                self.listingsView.listings = listings
+                self.listingsView.fetchProductMainImage( completion: { success in
+                    if !success {
+                        print("Failed to load images")
+                    }
+                })
             })
         }
     }
