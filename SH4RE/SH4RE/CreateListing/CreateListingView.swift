@@ -267,6 +267,7 @@ struct CreateListingView: View {
                         postalCode = editListing.address
                         availabilityCalendar.selectedDates = editListing.availability
                         imagesCount = editListing.imagepath.count
+                        categorySelection = editListing.category
                         imagesCount = (imagesCount <  5) ? imagesCount + 1 : imagesCount
                         for path in editListing.imagepath {
                             let storageRef = Storage.storage().reference(withPath: path)

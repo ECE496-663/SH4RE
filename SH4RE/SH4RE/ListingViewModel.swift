@@ -23,6 +23,7 @@ struct Listing : Identifiable{
     var imageDict = UIImage()
     var availability = [Date]()
     var address = ""
+    var category = ""
 }
 
 class ListingViewModel : ObservableObject{
@@ -49,10 +50,11 @@ class ListingViewModel : ObservableObject{
                 let timeAvailability = data["Availability"] as? [Timestamp] ?? []
                 var availability:[Date] = []
                 let address = data["Address"] as? String ?? ""
+                let category = data["Category"] as? String ?? ""
                 for timestamp in timeAvailability{
                     availability.append(timestamp.dateValue())
                 }
-                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, address: address)
+                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, address: address, category: category)
             }
             if QuerySnapshot!.isEmpty{
                 completion(false)
