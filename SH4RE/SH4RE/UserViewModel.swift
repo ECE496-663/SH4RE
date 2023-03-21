@@ -9,6 +9,7 @@ struct User : Identifiable{
     var id :String
     var name:String
     var email:String
+    var pfpPath:String = ""
 }
 
 
@@ -30,7 +31,8 @@ func getCurrentUser(completion: @escaping(User) -> Void){
             let id = document.documentID
             let name = data["name"] as? String ?? ""
             let email = data["email"] as? String ?? ""
-            completion(User(id:id,name:name,email:email))
+            let pfpPath = data["pfp_path"] as? String ?? ""
+            completion(User(id:id,name:name,email:email,pfpPath:pfpPath))
         }
     }
 }

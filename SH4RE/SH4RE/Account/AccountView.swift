@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import FirebaseStorage
 
 struct ParentAccountKey: EnvironmentKey {
     static let defaultValue: (() -> Void)? = nil
@@ -166,6 +167,14 @@ struct AccountView: View {
                     .onAppear() {
                         getCurrentUser() {(result) in
                             name = result.name
+                            let storageRef = Storage.storage().reference(withPath: result.pfpPath)
+                            storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                                if let error = error {
+                                    print (error)
+                                } else {
+                                    profilePicture = UIImage(data: data!) ?? UIImage(named: "ProfilePhotoPlaceholder")!
+                                }
+                            }
                         }
                     }
                 }
