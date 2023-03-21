@@ -129,6 +129,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void){
             }
         })
     }
+    completion(listings)
 }
 
 func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
