@@ -24,6 +24,7 @@ extension EnvironmentValues {
 }
 
 struct CreateListingView: View {
+    @Environment(\.presentationMode) var presentationMode
     @Binding var tabSelection: Int
     @Binding var editListing: Listing
     @State var isEditing:Bool = false
@@ -341,9 +342,8 @@ struct CreateListingView: View {
                         
                         // delete listing if editing, else Cancel button
                         Button(action: {
-                            // bryan TODO: delete listing
                             if (isEditing) {
-                                
+                                self.presentationMode.wrappedValue.dismiss()
                             }
                             else {
                                 resetInputs()
@@ -354,7 +354,7 @@ struct CreateListingView: View {
                             }
                         })
                         {
-                            Text((isEditing) ? "Delete" : "Cancel")
+                            Text("Cancel")
                                 .fontWeight(.semibold)
                                 .frame(width: screenSize.width * 0.9, height: 10)
                                 .padding()
