@@ -34,7 +34,9 @@ struct CreateListingView: View {
     @State private var pictures:[UIImage] = []
     @State private var imagesCount = 1
     @State private var showSheet = false
+    @State private var picturesUnchanged = true
     func deleteImage (index: Int) {
+        picturesUnchanged = false
         imagesCount -= 1
         pictures.remove(at: index)
     }
@@ -76,6 +78,7 @@ struct CreateListingView: View {
     @State var showPostAlertX: Bool = false
     @State var showCancelAlertX: Bool = false
     @State var errorInField: Bool = false
+    @State var errorInUpdate: Bool = false
     
     // componnents
     private var imageView: some View {
@@ -109,6 +112,7 @@ struct CreateListingView: View {
                                     .stroke(Color.primaryDark, lineWidth: 3))
                                 .onTapGesture {
                                     showSheet = true
+                                    picturesUnchanged = false
                                     if (!showSheet) {
                                         pictures.append(image)
                                     }
@@ -215,44 +219,45 @@ struct CreateListingView: View {
         availabilityCalendar.selectedDates = []
         showCal = false
     }
-    func validatePost () {
+    func post() {
+        var calAvail = [Any]()
+        if (!availabilityCalendar.selectedDates.isEmpty) {
+            for date in availabilityCalendar.selectedDates {
+                calAvail.append(date)
+            }
+        }
+        else {
+            calAvail.append(availabilitySelection)
+        }
+        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
+        let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
+        
+        // upload images and add paths to data fields
+        var index = 1
+        var imgPath = ""
+        var arrayImgs:[String] = []
+        for pic in pictures {
+            imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
+            arrayImgs.append(imgPath)
+            storageManager.upload(image: pic, path: imgPath)
+            index += 1
+        }
+        if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
+            NSLog("error");
+        }
+        showPostAlertX = true
+
+        //reset inputs
+        resetInputs()
+    }
+    func validatePost () -> Bool {
         if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
             (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty)) {
             errorInField = true
+            return false
         }
-        if (!errorInField) {
-            // upload data fields
-            var calAvail = [Any]()
-            if (!availabilityCalendar.selectedDates.isEmpty) {
-                for date in availabilityCalendar.selectedDates {
-                    calAvail.append(date)
-                }
-            }
-            else {
-                calAvail.append(availabilitySelection)
-            }
-            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
-            let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
-            
-            // upload images and add paths to data fields
-            var index = 1
-            var imgPath = ""
-            var arrayImgs:[String] = []
-            for pic in pictures {
-                imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
-                arrayImgs.append(imgPath)
-                storageManager.upload(image: pic, path: imgPath)
-                index += 1
-            }
-            if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
-                NSLog("error");
-            }
-            showPostAlertX = true
-
-            //reset inputs
-            resetInputs()
-        }
+        return true
     }
     
     var body: some View {
@@ -304,11 +309,15 @@ struct CreateListingView: View {
                         // update button is editing, else Post button
                         Button(action: {
                             if (isEditing) {
-                                // bryan TODO: update listing
                                 if (title == editListing.title && description == editListing.description
                                     && cost == editListing.price && postalCode == editListing.address
-                                    && availabilityCalendar.selectedDates == editListing.availability) {
-                                    errorInField.toggle()
+                                    && availabilityCalendar.selectedDates == editListing.availability
+                                    && picturesUnchanged && categorySelection == editListing.category) {
+                                    errorInUpdate.toggle()
+                                    return
+                                }
+                                if (validatePost()) {
+                                    // bryan TODO: update listing
                                 }
                             }
                             else {
@@ -316,7 +325,9 @@ struct CreateListingView: View {
                                     value.scrollTo(1)
                                 }
                                 // validate entries
-                                validatePost()
+                                if (validatePost()) {
+                                    post()
+                                }
                             }
                         }) {
                             Text((isEditing) ? "Update" : "Post")
@@ -362,7 +373,7 @@ struct CreateListingView: View {
 
                 PopUp(show: $errorInField) {
                     VStack {
-                        Text((isEditing) ? "ERROR: No listing values changed" : "ERROR: Entries missing")
+                        Text("ERROR: Entries missing")
                             .foregroundColor(.errorColour)
                             .bold()
                             .padding(.bottom)
@@ -378,7 +389,25 @@ struct CreateListingView: View {
                     .frame(width: screenSize.width * 0.9, height: 130)
                     .background(.white)
                     .cornerRadius(30)
-                    
+                }
+                PopUp(show: $errorInUpdate) {
+                    VStack {
+                        Text("ERROR: No listing values changed")
+                            .foregroundColor(.errorColour)
+                            .bold()
+                            .padding(.bottom)
+                        Button(action: {
+                            errorInUpdate.toggle()
+                        })
+                        {
+                            Text("OK")
+                        }
+                        .buttonStyle(primaryButtonStyle())
+                    }
+                    .padding()
+                    .frame(width: screenSize.width * 0.9, height: 130)
+                    .background(.white)
+                    .cornerRadius(30)
                 }
                 PopUp(show: $showPostAlertX) {
                     VStack {
@@ -418,7 +447,6 @@ struct CreateListingView: View {
                     .frame(width: screenSize.width * 0.9, height: 130)
                     .background(.white)
                     .cornerRadius(30)
-                    
                 }
             }
         }
