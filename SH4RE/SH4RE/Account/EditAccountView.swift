@@ -20,12 +20,24 @@ struct EditAccountView: View {
     @State private var confirmPassword: String = ""
     @State private var errorInField: Bool = false
     @State private var showPosted: Bool = false
+    @State private var dataToChange:Dictionary<String, Any> = [String: Any]()
     
     func update() {
-        if (name == user.name || !pfpChanged || password.isEmpty || confirmPassword.isEmpty || password != confirmPassword) {
+        dataToChange.removeAll()
+        if (name != user.name && name != "") {
+            dataToChange["name"] = name
+        }
+        if (pfpChanged) {
+            dataToChange["pfp"] = profilePicture
+        }
+        if (!password.isEmpty && !confirmPassword.isEmpty && password == confirmPassword) {
+            dataToChange["pwd"] = password
+        }
+        if (dataToChange.count == 0) {
             errorInField.toggle()
             return
         }
+        // bryan TODO: update user fields
         showPosted.toggle()
     }
     
