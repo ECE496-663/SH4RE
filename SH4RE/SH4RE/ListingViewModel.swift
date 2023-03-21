@@ -140,9 +140,6 @@ func deleteListing(lid:String){
     }
 }
 
-
-
-
 func bookListing(listing_id : String, start: Date, end: Date? = nil){
     let db = Firestore.firestore()
     var bookedDates:[Date] = []
