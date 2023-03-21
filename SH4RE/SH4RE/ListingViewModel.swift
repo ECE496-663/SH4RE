@@ -101,6 +101,48 @@ class ListingViewModel : ObservableObject{
     }
 }
 
+func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void){
+    let db = Firestore.firestore()
+    var listings = [Listing]()
+    db.collection("Listings").whereField("UID", isEqualTo: uid).getDocuments() {(snapshot, error) in
+        
+        snapshot?.documents.forEach({ (document) in
+            let data = document.data()
+            //Assign listing properties here
+            let id = document.documentID
+            let uid = data["UID"] as? String ?? ""
+            let title = data["Title"] as? String ?? ""
+            let description = data["Description"] as? String ?? ""
+            let imagepath = data["image_path"] as? [String] ?? []
+            let price = data["Price"] as? String ?? ""
+            let timeAvailability = data["Availability"] as? [Timestamp] ?? []
+            var availability:[Date] = []
+            for timestamp in timeAvailability{
+                availability.append(timestamp.dateValue())
+            }
+            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability)
+            listings.append(listing)
+            if listings.count == snapshot?.documents.count {
+                completion(listings)
+            }
+        })
+    }
+}
+
+func deleteListing(lid:String){
+    let db = Firestore.firestore()
+    db.collection("Listings").document(lid).delete() { err in
+        if let err = err {
+            print("Error removing document: \(err)")
+        } else {
+            print("Document successfully removed!")
+        }
+    }
+}
+
+
+
+
 func bookListing(listing_id : String, start: Date, end: Date? = nil){
     let db = Firestore.firestore()
     var bookedDates:[Date] = []
