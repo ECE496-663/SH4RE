@@ -6,9 +6,9 @@ import FirebaseAuth
 
 //Functions used to extract data about users
 struct User : Identifiable{
-    var id :String
-    var name:String
-    var email:String
+    var id :String = ""
+    var name:String = ""
+    var email:String = ""
     var pfpPath:String = ""
 }
 
