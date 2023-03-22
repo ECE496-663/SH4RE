@@ -42,10 +42,8 @@ struct CreateListingView: View {
 
     // drop down fields
     @State var categorySelection = ""
-    var categoryPlaceholder = " Category"
     var categoryList = ["Film & Photography", "Audio Visual Equipment", "Projectors & Screens", "Drones", "DJ Equipment", "Transport", "Storage", "Electronics", "Party & Events", "Sports", "Musical Instruments", "Home, Office & Garden", "Holiday & Travel", "Clothing"]
     @State var availabilitySelection = ""
-    var availabilityPlaceholder = " Availability"
     var availabilityList = ["Everyday", "Weekdays", "Weekends"]
     
     // calendar entry
@@ -53,7 +51,7 @@ struct CreateListingView: View {
     @Environment(\.calendar) var calendar
     @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
-    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
+    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*90), mode: 3)
     @EnvironmentObject var currentUser: CurrentUser
     
     var bounds: PartialRangeFrom<Date> {
@@ -178,7 +176,7 @@ struct CreateListingView: View {
                 .padding(.bottom)
             
             // availability
-            DropdownMenu(label: "Availability", options: availabilityList, selection: $availabilitySelection)
+            DropdownMenu(label: "Availability for the next 3 months", options: availabilityList, selection: $availabilitySelection)
                 .frame(maxWidth: screenSize.width * 0.9)
                 .onChange(of: availabilitySelection) { value in
                         availabilityCalendar.selectedDates = []
@@ -226,6 +224,20 @@ struct CreateListingView: View {
             }
             else {
                 calAvail.append(availabilitySelection)
+                let calendar = Calendar.current
+                let components = calendar.dateComponents([.year, .month, .day], from: Date())
+                let startOfMonth = calendar.date(from:components)!
+                let numberOfDays = calendar.range(of: .day, in: .quarter, for: startOfMonth)!.upperBound
+                let allDays = Array(0..<numberOfDays).map{ calendar.date(byAdding:.day, value: $0, to: startOfMonth)!}
+                if (availabilitySelection == "Everyday") {
+                    calAvail = []
+                }
+                else if (availabilitySelection == "Weekdays") {
+                    calAvail = allDays.filter{ calendar.isDateInWeekend($0) }
+                }
+                else if (availabilitySelection == "Weekends") {
+                    calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
+                }
             }
             let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
             let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
