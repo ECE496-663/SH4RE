@@ -10,8 +10,12 @@ import SwiftUI
 struct MessagesChat: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var vm: ChatLogViewModel
+    @Binding var tabSelection: Int
+    @EnvironmentObject var currentUser: CurrentUser
     static let emptyScrollToString = "Empty"
     @State private var profilePicture = UIImage(named: "ProfilePhotoPlaceholder")!
+    @State private var name = ""
+    @State private var uid = ""
     
     var body: some View {
         ZStack {
@@ -43,7 +47,7 @@ struct MessagesChat: View {
                     .resizable()
                     .clipShape(Circle())
                     .aspectRatio(contentMode: .fill)
-                    .frame(height: screenSize.height * 0.05)
+                    .frame(height: screenSize.height * 0.03)
                     .padding(.bottom)
             }
             ToolbarItem(placement: .navigationBarLeading) {
@@ -51,14 +55,16 @@ struct MessagesChat: View {
                     .padding(.bottom)
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    print("About tapped!")
-                }) {
+                NavigationLink(destination: ProfileView(uid: $uid, profilePicture: $profilePicture, tabSelection: $tabSelection, currentUser: _currentUser))
+                {
                     Image(systemName: "info.circle.fill")
-                        .foregroundColor(.primaryDark)
                 }
                 .padding(.bottom)
             }
+        }
+        .onAppear() {
+            name = vm.chatUser?.name ?? "error" // if reverting back to name
+            uid = vm.chatUser?.uid ?? ""
         }
     }
     

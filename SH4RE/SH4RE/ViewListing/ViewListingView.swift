@@ -201,7 +201,7 @@ struct ViewListingView: View {
                     }
                     Spacer()
                     
-                    NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
+                    NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel, tabSelection: $tabSelection, currentUser: _currentUser)) {
                         HStack {
                             Text("Send")
                                 .font(.body)
