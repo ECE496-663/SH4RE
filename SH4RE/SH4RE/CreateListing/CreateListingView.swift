@@ -335,8 +335,8 @@ struct CreateListingView: View {
                 ScrollViewReader { value in
                     ScrollView([.vertical]) {
                         Text(isEditing ? "Edit Listing" : "New Post")
-                            .font(.title2)
-                            .bold()
+                            .font(.title.bold())
+                            .frame(width: screenSize.width * 0.9, alignment: .leading)
                             .id(1)
                         
                         imageView
