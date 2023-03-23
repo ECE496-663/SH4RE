@@ -40,6 +40,7 @@ struct MyListingsView: View {
                 }
             }
         }
+        .padding()
         .navigationTitle("My Listings")
         .onAppear(){
             fetchUsersListings(uid: getCurrentUserUid(), completion: { listings in

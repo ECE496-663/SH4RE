@@ -79,7 +79,7 @@ struct CreateListingView: View {
     @State var showPostAlertX: Bool = false
     @State var showCancelAlertX: Bool = false
     @State var errorInField: Bool = false
-    @State var errorInUpdate: Bool = false
+    @State var shouldDisableUpdateButton: Bool = true
     
     // componnents
     private var imageView: some View {
@@ -289,36 +289,45 @@ struct CreateListingView: View {
         }
         return true
     }
+    func intializeEditor () {
+        isEditing = editListing.title != ""
+        if (isEditing) {
+            title = editListing.title
+            description = editListing.description
+            cost = editListing.price
+            postalCode = editListing.address
+            availabilityCalendar.selectedDates = editListing.availability
+            imagesCount = editListing.imagepath.count
+            categorySelection = editListing.category
+            imagesCount = (imagesCount <  5) ? imagesCount + 1 : imagesCount
+            for path in editListing.imagepath {
+                let storageRef = Storage.storage().reference(withPath: path)
+                storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                    if let error = error {
+                        print (error)
+                    } else {
+                        //Image Returned Successfully:
+                        let image = UIImage(data: data!)
+                        pictures.append(image!)
+                    }
+                }
+            }
+        }
+    }
+    func validateUpdate () -> Bool {
+        if (title == editListing.title && description == editListing.description
+            && cost == editListing.price && postalCode == editListing.address
+            && availabilityCalendar.selectedDates == editListing.availability
+            && picturesUnchanged && categorySelection == editListing.category) {
+            return false
+        }
+        return true
+    }
     
     var body: some View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
-                .onAppear() {
-                    isEditing = editListing.title != ""
-                    if (isEditing) {
-                        title = editListing.title
-                        description = editListing.description
-                        cost = editListing.price
-                        postalCode = editListing.address
-                        availabilityCalendar.selectedDates = editListing.availability
-                        imagesCount = editListing.imagepath.count
-                        categorySelection = editListing.category
-                        imagesCount = (imagesCount <  5) ? imagesCount + 1 : imagesCount
-                        for path in editListing.imagepath {
-                            let storageRef = Storage.storage().reference(withPath: path)
-                            storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
-                                if let error = error {
-                                    print (error)
-                                } else {
-                                    //Image Returned Successfully:
-                                    let image = UIImage(data: data!)
-                                    pictures.append(image!)
-                                }
-                            }
-                        }
-                    }
-                }
-            
+
             if (currentUser.isGuest()) {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
@@ -339,13 +348,6 @@ struct CreateListingView: View {
                         // update button is editing, else Post button
                         Button(action: {
                             if (isEditing) {
-                                if (title == editListing.title && description == editListing.description
-                                    && cost == editListing.price && postalCode == editListing.address
-                                    && availabilityCalendar.selectedDates == editListing.availability
-                                    && picturesUnchanged && categorySelection == editListing.category) {
-                                    errorInUpdate.toggle()
-                                    return
-                                }
                                 if (validatePost()) {
                                     update()
                                 }
@@ -365,9 +367,10 @@ struct CreateListingView: View {
                                 .frame(width: screenSize.width * 0.9, height: 20)
                                 .padding()
                                 .foregroundColor(.white)
-                                .background(Color.primaryDark)
+                                .background((isEditing && shouldDisableUpdateButton) ? .grey : Color.primaryDark)
                                 .cornerRadius(40)
                         }
+                        .disabled(isEditing && shouldDisableUpdateButton)
                         
                         // delete listing if editing, else Cancel button
                         Button(action: {
@@ -399,6 +402,15 @@ struct CreateListingView: View {
                 .sheet(isPresented: $showCal) {
                     RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
                 }
+                .onChange(of: [title, description, cost, postalCode, categorySelection], perform: { newVal in
+                    shouldDisableUpdateButton = !validateUpdate()
+                })
+                .onChange(of: [picturesUnchanged], perform: { newVal in
+                    shouldDisableUpdateButton = !validateUpdate()
+                })
+                .onChange(of: showCal, perform: { newVal in
+                    shouldDisableUpdateButton = !validateUpdate()
+                })
 
                 PopUp(show: $errorInField) {
                     VStack {
@@ -408,25 +420,6 @@ struct CreateListingView: View {
                             .padding(.bottom)
                         Button(action: {
                             errorInField.toggle()
-                        })
-                        {
-                            Text("OK")
-                        }
-                        .buttonStyle(primaryButtonStyle())
-                    }
-                    .padding()
-                    .frame(width: screenSize.width * 0.9, height: 130)
-                    .background(.white)
-                    .cornerRadius(30)
-                }
-                PopUp(show: $errorInUpdate) {
-                    VStack {
-                        Text("ERROR: No listing values changed")
-                            .foregroundColor(.errorColour)
-                            .bold()
-                            .padding(.bottom)
-                        Button(action: {
-                            errorInUpdate.toggle()
                         })
                         {
                             Text("OK")
@@ -481,6 +474,9 @@ struct CreateListingView: View {
                     .cornerRadius(30)
                 }
             }
+        }
+        .onAppear() {
+            intializeEditor()
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
