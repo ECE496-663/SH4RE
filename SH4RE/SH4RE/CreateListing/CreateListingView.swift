@@ -176,7 +176,7 @@ struct CreateListingView: View {
                 .padding(.bottom)
             
             // availability
-            DropdownMenu(label: "Availability for the next 3 months", options: availabilityList, selection: $availabilitySelection)
+            DropdownMenu(label: "Availability for the Next 3 Months", options: availabilityList, selection: $availabilitySelection)
                 .frame(maxWidth: screenSize.width * 0.9)
                 .onChange(of: availabilitySelection) { value in
                         availabilityCalendar.selectedDates = []
@@ -223,7 +223,6 @@ struct CreateListingView: View {
                 }
             }
             else {
-                calAvail.append(availabilitySelection)
                 let calendar = Calendar.current
                 let components = calendar.dateComponents([.year, .month, .day], from: Date())
                 let startOfMonth = calendar.date(from:components)!
