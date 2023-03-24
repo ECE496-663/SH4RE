@@ -10,7 +10,6 @@ import FirebaseAuth
 
 struct AccountView: View {
     @Binding var tabSelection: Int
-    @ObservedObject var favouritesModel: FavouritesModel
     @EnvironmentObject var currentUser: CurrentUser
     
     var body: some View {
@@ -46,7 +45,7 @@ struct AccountView: View {
 
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountView(tabSelection: .constant(1), favouritesModel: FavouritesModel())
+        AccountView(tabSelection: .constant(1))
             .environmentObject(CurrentUser())
     }
 }

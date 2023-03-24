@@ -59,7 +59,7 @@ struct ContentView: View {
                             Label("Messages", systemImage: "message.fill")
                         }
                         .tag(4)
-                    AccountView(tabSelection: $tabSelection, favouritesModel: favouritesModel)
+                    AccountView(tabSelection: $tabSelection)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Account", systemImage: "person.crop.circle.fill")
