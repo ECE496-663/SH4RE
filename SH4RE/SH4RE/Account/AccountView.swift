@@ -11,6 +11,7 @@ import FirebaseAuth
 struct AccountView: View {
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser
+    
     var body: some View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
@@ -45,5 +46,6 @@ struct AccountView: View {
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
         AccountView(tabSelection: .constant(1))
+            .environmentObject(CurrentUser())
     }
 }

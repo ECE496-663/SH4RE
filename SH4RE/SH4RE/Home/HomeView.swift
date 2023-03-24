@@ -22,6 +22,7 @@ extension Collection {
 struct HomeView: View {
     @Binding var tabSelection: Int
     @ObservedObject var searchModel: SearchModel
+    @ObservedObject var favouritesModel: FavouritesModel
     let categories = getCategoriesAndImg()
 
     var body: some View {
@@ -74,9 +75,9 @@ struct HomeView: View {
                                 Text("Recent Posts")
                                     .font(.title2.bold())
                                 HStack(){
-                                    ProductCard(listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+                                    ProductCard(favouritesModel: favouritesModel, listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
                                     Spacer()
-                                    ProductCard(listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+                                    ProductCard(favouritesModel: favouritesModel, listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
                                 }
                             }
                             //Categories
@@ -148,6 +149,6 @@ struct CategoryCardView: View {
 
 struct Previews_HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(tabSelection: .constant(1), searchModel: SearchModel())
+        HomeView(tabSelection: .constant(1), searchModel: SearchModel(), favouritesModel:FavouritesModel())
     }
 }
