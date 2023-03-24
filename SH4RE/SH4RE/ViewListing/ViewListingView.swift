@@ -239,7 +239,7 @@ struct ViewListingView: View {
             numberOfImages = listing.imagepath.count
             for path in listing.imagepath {
                 let storageRef = Storage.storage().reference(withPath: path)
-                storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                storageRef.getData(maxSize: 1 * 1024 * 1024 as Int64) { [self] data, error in
                     if let error = error {
                         print (error)
                     } else {
@@ -269,7 +269,8 @@ struct ViewListingView: View {
 }
 
 struct ViewListingView_Previews: PreviewProvider {
-    static var previewListing = Listing(uid: "123", title: "Sample Listing", description: "", price: "10")
+    static var previewListing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : [
+        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: "20.00")
     static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "123", uid: "123", name: "Random"))
     
     static var previews: some View {
