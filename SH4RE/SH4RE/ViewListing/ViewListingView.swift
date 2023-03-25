@@ -36,7 +36,7 @@ struct ViewListingView: View {
     @State var price:String = ""
     @State var name:String = ""
     
-    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 1)
+    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*90), mode: 1)
     @State var startDateText: String = ""
     @State var endDateText: String = ""
     
