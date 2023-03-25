@@ -14,6 +14,7 @@ struct ImageCarouselView<Content: View>: View {
     private var content: Content
     @State private var currentIndex: Int = 0
     @State private var offset = CGSize.zero
+    @State private var show:Bool = true;
 
     init(numberOfImages: Int, isEditable: Bool, @ViewBuilder content: () -> Content) {
         self.numberOfImages = numberOfImages
@@ -21,23 +22,16 @@ struct ImageCarouselView<Content: View>: View {
         self.content = content()
     }
 
-    var body: some View {
-        if (currentIndex != numberOfImages - 1 && isEditable) {
-            Button(action: {
-                self.deleteImage!(currentIndex)
-            }) {
-                ZStack {
-                    Circle()
-                        .fill(Color.primaryDark)
-                        .frame(width: 25, height: 25)
-                    Image(systemName: "xmark")
-                        .font(.system(size: 15, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                }
-                .padding(8)
-                .contentShape(Circle())
-            }
+    func animateCloseButton () {
+        show.toggle()
+        let delay = 500 // seconds to wait before firing
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .milliseconds(delay)) {
+            // set your var here
+            show.toggle()
         }
+    }
+
+    var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
                 HStack(spacing: 0) {
@@ -60,11 +54,13 @@ struct ImageCarouselView<Content: View>: View {
                         .onEnded { _ in
                             if offset.width > 20 {
                                 if self.currentIndex > 0 {
+                                    animateCloseButton()
                                     self.currentIndex -= 1
                                 }
                             }
                             else if offset.width < 20 {
                                 if self.currentIndex < numberOfImages - 1 && self.currentIndex < 4 {
+                                    animateCloseButton()
                                     self.currentIndex += 1
                                 }
                             }
@@ -85,8 +81,22 @@ struct ImageCarouselView<Content: View>: View {
                     }
                 }
             }
-            .padding(.top)
         }
-        .frame(maxHeight: 300)
+        if (currentIndex != numberOfImages - 1 && isEditable && show) {
+            Button(action: {
+                self.deleteImage!(currentIndex)
+            }) {
+                ZStack {
+                    Circle()
+                        .fill(Color.primaryDark)
+                        .frame(width: 25, height: 25)
+                    Image(systemName: "xmark")
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                }
+                .padding([.trailing, .leading, .top], 8)
+                .contentShape(Circle())
+            }
+        }
     }
 }

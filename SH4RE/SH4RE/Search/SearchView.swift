@@ -17,6 +17,7 @@ import Combine
 struct SearchView: View {
     @Binding var tabSelection: Int
     @ObservedObject var searchModel: SearchModel
+    @ObservedObject var favouritesModel: FavouritesModel
     @EnvironmentObject var currentUser: CurrentUser
     
     @StateObject private var listingsView = ListingViewModel()
@@ -72,7 +73,7 @@ struct SearchView: View {
                                 NavigationLink(destination: {
                                     ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title))).environmentObject(currentUser)
                                 }, label: {
-                                    ProductCard(listing: listing, image: productImage)
+                                    ProductCard(favouritesModel: favouritesModel, listing: listing, image: productImage)
                                 })
                             }
                         }
@@ -162,7 +163,7 @@ struct ContentView_Previews: PreviewProvider {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView(tabSelection: .constant(1), searchModel: SearchModel())
+        SearchView(tabSelection: .constant(1), searchModel: SearchModel(), favouritesModel: FavouritesModel())
             .environmentObject(CurrentUser())
     }
 }
