@@ -30,6 +30,7 @@ class ListingViewModel : ObservableObject{
     @Published var image_dict : [String: UIImage] = [:]
     private var db = Firestore.firestore()
     var image:UIImage = UIImage()
+    
     func fetchListings(completion: @escaping (Bool) -> Void){
         db.collection("Listings").addSnapshotListener{(QuerySnapshot, Error) in
             guard let listings = QuerySnapshot?.documents else{

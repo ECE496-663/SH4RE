@@ -27,9 +27,9 @@ struct ViewListingView: View {
     @State private var showCal = false
     @State private var showPopUp = false
     
-    var numberOfStars: Float = 4
-    var hasHalfStar = true
-    var numberOfReviews = 3
+    @State var numberOfStars: Float = 0
+    @State var numberOfReviews = 0
+    @State var allReviews = [Review]()
     @State var numberOfImages = 0
     @State var description:String = ""
     @State var title:String = ""
@@ -46,24 +46,27 @@ struct ViewListingView: View {
                 .font(.headline)
                 .padding()
             
-            HStack(alignment: .top) {
-                Image("placeholder")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .clipShape(Circle())
-                    .frame(width: 40, height: 40)
-                
-                VStack(alignment: .leading) {
-                    Text("Melissa Lim")
-                        .font(.body)
+            ForEach(allReviews) { review in
+                HStack(alignment: .top) {
+                    Image("placeholder")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .clipShape(Circle())
+                        .frame(width: 40, height: 40)
                     
-                    StarsView(numberOfStars: 3.5)
-                    Text("Fusce non arcu non nunc ultrices hendrerit. In libero risus, auctor ac turpis in, venenatis tempus erat tincidunt et lorem ipsum.")
-                        .font(.footnote)
+                    VStack(alignment: .leading) {
+                        Text(review.name)
+                            .font(.body)
+                        
+                        StarsView(numberOfStars: review.rating as Float)
+                        Text(review.description)
+                            .font(.footnote)
+                    }
+                    
                 }
-                
+                .padding([.horizontal])
             }
-            .padding([.horizontal])
+            
         }
         
     }
@@ -194,6 +197,16 @@ struct ViewListingView: View {
         .onAppear() {
             availabilityCalendar.disabledDates = listing.availability
             numberOfImages = listing.imagepath.count
+            
+            getListingReviews(uid: listing.uid, lid: listing.id, completion: { reviews in
+                    allReviews = reviews
+                    numberOfReviews = reviews.count
+            })
+            
+            getListingRating(uid: listing.uid, lid: listing.id, completion: { rating in
+                numberOfStars = rating
+            })
+            
             for path in listing.imagepath {
                 let storageRef = Storage.storage().reference(withPath: path)
                 storageRef.getData(maxSize: 1 * 1024 * 1024 as Int64) { [self] data, error in

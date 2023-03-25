@@ -14,8 +14,9 @@ struct  Review: Identifiable{
     var id :String =  UUID().uuidString
     var uid : String
     var lid:String
-    var rating:Int
+    var rating:Float
     var description:String
+    var name:String
 }
 
 func postReview(review : Review){
@@ -40,8 +41,14 @@ func getUserReviews(uid: String, completion: @escaping([Review]) -> Void) {
             let id = document.documentID
             let lid = data["lid"] as? String ?? ""
             let description = data["description"] as? String ?? ""
-            let rating : Int = data["rating"] as! Int
-            let review = Review(id:id,uid:uid, lid:lid, rating:rating, description:description)
+            let rating : Float = data["rating"] as! Float
+            
+            var reviewname: String = ""
+            getUserName(uid: data["uid"] as! String, completion: { name in
+                reviewname = name
+            })
+            
+            let review = Review(id:id,uid:uid, lid:lid, rating:rating, description:description, name: reviewname)
             reviews.append(review)
             
             if reviews.count == snapshot?.documents.count {
@@ -51,7 +58,7 @@ func getUserReviews(uid: String, completion: @escaping([Review]) -> Void) {
     }
 }
 
-func getListingReviews(uid: String, lid:String, completion: @escaping([Review]) -> Void) {
+func getListingReviews(uid: String, lid: String, completion: @escaping([Review]) -> Void) {
     var reviews = [Review]()
     Firestore.firestore().collection("User Info").document(uid).collection("Reviews").whereField("lid", isEqualTo: lid).getDocuments() { (snapshot, error) in
         snapshot?.documents.forEach({ (document) in
@@ -59,8 +66,14 @@ func getListingReviews(uid: String, lid:String, completion: @escaping([Review]) 
             let id = document.documentID
             let lid = data["lid"] as? String ?? ""
             let description = data["description"] as? String ?? ""
-            let rating : Int = data["rating"] as! Int
-            let review = Review(id:id,uid:uid, lid:lid, rating:rating, description:description)
+            let rating : Float = data["rating"] as! Float
+            
+            var reviewname: String = ""
+            getUserName(uid: data["uid"] as! String, completion: { name in
+                reviewname = name
+            })
+            
+            let review = Review(id:id,uid:uid, lid:lid, rating:rating, description:description, name: reviewname)
             reviews.append(review)
             
             if reviews.count == snapshot?.documents.count {
@@ -97,4 +110,3 @@ func getListingRating(uid: String, lid:String, completion: @escaping(Float) -> V
         })
     }
 }
-
