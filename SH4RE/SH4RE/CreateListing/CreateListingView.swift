@@ -11,6 +11,7 @@ import Combine
 import AlertX
 import Firebase
 import FirebaseAuth
+import CoreLocation
 
 struct ParentFunctionKey: EnvironmentKey {
     static let defaultValue: ((Int) -> Void)? = nil
@@ -37,6 +38,9 @@ struct CreateListingView: View {
     // text fields
     @State private var title: String = ""
     @State private var postalCode: String = ""
+    @State private var isPostalCodeValid:Bool = false
+    @State private var lat:Double = 0.0
+    @State private var lon:Double = 0.0
     @State var cost = ""
     @State private var description: String = ""
 
@@ -166,6 +170,32 @@ struct CreateListingView: View {
                 .textFieldStyle(textInputStyle())
                 .frame(width: screenSize.width * 0.9)
                 .padding()
+                .onReceive(Just(postalCode)) { address in
+                    isPostalCodeValid = false
+                    let range = NSRange(location: 0, length: postalCode.utf16.count)
+                    let regex1 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z][0-9][A-Za-z][0-9]")
+                    let res1 = regex1!.firstMatch(in: postalCode, options: [], range: range)
+                    let regex2 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z]-[0-9][A-Za-z][0-9]")
+                    let res2 = regex2!.firstMatch(in: postalCode, options: [], range: range)
+                    let regex3 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]")
+                    let res3 = regex3!.firstMatch(in: postalCode, options: [], range: range)
+                    if (res1 != nil || res2 != nil || res3 != nil) {
+                        let geoCoder = CLGeocoder()
+                        geoCoder.geocodeAddressString(address) { (placemarks, error) in
+                            guard
+                                let placemarks = placemarks,
+                                let location = placemarks.first?.location
+                            else {
+                                // handle no location found
+                                return
+                            }
+                            // Use your location
+                            isPostalCodeValid = true
+                            lat = location.coordinate.latitude
+                            lon = location.coordinate.longitude
+                        }
+                    }
+                }
         }
     }
     private var availabilityView: some View {
@@ -211,7 +241,7 @@ struct CreateListingView: View {
     func validatePost () {
         if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
-            (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty)) {
+            (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
             errorInField = true
         }
         if (!errorInField) {
@@ -238,7 +268,7 @@ struct CreateListingView: View {
                     calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
                 }
             }
-            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": ["latitude": lat, "longitude": lon], "UID": getCurrentUserUid()] as [String : Any]
             let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
             
             // upload images and add paths to data fields
@@ -284,9 +314,6 @@ struct CreateListingView: View {
                         
                         // Post button
                         Button(action: {
-                            withAnimation(.easeInOut(duration: 1)) {
-                                value.scrollTo(1)
-                            }
                             // validate entries
                             validatePost()
                             
@@ -328,7 +355,7 @@ struct CreateListingView: View {
 
                 PopUp(show: $errorInField) {
                     VStack {
-                        Text("ERROR: Entries missing")
+                        Text("Entries missing or incorrectly filled")
                             .foregroundColor(.errorColour)
                             .bold()
                             .padding(.bottom)
