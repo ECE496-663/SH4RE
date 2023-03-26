@@ -36,6 +36,20 @@ struct MessagesChat: View {
     
     private var messagesView: some View {
         VStack {
+            
+            VStack {
+                HStack {
+                    Text("Has this item been returned?")
+                    Spacer()
+                    Button(action: {
+                        // TODO: bryan add mark as returned message to send leave review
+                    }) {
+                        Text("Confirm")
+                    }
+                }
+                    .padding()
+            }
+            
             ScrollView {
                 ScrollViewReader { scrollViewProxy in
                     VStack {
