@@ -52,21 +52,21 @@ struct MessageView: View {
                                     Text("Cancelled").foregroundColor(.white)
                                 }
                             }
-                            else { // TODO: bryan add this
-                                Button(action: {
-                                    showPopUp.toggle()
-                                })
-                                {
-                                    Text("Leave Review")
-                                }
-                                .buttonStyle(primaryButtonStyle())
-//                                .buttonStyle(disabledButtonStyle(width: screenSize.width * 0.5))
-//                                .disabled(hasAlreadyLeftReview) // TODO: bryan add this
-                            }
-//                            else {
-//                                Text(message.text.replacingOccurrences(of: "\n", with: ""))
-//                                    .foregroundColor(.white)
+                            // TODO: bryan add hasBeenReturned and hasLeftReview variables
+//                            else if (message.hasBeenReturned) {
+//                                Button(action: {
+//                                    showPopUp.toggle()
+//                                })
+//                                {
+//                                    Text("Leave Review")
+//                                }
+//                                .buttonStyle(hasBeenReturned || hasLeftReview ? primaryButtonStyle(width: screenSize.width * 0.5) : disabledButtonStyle(width: screenSize.width * 0.5))
+//                                .disabled(!hasBeenReturned)
 //                            }
+                            else {
+                                Text(message.text.replacingOccurrences(of: "\n", with: ""))
+                                    .foregroundColor(.white)
+                            }
                         }
                         .padding()
                         .background(Color.primaryDark)
