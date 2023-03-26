@@ -188,6 +188,8 @@ struct ViewListingView: View {
                     }
                     
                     reviews
+                    
+                    Spacer().frame(height: 100)
                 }
             }
             

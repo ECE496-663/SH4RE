@@ -261,11 +261,14 @@
 		5939D35C29132D7000866FA5 /* SH4RE */ = {
 			isa = PBXGroup;
 			children = (
+				5939D35D29132D7000866FA5 /* SH4REApp.swift */,
+				5939D35F29132D7000866FA5 /* ContentView.swift */,
+				5939D38829132D8500866FA5 /* FirebaseDB.swift */,
+				5939D36129132D7200866FA5 /* Assets.xcassets */,
+				5939D36329132D7200866FA5 /* SH4RE.entitlements */,
 				1E3D19D1297FB3E700251D39 /* Styles */,
 				D120FAB22966530700CCD7A5 /* Login */,
 				9D95674829380837003F6B74 /* Components */,
-				5939D35D29132D7000866FA5 /* SH4REApp.swift */,
-				5939D35F29132D7000866FA5 /* ContentView.swift */,
 				9D08058E292FE9CD00094169 /* Account */,
 				9D08058D292FE9B900094169 /* Search */,
 				9D08058C292FE98000094169 /* Messages */,
@@ -273,11 +276,8 @@
 				9D08058B292FE96A00094169 /* CreateListing */,
 				5939D36429132D7200866FA5 /* Preview Content */,
 				9D080599292FF48200094169 /* ViewListing */,
-				5939D38829132D8500866FA5 /* FirebaseDB.swift */,
-				5939D36129132D7200866FA5 /* Assets.xcassets */,
 				12AA3C2D2933038800F7F8E3 /* ListingViewModel.swift */,
 				9D16B1EA29958786007F99D8 /* MainMessagesViewModel.swift */,
-				5939D36329132D7200866FA5 /* SH4RE.entitlements */,
 				12A7A36D296F6C1C000B18D4 /* UserViewModel.swift */,
 				9D16B1EC2995886D007F99D8 /* ChatLogViewModel.swift */,
 				12870D3529787414006CFA2B /* CurrentUser.swift */,

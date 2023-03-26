@@ -44,7 +44,7 @@ func getUserReviews(uid: String, completion: @escaping([Review]) -> Void) {
             let rating : Float = data["rating"] as! Float
             
             var reviewname: String = ""
-            getUserName(uid: data["uid"] as! String, completion: { name in
+            getUserName(uid: uid, completion: { name in
                 reviewname = name
             })
             
@@ -67,9 +67,9 @@ func getListingReviews(uid: String, lid: String, completion: @escaping([Review])
             let lid = data["lid"] as? String ?? ""
             let description = data["description"] as? String ?? ""
             let rating : Float = data["rating"] as! Float
-            
+                        
             var reviewname: String = ""
-            getUserName(uid: data["uid"] as! String, completion: { name in
+            getUserName(uid: uid , completion: { name in
                 reviewname = name
             })
             

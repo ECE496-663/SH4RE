@@ -14,6 +14,7 @@ struct MessagesChat: View {
     @State private var showPopUp = false
     @State private var reviewRating = 0.0
     @State private var review: String = ""
+    @State var listingId: String = ""
 
     
     var body: some View {
@@ -113,7 +114,13 @@ struct MessagesChat: View {
                 Button(action: {
                     showPopUp.toggle()
                     
-                    // TODO: bryan add send review
+                    var reviewname: String = ""
+                    getUserName(uid: getCurrentUserUid(), completion: { name in
+                        reviewname = name
+                    })
+                    
+                    let review = Review(uid: getCurrentUserUid(), lid: listingId, rating: Float(reviewRating), description: review, name: reviewname)
+                    postReview(review: review)
                 })
                 {
                     Text("Send")
@@ -132,6 +139,9 @@ struct MessagesChat: View {
             .frame(width: screenSize.width * 0.9, height: 420)
             .background(.white)
             .cornerRadius(8)
+            .onAppear(){
+                listingId = vm.chatMessages[0].listingId
+            }
         }
     }
 }

@@ -52,20 +52,21 @@ struct MessageView: View {
                                     Text("Cancelled").foregroundColor(.white)
                                 }
                             }
-//                            else if (message.leaveReview) { // TODO: bryan add this
-//                                Button(action: {
-//                                    showPopUp.toggle()
-//                                })
-//                                {
-//                                    Text("Leave Review")
-//                                }
+                            else { // TODO: bryan add this
+                                Button(action: {
+                                    showPopUp.toggle()
+                                })
+                                {
+                                    Text("Leave Review")
+                                }
+                                .buttonStyle(primaryButtonStyle())
 //                                .buttonStyle(disabledButtonStyle(width: screenSize.width * 0.5))
 //                                .disabled(hasAlreadyLeftReview) // TODO: bryan add this
-//                            }
-                            else {
-                                Text(message.text.replacingOccurrences(of: "\n", with: ""))
-                                    .foregroundColor(.white)
                             }
+//                            else {
+//                                Text(message.text.replacingOccurrences(of: "\n", with: ""))
+//                                    .foregroundColor(.white)
+//                            }
                         }
                         .padding()
                         .background(Color.primaryDark)
