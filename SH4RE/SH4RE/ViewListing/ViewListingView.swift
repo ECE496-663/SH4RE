@@ -114,14 +114,13 @@ struct ViewListingView: View {
                     }
                     .frame(alignment: .trailing)
                     .padding()
-                    .background(startDateText == "" ? Color.grey : Color.primaryDark)
+//                    .background(startDateText == "" ? Color.grey : Color.primaryDark)
+                    .background(Color.primaryDark)
                     .cornerRadius(40)
                     .padding()
                     
-                    Image(systemName: "message")
-                        .foregroundColor(.white)
-                }
-                )
+                })
+//                .disabled(startDateText == "")
             }
             else {
                 NavigationLink(destination: {
@@ -299,7 +298,12 @@ struct ViewListingView: View {
     private var sendMessagePopUp: some View {
         PopUp(show: $showPopUp) {
             VStack(alignment: .leading) {
-                if (endDateText == "") {
+                if (startDateText == "" && endDateText == "") {
+                    Text("Send message about “\(listing.title)”?")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .bold()
+                }
+                else if (endDateText == "") {
                     Text("Send request for “\(listing.title)” for \(startDateText)")
                         .fixedSize(horizontal: false, vertical: true)
                         .bold()
@@ -316,8 +320,11 @@ struct ViewListingView: View {
                             .font(.body)
                             .foregroundColor(.white)
                     }
-                }.simultaneousGesture(TapGesture().onEnded{
-                    sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
+                }.simultaneousGesture(TapGesture().onEnded {
+
+                    if (startDateText != "") {
+                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
+                    }
                     
                     availabilityCalendar.startDate = nil
                     availabilityCalendar.endDate = nil
