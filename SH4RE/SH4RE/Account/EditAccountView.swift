@@ -138,7 +138,7 @@ struct EditAccountView: View {
             }
             PopUp(show: $showPosted) {
                 VStack {
-                    Text("Credentials Updated!")
+                    Text("Profile Updated!")
                         .foregroundColor(.primaryDark)
                         .bold()
                         .padding(.bottom)
@@ -158,7 +158,7 @@ struct EditAccountView: View {
             }
             PopUp(show: $errorInField) {
                 VStack {
-                    Text("Error in entries")
+                    Text("Nothing has been updated")
                         .foregroundColor(.errorColour)
                         .bold()
                         .padding(.bottom)
