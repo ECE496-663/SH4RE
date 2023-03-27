@@ -382,6 +382,7 @@ struct CreateListingView: View {
                     calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
                 }
             }
+            
             getCurrentUser(completion: { user in
                 let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid(), "name": user.name] as [String : Any]
                 let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
