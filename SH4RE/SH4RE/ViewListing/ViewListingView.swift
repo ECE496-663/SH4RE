@@ -51,9 +51,7 @@ struct ViewListingView: View {
             ForEach(allReviews) { review in
                 ReviewView(reviewName: review.name, reviewRating: review.rating as Float, reviewDescription: review.description, reviewUID: review.uid)
             }
-            
         }
-        
     }
     
     private var bottomBar: some View {

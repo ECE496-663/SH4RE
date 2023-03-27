@@ -67,6 +67,7 @@ func getListingReviews(uid: String, lid: String, completion: @escaping([Review])
             let lid = data["lid"] as? String ?? ""
             let description = data["description"] as? String ?? ""
             let rating : Float = data["rating"] as! Float
+            
                         
             var reviewname: String = ""
             getUserName(uid: uid , completion: { name in
@@ -77,6 +78,7 @@ func getListingReviews(uid: String, lid: String, completion: @escaping([Review])
             reviews.append(review)
             
             if reviews.count == snapshot?.documents.count {
+                print(reviews)
                 completion(reviews)
             }
         })
