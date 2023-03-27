@@ -271,7 +271,7 @@ struct CreateListingView: View {
                 calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
             }
         }
-        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
+        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": ["postalCode": postalCode, "latitude": lat, "longitude": lon], "UID": getCurrentUserUid()] as [String : Any]
         let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
         
         // upload images and add paths to data fields
@@ -315,7 +315,7 @@ struct CreateListingView: View {
                 calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
             }
         }
-        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
+        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": ["postalCode": postalCode, "latitude": lat, "longitude": lon], "UID": getCurrentUserUid()] as [String : Any]
         if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: listingFields)) {
             NSLog("error");
         }
@@ -349,7 +349,7 @@ struct CreateListingView: View {
             title = editListing.title
             description = editListing.description
             cost = editListing.price
-            postalCode = editListing.address
+            postalCode = editListing.address["postalCode"] as? String ?? "ERROR"
             availabilityCalendar.selectedDates = editListing.availability
             imagesCount = editListing.imagepath.count
             categorySelection = editListing.category
@@ -370,7 +370,7 @@ struct CreateListingView: View {
     }
     func validateUpdate () -> Bool {
         if (title == editListing.title && description == editListing.description
-            && cost == editListing.price && postalCode == editListing.address
+            && cost == editListing.price && postalCode == editListing.address["postalCode"] as! String
             && availabilityCalendar.selectedDates == editListing.availability
             && picturesUnchanged && categorySelection == editListing.category) {
             return false
@@ -457,12 +457,15 @@ struct CreateListingView: View {
                     RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
                 }
                 .onChange(of: [title, description, cost, postalCode, categorySelection], perform: { newVal in
+                    if (!isEditing) { return }
                     shouldDisableUpdateButton = !validateUpdate()
                 })
                 .onChange(of: [picturesUnchanged], perform: { newVal in
+                    if (!isEditing) { return }
                     shouldDisableUpdateButton = !validateUpdate()
                 })
                 .onChange(of: showCal, perform: { newVal in
+                    if (!isEditing) { return }
                     shouldDisableUpdateButton = !validateUpdate()
                 })
 

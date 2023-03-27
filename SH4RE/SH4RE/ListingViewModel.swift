@@ -23,7 +23,7 @@ struct Listing : Identifiable{
     var imageDict = UIImage()
     var availability = [Date]()
     var category = ""
-    var address:Dictionary<String,Any>
+    var address:Dictionary<String,Any> = [String:Any]()
 }
 
 class ListingViewModel : ObservableObject{
@@ -50,7 +50,6 @@ class ListingViewModel : ObservableObject{
                 let timeAvailability = data["Availability"] as? [Timestamp] ?? []
                 let address = data["Address"] as? Dictionary<String,Any> ?? ["latitude": -1, "longitude": -1]
                 var availability:[Date] = []
-                let address = data["Address"] as? String ?? ""
                 let category = data["Category"] as? String ?? ""
                 for timestamp in timeAvailability{
                     availability.append(timestamp.dateValue())
@@ -119,7 +118,6 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void){
             let timeAvailability = data["Availability"] as? [Timestamp] ?? []
             let address = data["Address"] as? Dictionary<String,Any> ?? ["latitude": -1, "longitude": -1]
             var availability:[Date] = []
-            let address = data["Address"] as? String ?? ""
             let category = data["Category"] as? String ?? ""
             for timestamp in timeAvailability{
                 availability.append(timestamp.dateValue())
@@ -150,12 +148,12 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         let price = data!["Price"] as? String ?? ""
         let timeAvailability = data!["Availability"] as? [Timestamp] ?? []
         var availability:[Date] = []
-        let address = data!["Address"] as? String ?? ""
+        let address = data!["Address"] as? Dictionary<String,Any> ?? ["latitude": -1, "longitude": -1]
         let category = data!["Category"] as? String ?? ""
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
         }
-        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, address: address, category: category)
+        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address)
         completion(listing)
     }
 }
