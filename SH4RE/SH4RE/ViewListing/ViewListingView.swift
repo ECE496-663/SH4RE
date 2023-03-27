@@ -31,7 +31,6 @@ struct ViewListingView: View {
     @State private var showDeleted = false
     
     @State var numberOfStars: Float = 0
-    @State var numberOfReviews = 0
     @State var allReviews = [Review]()
     @State var numberOfImages = 0
     @State var description:String = ""
@@ -45,29 +44,12 @@ struct ViewListingView: View {
     
     private var reviews: some View {
         VStack(alignment: .leading) {
-            Text("Reviews (\(numberOfReviews))")
+            Text("Reviews (\(allReviews.count))")
                 .font(.headline)
                 .padding()
             
             ForEach(allReviews) { review in
-                HStack(alignment: .top) {
-                    Image("placeholder")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .clipShape(Circle())
-                        .frame(width: 40, height: 40)
-                    
-                    VStack(alignment: .leading) {
-                        Text(review.name)
-                            .font(.body)
-                        
-                        StarsView(numberOfStars: review.rating as Float)
-                        Text(review.description)
-                            .font(.footnote)
-                    }
-                    
-                }
-                .padding([.horizontal])
+                ReviewView(reviewName: review.name, reviewRating: review.rating as Float, reviewDescription: review.description)
             }
             
         }
@@ -79,7 +61,7 @@ struct ViewListingView: View {
             VStack {
                 if (listing.price.isEmpty) {
                     Text("Message user for more pricing info")
-                        .foregroundColor(.grey)
+                        .foregroundColor(.darkGrey)
                         .font(.caption)
                 }
                 else {
@@ -114,13 +96,13 @@ struct ViewListingView: View {
                     }
                     .frame(alignment: .trailing)
                     .padding()
-//                    .background(startDateText == "" ? Color.grey : Color.primaryDark)
+                    // .background(startDateText == "" ? Color.grey : Color.primaryDark)
                     .background(Color.primaryDark)
                     .cornerRadius(40)
                     .padding()
                     
                 })
-//                .disabled(startDateText == "")
+            //    .disabled(startDateText == "")
             }
             else {
                 NavigationLink(destination: {
@@ -209,9 +191,9 @@ struct ViewListingView: View {
                     HStack {
                         StarsView(numberOfStars: numberOfStars)
                         
-                        Text("(\(numberOfReviews) reviews)")
+                        Text("(\(allReviews.count) reviews)")
                             .font(.caption)
-                            .foregroundColor(.grey)
+                            .foregroundColor(.darkGrey)
                     }
                     .padding([.horizontal])
                     
@@ -274,6 +256,7 @@ struct ViewListingView: View {
                 })
             }
             else {
+
                 availabilityCalendar.disabledDates = listing.availability
                 numberOfImages = listing.imagepath.count
                 for path in listing.imagepath {
@@ -289,6 +272,14 @@ struct ViewListingView: View {
                     }
                 }
             }
+
+            getListingReviews(uid: listing.uid, lid: listing.id, completion: { reviews in
+                allReviews = reviews
+            })
+            
+            getListingRating(uid: listing.uid, lid: listing.id, completion:{ rating in
+                numberOfStars = rating
+            })
         }
         .sheet(isPresented: $showCal, onDismiss: didDismiss) {
             RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
@@ -325,7 +316,7 @@ struct ViewListingView: View {
                     if (startDateText != "") {
                         sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
                     }
-                    
+
                     availabilityCalendar.startDate = nil
                     availabilityCalendar.endDate = nil
                     
