@@ -16,16 +16,19 @@ import FirebaseStorage
 //if you need to create more variables create filler class variable and we will connect to database in later commit
 
 struct ViewListingView: View {
+    @Environment(\.presentationMode) var presentationMode
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser
     
     //parameters passed in from search nav link
-    var listing: Listing
+    @State var listing: Listing
     var chatLogViewModel: ChatLogViewModel
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     @State private var showCal = false
     @State private var showPopUp = false
+    @State private var showDeleteConfirmation = false
+    @State private var showDeleted = false
     
     var numberOfStars: Float = 4
     var hasHalfStar = true
@@ -94,28 +97,77 @@ struct ViewListingView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            Button(action: {
-                showPopUp.toggle()
-            }, label: {
-                HStack {
-                    Text("Message")
-                        .font(.body)
-                        .foregroundColor(.white)
+            if (listing.uid != getCurrentUserUid()) {
+                Button(action: {
+                    showPopUp.toggle()
+                }, label: {
+                    HStack {
+                        Text("Message")
+                            .font(.body)
+                            .foregroundColor(.white)
+                        
+                        Image(systemName: "message")
+                            .foregroundColor(.white)
+                    }
+                    .frame(alignment: .trailing)
+                    .padding()
+                    .background(startDateText == "" ? Color.grey : Color.primaryDark)
+                    .cornerRadius(40)
+                    .padding()
                     
-                    Image(systemName: "message")
-                        .foregroundColor(.white)
-                }
-                .frame(alignment: .trailing)
-                .padding()
-                .background(startDateText == "" ? Color.grey : Color.primaryDark)
-                .cornerRadius(40)
-                .padding()
-                
-            })
-            .disabled(startDateText == "")
+                })
+                .disabled(startDateText == "")
+            }
+            else {
+                NavigationLink(destination: {
+                    CreateListingView(tabSelection: $tabSelection, editListing: $listing)
+                }, label: {
+                    HStack {
+                        Text("Edit")
+                            .font(.body)
+                            .foregroundColor(.white)
+                        
+                        Image(systemName: "pencil.tip.crop.circle")
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: screenSize.width * 0.2)
+                    .padding()
+                    .background(Color.primaryDark)
+                    .cornerRadius(40)
+                    .padding([.top, .bottom])
+                })
+                Button(action: {
+                    showDeleteConfirmation.toggle()
+                }, label: {
+                    HStack {
+                        Text("Delete")
+                            .font(.body)
+                            .foregroundColor(.red)
+                        
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                    }
+                    .frame(width: screenSize.width * 0.2, alignment: .trailing)
+                    .padding()
+                    .background(Color.backgroundGrey)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 40)
+                            .stroke(.red, lineWidth: 2)
+                    )
+                    .padding([.top, .bottom])
+                })
+            }
         }
         .padding([.horizontal])
         .background(.white)
+        .onChange(of: showDeleted, perform: { newVal in
+            if (showDeleted) {
+                deleteListing(lid: listing.id)
+            }
+            else {
+                self.presentationMode.wrappedValue.dismiss()
+            }
+        })
     }
     
     var body: some View {
@@ -232,20 +284,89 @@ struct ViewListingView: View {
                 .cornerRadius(8)
                 
             }
+            PopUp(show: $showDeleteConfirmation) {
+                VStack {
+                    Text("Delete listing?")
+                        .foregroundColor(.primaryDark)
+                        .bold()
+                        .padding(.bottom)
+                    Button(action: {
+                        showDeleteConfirmation.toggle()
+                        showDeleted.toggle()
+                    })
+                    {
+                        Text("Yes")
+                    }
+                    .buttonStyle(primaryButtonStyle())
+                    Button(action: {
+                        showDeleteConfirmation.toggle()
+                    })
+                    {
+                        Text("Cancel")
+                    }
+                    .buttonStyle(secondaryButtonStyle())
+                }
+                .padding()
+                .frame(width: screenSize.width * 0.9, height: 160)
+                .background(.white)
+                .cornerRadius(30)
+            }
+            PopUp(show: $showDeleted) {
+                VStack {
+                    Text("Post Deleted")
+                        .foregroundColor(.primaryDark)
+                        .bold()
+                        .padding(.bottom)
+                    Button(action: {
+                        showDeleted.toggle()
+                    })
+                    {
+                        Text("OK")
+                    }
+                    .buttonStyle(primaryButtonStyle())
+                }
+                .padding()
+                .frame(width: screenSize.width * 0.9, height: 130)
+                .background(.white)
+                .cornerRadius(30)
+            }
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
-            availabilityCalendar.disabledDates = listing.availability
-            numberOfImages = listing.imagepath.count
-            for path in listing.imagepath {
-                let storageRef = Storage.storage().reference(withPath: path)
-                storageRef.getData(maxSize: 1 * 1024 * 1024 as Int64) { [self] data, error in
-                    if let error = error {
-                        print (error)
-                    } else {
-                        //Image Returned Successfully:
-                        let image = UIImage(data: data!)
-                        images.append(image)
+            if (listing.uid == getCurrentUserUid()) {
+                fetchSingleListing(lid: listing.id, completion: { result in
+                    listing = result
+                    availabilityCalendar.disabledDates = result.availability
+                    numberOfImages = result.imagepath.count
+                    images.removeAll()
+                    for path in result.imagepath {
+                        let storageRef = Storage.storage().reference(withPath: path)
+                        storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                            if let error = error {
+                                print (error)
+                            } else {
+                                //Image Returned Successfully:
+                                let image = UIImage(data: data!)
+                                images.append(image)
+                            }
+                        }
+                    }
+                    
+                })
+            }
+            else {
+                availabilityCalendar.disabledDates = listing.availability
+                numberOfImages = listing.imagepath.count
+                for path in listing.imagepath {
+                    let storageRef = Storage.storage().reference(withPath: path)
+                    storageRef.getData(maxSize: 1 * 1024 * 1024 as Int64) { [self] data, error in
+                        if let error = error {
+                            print (error)
+                        } else {
+                            //Image Returned Successfully:
+                            let image = UIImage(data: data!)
+                            images.append(image)
+                        }
                     }
                 }
             }
