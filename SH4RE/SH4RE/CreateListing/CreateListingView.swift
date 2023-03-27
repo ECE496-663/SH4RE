@@ -366,6 +366,47 @@ struct CreateListingView: View {
                     }
                 }
             }
+            else {
+                let calendar = Calendar.current
+                let components = calendar.dateComponents([.year, .month, .day], from: Date())
+                let startOfMonth = calendar.date(from:components)!
+                let numberOfDays = calendar.range(of: .day, in: .quarter, for: startOfMonth)!.upperBound
+                let allDays = Array(0..<numberOfDays).map{ calendar.date(byAdding:.day, value: $0, to: startOfMonth)!}
+                if (availabilitySelection == "Everyday") {
+                    calAvail = []
+                }
+                else if (availabilitySelection == "Weekdays") {
+                    calAvail = allDays.filter{ calendar.isDateInWeekend($0) }
+                }
+                else if (availabilitySelection == "Weekends") {
+                    calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
+                }
+            }
+            getCurrentUser(completion: { user in
+                let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid(), "name": user.name] as [String : Any]
+                let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
+                
+                
+                
+                // upload images and add paths to data fields
+                var index = 1
+                var imgPath = ""
+                var arrayImgs:[String] = []
+                for pic in pictures {
+                    imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
+                    arrayImgs.append(imgPath)
+                    storageManager.upload(image: pic, path: imgPath)
+                    index += 1
+                }
+                if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
+                    NSLog("error");
+                }
+                
+                showPostAlertX = true
+                
+                //reset inputs
+                resetInputs()
+            })
         }
     }
     func validateUpdate () -> Bool {

@@ -20,6 +20,7 @@ struct ChatMessage: Codable, Identifiable {
     let datesRequested: String
     let listingId: String
     let requestId: String
+    let isReviewRequest: Bool
 }
 
 struct ChatUser: Codable, Identifiable {
@@ -37,6 +38,7 @@ struct RecentMessage: Identifiable {
     let datesRequested: String
     let listingId: String
     let requestId: String
+    let isReviewRequest: Bool
     
     var timeAgo: String {
         let formatter = RelativeDateTimeFormatter()
