@@ -83,7 +83,8 @@ func getUserName(uid:String, completion: @escaping(String) -> Void){
         }
         if let document = document, document.exists {
             let data = document.data()!
-            completion(data["name"] as! String)
+            let name = data["name"] as? String ?? ""
+            completion(name)
         }
     }
 }
