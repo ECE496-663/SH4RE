@@ -33,7 +33,7 @@ struct MyListingsView: View {
                             NavigationLink(destination: {
                                 ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title))).environmentObject(currentUser)
                             }, label: {
-                                ProductCard(listing: listing, image: productImage)
+                                ProductCard(favouritesModel: FavouritesModel(), listing: listing, image: productImage)
                             })
                         }
                     }

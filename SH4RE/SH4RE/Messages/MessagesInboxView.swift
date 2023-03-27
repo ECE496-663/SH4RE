@@ -37,7 +37,7 @@ struct MessagesInboxView: View {
                             messagesView
                         }
                         NavigationLink("", isActive: $shouldNavigateToChatLogView) {
-                            MessagesChat(vm: chatLogViewModel)
+                            MessagesChat(vm: chatLogViewModel, tabSelection: $tabSelection, currentUser: _currentUser)
                         }
                     }
                 }.onAppear(){

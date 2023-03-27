@@ -12,6 +12,7 @@ import AlertX
 import Firebase
 import FirebaseAuth
 import FirebaseStorage
+import CoreLocation
 
 struct ParentFunctionKey: EnvironmentKey {
     static let defaultValue: ((Int) -> Void)? = nil
@@ -45,15 +46,16 @@ struct CreateListingView: View {
     // text fields
     @State private var title: String = ""
     @State private var postalCode: String = ""
+    @State private var isPostalCodeValid:Bool = false
+    @State private var lat:Double = 0.0
+    @State private var lon:Double = 0.0
     @State var cost = ""
     @State private var description: String = ""
 
     // drop down fields
     @State var categorySelection = ""
-    var categoryPlaceholder = " Category"
     var categoryList = ["Film & Photography", "Audio Visual Equipment", "Projectors & Screens", "Drones", "DJ Equipment", "Transport", "Storage", "Electronics", "Party & Events", "Sports", "Musical Instruments", "Home, Office & Garden", "Holiday & Travel", "Clothing"]
     @State var availabilitySelection = ""
-    var availabilityPlaceholder = " Availability"
     var availabilityList = ["Everyday", "Weekdays", "Weekends"]
     
     // calendar entry
@@ -61,7 +63,7 @@ struct CreateListingView: View {
     @Environment(\.calendar) var calendar
     @Environment(\.timeZone) var timeZone
     @State private var dates: Set<DateComponents> = []
-    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), mode: 3)
+    @State var availabilityCalendar = RKManager(calendar: Calendar.current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*90), mode: 3)
     @EnvironmentObject var currentUser: CurrentUser
     
     var bounds: PartialRangeFrom<Date> {
@@ -178,6 +180,32 @@ struct CreateListingView: View {
                 .textFieldStyle(textInputStyle())
                 .frame(width: screenSize.width * 0.9)
                 .padding()
+                .onReceive(Just(postalCode)) { address in
+                    isPostalCodeValid = false
+                    let range = NSRange(location: 0, length: postalCode.utf16.count)
+                    let regex1 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z][0-9][A-Za-z][0-9]")
+                    let res1 = regex1!.firstMatch(in: postalCode, options: [], range: range)
+                    let regex2 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z]-[0-9][A-Za-z][0-9]")
+                    let res2 = regex2!.firstMatch(in: postalCode, options: [], range: range)
+                    let regex3 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]")
+                    let res3 = regex3!.firstMatch(in: postalCode, options: [], range: range)
+                    if (res1 != nil || res2 != nil || res3 != nil) {
+                        let geoCoder = CLGeocoder()
+                        geoCoder.geocodeAddressString(address) { (placemarks, error) in
+                            guard
+                                let placemarks = placemarks,
+                                let location = placemarks.first?.location
+                            else {
+                                // handle no location found
+                                return
+                            }
+                            // Use your location
+                            isPostalCodeValid = true
+                            lat = location.coordinate.latitude
+                            lon = location.coordinate.longitude
+                        }
+                    }
+                }
         }
     }
     private var availabilityView: some View {
@@ -188,7 +216,7 @@ struct CreateListingView: View {
                 .padding(.bottom)
             
             // availability
-            DropdownMenu(label: "Availability", options: availabilityList, selection: $availabilitySelection)
+            DropdownMenu(label: "Availability for the Next 3 Months", options: availabilityList, selection: $availabilitySelection)
                 .frame(maxWidth: screenSize.width * 0.9)
                 .onChange(of: availabilitySelection) { value in
                         availabilityCalendar.selectedDates = []
@@ -228,7 +256,20 @@ struct CreateListingView: View {
             }
         }
         else {
-            calAvail.append(availabilitySelection)
+            let calendar = Calendar.current
+            let components = calendar.dateComponents([.year, .month, .day], from: Date())
+            let startOfMonth = calendar.date(from:components)!
+            let numberOfDays = calendar.range(of: .day, in: .quarter, for: startOfMonth)!.upperBound
+            let allDays = Array(0..<numberOfDays).map{ calendar.date(byAdding:.day, value: $0, to: startOfMonth)!}
+            if (availabilitySelection == "Everyday") {
+                calAvail = []
+            }
+            else if (availabilitySelection == "Weekdays") {
+                calAvail = allDays.filter{ calendar.isDateInWeekend($0) }
+            }
+            else if (availabilitySelection == "Weekends") {
+                calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
+            }
         }
         let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
         let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
@@ -259,7 +300,20 @@ struct CreateListingView: View {
             }
         }
         else {
-            calAvail.append(availabilitySelection)
+            let calendar = Calendar.current
+            let components = calendar.dateComponents([.year, .month, .day], from: Date())
+            let startOfMonth = calendar.date(from:components)!
+            let numberOfDays = calendar.range(of: .day, in: .quarter, for: startOfMonth)!.upperBound
+            let allDays = Array(0..<numberOfDays).map{ calendar.date(byAdding:.day, value: $0, to: startOfMonth)!}
+            if (availabilitySelection == "Everyday") {
+                calAvail = []
+            }
+            else if (availabilitySelection == "Weekdays") {
+                calAvail = allDays.filter{ calendar.isDateInWeekend($0) }
+            }
+            else if (availabilitySelection == "Weekends") {
+                calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
+            }
         }
         let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
         if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: listingFields)) {
@@ -283,7 +337,7 @@ struct CreateListingView: View {
     func validatePost () -> Bool {
         if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
-            (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty)) {
+            (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
             errorInField = true
             return false
         }
@@ -414,7 +468,7 @@ struct CreateListingView: View {
 
                 PopUp(show: $errorInField) {
                     VStack {
-                        Text("ERROR: Entries missing")
+                        Text("Entries missing or incorrectly filled")
                             .foregroundColor(.errorColour)
                             .bold()
                             .padding(.bottom)
@@ -433,7 +487,7 @@ struct CreateListingView: View {
                 }
                 PopUp(show: $showPostAlertX) {
                     VStack {
-                        Text("Listing Posted!")
+                        Text((isEditing) ? "Listing Updated!" : "Listing Posted!")
                             .foregroundColor(.primaryDark)
                             .bold()
                             .padding(.bottom)
