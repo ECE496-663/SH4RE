@@ -9,7 +9,8 @@ import SwiftUI
 
 struct MessageView: View {
     let message: ChatMessage
-    @State var requestStatus: Int = 0
+    @State var requestStatus: Int = -1
+    
     @State private var requestResponed = false
     @Binding var showPopUp: Bool;
     
@@ -52,17 +53,15 @@ struct MessageView: View {
                                     Text("Cancelled").foregroundColor(.white)
                                 }
                             }
-                            // TODO: bryan add hasBeenReturned and hasLeftReview variables
-//                            else if (message.hasBeenReturned) {
-//                                Button(action: {
-//                                    showPopUp.toggle()
-//                                })
-//                                {
-//                                    Text("Leave Review")
-//                                }
-//                                .buttonStyle(hasBeenReturned || hasLeftReview ? primaryButtonStyle(width: screenSize.width * 0.5) : disabledButtonStyle(width: screenSize.width * 0.5))
-//                                .disabled(!hasBeenReturned)
-//                            }
+                            else if (message.isReviewRequest) {
+                                Button(action: {
+                                    showPopUp.toggle()
+                                })
+                                {
+                                    Text("Leave Review")
+                                }
+                                .buttonStyle(secondaryButtonStyle(width: screenSize.width * 0.5))
+                            }
                             else {
                                 Text(message.text.replacingOccurrences(of: "\n", with: ""))
                                     .foregroundColor(.white)
@@ -108,6 +107,7 @@ struct MessageView: View {
                                         Text("Deny Request")
                                     }
                                     .buttonStyle(secondaryButtonStyle())
+                                
                                 }else if(requestStatus == 1){
                                     Text("Accepted").foregroundColor(.white)
                                 }else if(requestStatus == 2){
@@ -116,6 +116,15 @@ struct MessageView: View {
                                     Text("Cancelled").foregroundColor(.white)
                                 }
                                 
+                            }
+                            else if (message.isReviewRequest) {
+                                Button(action: {
+                                    showPopUp.toggle()
+                                })
+                                {
+                                    Text("Leave Review")
+                                }
+                                .buttonStyle(secondaryButtonStyle(width: screenSize.width * 0.5))
                             }
                             else {
                                 Text(message.text.replacingOccurrences(of: "\n", with: ""))

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct MessagesChat: View {
     
@@ -15,6 +16,7 @@ struct MessagesChat: View {
     @State private var reviewRating = 0.0
     @State private var review: String = ""
     @State var listingId: String = ""
+    @State var rentalNeedsReturn = "no"
 
     
     var body: some View {
@@ -31,23 +33,29 @@ struct MessagesChat: View {
         .navigationBarTitleDisplayMode(.inline)
         .onDisappear {
             vm.firestoreListener?.remove()
+        }.onAppear(){
+            self.hasUnreturnedRental(toId: vm.chatUser, completion: { ret in
+                rentalNeedsReturn = ret
+            })
         }
     }
     
     private var messagesView: some View {
         VStack {
             
-            VStack {
-                HStack {
-                    Text("Has this item been returned?")
-                    Spacer()
-                    Button(action: {
-                        // TODO: bryan add mark as returned message to send leave review
-                    }) {
-                        Text("Confirm")
+            if(rentalNeedsReturn != "no" ){
+                VStack {
+                    HStack {
+                        Text("Has this item been returned?")
+                        Spacer()
+                        Button(action: {
+                            self.markReturned(toId: vm.chatUser, docId: rentalNeedsReturn)
+                        }) {
+                            Text("Confirm")
+                        }
                     }
-                }
                     .padding()
+                }
             }
             
             ScrollView {
@@ -129,12 +137,43 @@ struct MessagesChat: View {
                     showPopUp.toggle()
                     
                     var reviewname: String = ""
-                    getUserName(uid: getCurrentUserUid(), completion: { name in
-                        reviewname = name
-                    })
+                    guard let uid = self.vm.chatUser?.uid else{
+                        return
+                    }
                     
-                    let review = Review(uid: getCurrentUserUid(), lid: listingId, rating: Float(reviewRating), description: review, name: reviewname)
-                    postReview(review: review)
+                    guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
+                    
+                    getUserName(uid: uid, completion: { name in
+                        
+                        Firestore.firestore().collection("Listings").document(listingId).getDocument { (document, error) in
+                            if let document = document, document.exists {
+                                let data = document.data()!
+                                let ownerId = data["UID"] as? String ?? ""
+                                
+                                var reviewToPost:Review
+                                if ownerId == uid{
+                                    reviewToPost = Review(uid: uid, lid: listingId, rating: Float(reviewRating), description: review, name: reviewname)
+                                }else{
+                                    reviewToPost = Review(uid: uid, lid: "renter", rating: Float(reviewRating), description: review, name: reviewname)
+                                }
+                                Firestore.firestore().collection("messages").document(fromId).collection(uid).whereField("isReviewRequest", isEqualTo: true).getDocuments() {(snapshot, err) in
+                                    snapshot?.documents.forEach({ (document) in
+                                        Firestore.firestore().collection("messages").document(fromId).collection(uid).document(document.documentID).delete()
+                                        var idx = 0
+                                        for message in vm.chatMessages{
+                                            if message.isReviewRequest{
+                                                vm.chatMessages.remove(at: idx)
+                                                idx-=1
+                                            }
+                                            idx+=1
+                                        }
+                                    })
+                                }
+                                Firestore.firestore().collection("recent_messages").document(fromId).collection("messages").document(uid).updateData(["text": "Thanks for leaving a review"])
+                                postReview(review: reviewToPost)
+                            }
+                        }
+                    })
                 })
                 {
                     Text("Send")
@@ -154,10 +193,58 @@ struct MessagesChat: View {
             .background(.white)
             .cornerRadius(8)
             .onAppear(){
-                listingId = vm.chatMessages[0].listingId
+                for message in vm.chatMessages{
+                    if (message.isRequest){
+                        listingId = message.listingId
+                    }
+                }
             }
         }
     }
+    
+    func hasUnreturnedRental(toId: ChatUser?,completion: @escaping (String) -> Void)
+    {
+        guard let toId = toId else{
+            return
+        }
+        guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
+        let db = Firestore.firestore()
+        db.collection("Listings").whereField("UID", isEqualTo: fromId).getDocuments() {(snapshotIds, error) in
+            snapshotIds?.documents.forEach({ (document) in
+                let docId = document.documentID
+                db.collection("Listings").document(docId).collection("Requests").whereField("UID", isEqualTo: toId.uid).getDocuments() {(snapshot, err) in
+                    snapshot?.documents.forEach({ (document) in
+                        let data = document.data()
+                        let title = data["title"] as? String ?? ""
+                        let status = data["status"] as? String ?? ""
+                        let startDate = data["start"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSince1970: 0))
+                        let returned = data["returned"] as? String ?? "no"
+                        if(startDate.dateValue() != Date(timeIntervalSince1970: 0) && startDate.dateValue() < Date() && returned == "no" && status == "accepted"){
+                            completion(docId)
+                        }
+                    })
+                }
+            })
+        }
+        completion("no")
+    }
+
+    func markReturned(toId: ChatUser?, docId: String){
+        guard let toId = toId else{
+            return
+        }
+        guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
+        let db = Firestore.firestore()
+        db.collection("Listings").document(docId).collection("Requests").whereField("UID", isEqualTo: toId.uid).getDocuments() {(snapshot, err) in
+            snapshot?.documents.forEach({ (document) in
+                db.collection("Listings").document(docId).collection("Requests").document(document.documentID).updateData(["returned":"yes"])
+            })
+        }
+        self.rentalNeedsReturn = "no"
+        sendRentalStatusMessage(statusMessage: "", messagePreview: "Please Leave a Review", userId: fromId, renterId: toId.uid, title: "", isReviewRequest: true)
+        
+    }
 }
+
 
 
