@@ -8,9 +8,14 @@
 import SwiftUI
 
 struct MessagesChat: View {
-    
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var vm: ChatLogViewModel
+    @Binding var tabSelection: Int
+    @EnvironmentObject var currentUser: CurrentUser
     static let emptyScrollToString = "Empty"
+    @State private var profilePicture = UIImage(named: "ProfilePhotoPlaceholder")!
+    @State private var name = ""
+    @State private var uid = ""
     
     var body: some View {
         ZStack {
@@ -21,10 +26,45 @@ struct MessagesChat: View {
                     .background(Color.white.ignoresSafeArea())
             }
         }
-        .navigationTitle(vm.chatUser?.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .onDisappear {
             vm.firestoreListener?.remove()
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.backward")
+                        .foregroundColor(.primaryDark)
+                }
+                .padding(.bottom)
+            }
+            ToolbarItem(placement: .navigationBarLeading) {
+                Image(uiImage: profilePicture)
+                    .resizable()
+                    .clipShape(Circle())
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: screenSize.height * 0.03)
+                    .padding(.bottom)
+            }
+            ToolbarItem(placement: .navigationBarLeading) {
+                Text(vm.chatUser?.name ?? "")
+                    .padding(.bottom)
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: ProfileView(uid: $uid, profilePicture: $profilePicture, tabSelection: $tabSelection, currentUser: _currentUser))
+                {
+                    Image(systemName: "info.circle.fill")
+                }
+                .padding(.bottom)
+            }
+        }
+        .onAppear() {
+            name = vm.chatUser?.name ?? "error" // if reverting back to name
+            uid = vm.chatUser?.uid ?? ""
         }
     }
     
