@@ -31,7 +31,7 @@ class ListingViewModel : ObservableObject{
     private var db = Firestore.firestore()
     var image:UIImage = UIImage()
     
-    func fetchListings(completion: @escaping (Bool) -> Void){
+    func fetchListings(completion: @escaping (Bool) -> Void) {
         db.collection("Listings").addSnapshotListener{(QuerySnapshot, Error) in
             guard let listings = QuerySnapshot?.documents else{
                 print("No listings found")
@@ -62,6 +62,7 @@ class ListingViewModel : ObservableObject{
         }
         
     }
+    
     public func fetchProductMainImage(completion: @escaping (Bool) -> Void) {
         
         //Clear Image Array:
@@ -99,7 +100,7 @@ class ListingViewModel : ObservableObject{
     }
 }
 
-func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void){
+func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
     let db = Firestore.firestore()
     var listings = [Listing]()
     db.collection("Listings").whereField("UID", isEqualTo: uid).getDocuments() {(snapshot, error) in

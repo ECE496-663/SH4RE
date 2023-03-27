@@ -110,12 +110,13 @@ struct ViewListingView: View {
                 }
                 .frame(alignment: .trailing)
                 .padding()
-                .background(startDateText == "" ? Color.grey : Color.primaryDark)
+//                .background(startDateText == "" ? Color.grey : Color.primaryDark) // TODO: hannah add when request already submitted
+                .background(Color.primaryDark)
                 .cornerRadius(40)
                 .padding()
                 
             })
-            .disabled(startDateText == "")
+//            .disabled(startDateText == "") // TODO: hannah add when request already submitted
         }
         .padding([.horizontal])
         .background(.white)
@@ -249,8 +250,11 @@ struct ViewListingView: View {
                     }
                 }.simultaneousGesture(TapGesture().onEnded{
                     sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
+                    
                     availabilityCalendar.startDate = nil
                     availabilityCalendar.endDate = nil
+                    
+                    showPopUp.toggle()
                 })
                 .fontWeight(.semibold)
                 .frame(width: screenSize.width * 0.8, height: 40)
