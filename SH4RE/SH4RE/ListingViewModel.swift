@@ -24,7 +24,7 @@ struct Listing : Identifiable{
     var availability = [Date]()
     var category = ""
     var address:Dictionary<String,Any> = [String:Any]()
-    var ownerName: String
+    var ownerName: String = ""
 
 }
 

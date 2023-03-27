@@ -51,7 +51,7 @@ struct CreateListingView: View {
     @State private var lon:Double = 0.0
     @State var cost = ""
     @State private var description: String = ""
-
+    
     // drop down fields
     @State var categorySelection = ""
     var categoryList = ["Film & Photography", "Audio Visual Equipment", "Projectors & Screens", "Drones", "DJ Equipment", "Transport", "Storage", "Electronics", "Party & Events", "Sports", "Musical Instruments", "Home, Office & Garden", "Holiday & Travel", "Clothing"]
@@ -143,6 +143,7 @@ struct CreateListingView: View {
                 .padding(.top)
         }
     }
+    
     private var fieldEntriesView: some View {
         Group {
             // title entry
@@ -219,8 +220,8 @@ struct CreateListingView: View {
             DropdownMenu(label: "Availability for the Next 3 Months", options: availabilityList, selection: $availabilitySelection)
                 .frame(maxWidth: screenSize.width * 0.9)
                 .onChange(of: availabilitySelection) { value in
-                        availabilityCalendar.selectedDates = []
-                    }
+                    availabilityCalendar.selectedDates = []
+                }
             
             HStack {
                 Text("or set")
@@ -271,26 +272,31 @@ struct CreateListingView: View {
                 calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
             }
         }
-        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": ["postalCode": postalCode, "latitude": lat, "longitude": lon], "UID": getCurrentUserUid()] as [String : Any]
-        let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
-        
-        // upload images and add paths to data fields
-        var index = 1
-        var imgPath = ""
-        var arrayImgs:[String] = []
-        for pic in pictures {
-            imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
-            arrayImgs.append(imgPath)
-            storageManager.upload(image: pic, path: imgPath)
-            index += 1
-        }
-        if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
-            NSLog("error");
-        }
-        showPostAlertX = true
-
-        //reset inputs
-        resetInputs()
+        getCurrentUser(completion: { user in
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid(), "name": user.name] as [String : Any]
+            let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
+            
+            
+            
+            // upload images and add paths to data fields
+            var index = 1
+            var imgPath = ""
+            var arrayImgs:[String] = []
+            for pic in pictures {
+                imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
+                arrayImgs.append(imgPath)
+                storageManager.upload(image: pic, path: imgPath)
+                index += 1
+            }
+            if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
+                NSLog("error");
+            }
+            
+            showPostAlertX = true
+            
+            //reset inputs
+            resetInputs()
+        })
     }
     func update() {
         var calAvail = [Any]()
@@ -343,6 +349,7 @@ struct CreateListingView: View {
         }
         return true
     }
+    
     func intializeEditor () {
         isEditing = editListing.title != ""
         if (isEditing) {
@@ -366,50 +373,9 @@ struct CreateListingView: View {
                     }
                 }
             }
-            else {
-                let calendar = Calendar.current
-                let components = calendar.dateComponents([.year, .month, .day], from: Date())
-                let startOfMonth = calendar.date(from:components)!
-                let numberOfDays = calendar.range(of: .day, in: .quarter, for: startOfMonth)!.upperBound
-                let allDays = Array(0..<numberOfDays).map{ calendar.date(byAdding:.day, value: $0, to: startOfMonth)!}
-                if (availabilitySelection == "Everyday") {
-                    calAvail = []
-                }
-                else if (availabilitySelection == "Weekdays") {
-                    calAvail = allDays.filter{ calendar.isDateInWeekend($0) }
-                }
-                else if (availabilitySelection == "Weekends") {
-                    calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
-                }
-            }
-            
-            getCurrentUser(completion: { user in
-                let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid(), "name": user.name] as [String : Any]
-                let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
-                
-                
-                
-                // upload images and add paths to data fields
-                var index = 1
-                var imgPath = ""
-                var arrayImgs:[String] = []
-                for pic in pictures {
-                    imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
-                    arrayImgs.append(imgPath)
-                    storageManager.upload(image: pic, path: imgPath)
-                    index += 1
-                }
-                if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
-                    NSLog("error");
-                }
-                
-                showPostAlertX = true
-                
-                //reset inputs
-                resetInputs()
-            })
         }
     }
+    
     func validateUpdate () -> Bool {
         if (title == editListing.title && description == editListing.description
             && cost == editListing.price && postalCode == editListing.address["postalCode"] as! String
@@ -423,7 +389,7 @@ struct CreateListingView: View {
     var body: some View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
-
+            
             if (currentUser.isGuest()) {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
@@ -438,7 +404,7 @@ struct CreateListingView: View {
                         imageView
                         
                         fieldEntriesView
-                            
+                        
                         availabilityView
                         
                         // update button is editing, else Post button
@@ -510,7 +476,7 @@ struct CreateListingView: View {
                     if (!isEditing) { return }
                     shouldDisableUpdateButton = !validateUpdate()
                 })
-
+                
                 PopUp(show: $errorInField) {
                     VStack {
                         Text("Entries missing or incorrectly filled")

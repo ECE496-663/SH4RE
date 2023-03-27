@@ -121,15 +121,8 @@ struct ViewListingView: View {
                     Image(systemName: "message")
                         .foregroundColor(.white)
                 }
-                .frame(alignment: .trailing)
-                .padding()
-//                .background(startDateText == "" ? Color.grey : Color.primaryDark) // TODO: hannah add when request already submitted
-                .background(Color.primaryDark)
-                .cornerRadius(40)
-                .padding()
-                
-            )}
-//            .disabled(startDateText == "") // TODO: hannah add when request already submitted
+                )
+            }
             else {
                 NavigationLink(destination: {
                     CreateListingView(tabSelection: $tabSelection, editListing: $listing)
@@ -200,8 +193,8 @@ struct ViewListingView: View {
                                         .clipped()
                                         .cornerRadius(10)
                                         .overlay(RoundedRectangle(cornerRadius: 10)
-                                                    .stroke(Color.primaryDark, lineWidth: 3))
-
+                                            .stroke(Color.primaryDark, lineWidth: 3))
+                                    
                                 }
                                 .frame(width: geometry.size.width, height: 250)
                             }
@@ -255,7 +248,7 @@ struct ViewListingView: View {
             }
             
             sendMessagePopUp
-            showDeleteConfirmation
+            showDeleteConfirmationPopUp
             showDeletedPopUp
         }
         .overlay(bottomBar, alignment: .bottom)
@@ -317,7 +310,7 @@ struct ViewListingView: View {
                 }
                 Spacer()
                 
-                NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel)) {
+                NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel, tabSelection: $tabSelection)) {
                     HStack {
                         Text("Send")
                             .font(.body)
@@ -352,7 +345,7 @@ struct ViewListingView: View {
             
         }
     }
-
+    
     private var showDeleteConfirmationPopUp: some View {
         PopUp(show: $showDeleteConfirmation) {
             VStack {
@@ -382,7 +375,7 @@ struct ViewListingView: View {
             .cornerRadius(30)
         }
     }
-
+    
     private var showDeletedPopUp: some View {
         PopUp(show: $showDeleted) {
             VStack {
