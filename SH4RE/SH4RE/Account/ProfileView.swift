@@ -33,16 +33,23 @@ struct ProfileView: View {
         VStack (alignment: .leading) {
             Text(name + "'s Listings")
                 .font(.title2.bold())
-            ScrollView (.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(listingsView.listings) { listing in
-                        // If theres no image for a listing, just use the placeholder
-                        let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
-                        NavigationLink(destination: {
-                            ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title))).environmentObject(currentUser)
-                        }, label: {
-                            ProductCard(listing: listing, image: productImage)
-                        })
+            if (listingsView.listings.isEmpty) {
+                Text(name + " has no listings")
+                    .font(.body)
+                    .padding()
+            }
+            else {
+                ScrollView (.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(listingsView.listings) { listing in
+                            // If theres no image for a listing, just use the placeholder
+                            let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
+                            NavigationLink(destination: {
+                                ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title))).environmentObject(currentUser)
+                            }, label: {
+                                ProductCard(favouritesModel: FavouritesModel(), listing: listing, image: productImage)
+                            })
+                        }
                     }
                 }
             }
