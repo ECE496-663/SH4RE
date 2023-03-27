@@ -11,6 +11,8 @@ import Combine
 import AlertX
 import Firebase
 import FirebaseAuth
+import FirebaseStorage
+import CoreLocation
 
 struct ParentFunctionKey: EnvironmentKey {
     static let defaultValue: ((Int) -> Void)? = nil
@@ -23,13 +25,20 @@ extension EnvironmentValues {
 }
 
 struct CreateListingView: View {
-    var storageManager = StorageManager()
+    @Environment(\.presentationMode) var presentationMode
     @Binding var tabSelection: Int
+    @Binding var editListing: Listing
+    @State var isEditing:Bool = false
+    var storageManager = StorageManager()
+    
+    // images
     @State private var image = UIImage(named: "CreateListingBkgPic")!
     @State private var pictures:[UIImage] = []
     @State private var imagesCount = 1
     @State private var showSheet = false
+    @State private var picturesUnchanged = true
     func deleteImage (index: Int) {
+        picturesUnchanged = false
         imagesCount -= 1
         pictures.remove(at: index)
     }
@@ -37,6 +46,9 @@ struct CreateListingView: View {
     // text fields
     @State private var title: String = ""
     @State private var postalCode: String = ""
+    @State private var isPostalCodeValid:Bool = false
+    @State private var lat:Double = 0.0
+    @State private var lon:Double = 0.0
     @State var cost = ""
     @State private var description: String = ""
 
@@ -69,6 +81,7 @@ struct CreateListingView: View {
     @State var showPostAlertX: Bool = false
     @State var showCancelAlertX: Bool = false
     @State var errorInField: Bool = false
+    @State var shouldDisableUpdateButton: Bool = true
     
     // componnents
     private var imageView: some View {
@@ -102,6 +115,7 @@ struct CreateListingView: View {
                                     .stroke(Color.primaryDark, lineWidth: 3))
                                 .onTapGesture {
                                     showSheet = true
+                                    picturesUnchanged = false
                                     if (!showSheet) {
                                         pictures.append(image)
                                     }
@@ -166,6 +180,32 @@ struct CreateListingView: View {
                 .textFieldStyle(textInputStyle())
                 .frame(width: screenSize.width * 0.9)
                 .padding()
+                .onReceive(Just(postalCode)) { address in
+                    isPostalCodeValid = false
+                    let range = NSRange(location: 0, length: postalCode.utf16.count)
+                    let regex1 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z][0-9][A-Za-z][0-9]")
+                    let res1 = regex1!.firstMatch(in: postalCode, options: [], range: range)
+                    let regex2 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z]-[0-9][A-Za-z][0-9]")
+                    let res2 = regex2!.firstMatch(in: postalCode, options: [], range: range)
+                    let regex3 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]")
+                    let res3 = regex3!.firstMatch(in: postalCode, options: [], range: range)
+                    if (res1 != nil || res2 != nil || res3 != nil) {
+                        let geoCoder = CLGeocoder()
+                        geoCoder.geocodeAddressString(address) { (placemarks, error) in
+                            guard
+                                let placemarks = placemarks,
+                                let location = placemarks.first?.location
+                            else {
+                                // handle no location found
+                                return
+                            }
+                            // Use your location
+                            isPostalCodeValid = true
+                            lat = location.coordinate.latitude
+                            lon = location.coordinate.longitude
+                        }
+                    }
+                }
         }
     }
     private var availabilityView: some View {
@@ -183,12 +223,12 @@ struct CreateListingView: View {
                     }
             
             HStack {
-                Text("or make a")
+                Text("or set")
                 Button(action: {
                     showCal = true
                     availabilitySelection = ""
                 }) {
-                    Text("Custom Availability")
+                    Text("Custom Unavailable Dates")
                 }
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.primaryBase)
@@ -208,72 +248,149 @@ struct CreateListingView: View {
         availabilityCalendar.selectedDates = []
         showCal = false
     }
-    func validatePost () {
+    func post() {
+        var calAvail = [Any]()
+        if (!availabilityCalendar.selectedDates.isEmpty) {
+            for date in availabilityCalendar.selectedDates {
+                calAvail.append(date)
+            }
+        }
+        else {
+            let calendar = Calendar.current
+            let components = calendar.dateComponents([.year, .month, .day], from: Date())
+            let startOfMonth = calendar.date(from:components)!
+            let numberOfDays = calendar.range(of: .day, in: .quarter, for: startOfMonth)!.upperBound
+            let allDays = Array(0..<numberOfDays).map{ calendar.date(byAdding:.day, value: $0, to: startOfMonth)!}
+            if (availabilitySelection == "Everyday") {
+                calAvail = []
+            }
+            else if (availabilitySelection == "Weekdays") {
+                calAvail = allDays.filter{ calendar.isDateInWeekend($0) }
+            }
+            else if (availabilitySelection == "Weekends") {
+                calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
+            }
+        }
+        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": ["postalCode": postalCode, "latitude": lat, "longitude": lon], "UID": getCurrentUserUid()] as [String : Any]
+        let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
+        
+        // upload images and add paths to data fields
+        var index = 1
+        var imgPath = ""
+        var arrayImgs:[String] = []
+        for pic in pictures {
+            imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
+            arrayImgs.append(imgPath)
+            storageManager.upload(image: pic, path: imgPath)
+            index += 1
+        }
+        if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
+            NSLog("error");
+        }
+        showPostAlertX = true
+
+        //reset inputs
+        resetInputs()
+    }
+    func update() {
+        var calAvail = [Any]()
+        if (!availabilityCalendar.selectedDates.isEmpty) {
+            for date in availabilityCalendar.selectedDates {
+                calAvail.append(date)
+            }
+        }
+        else {
+            let calendar = Calendar.current
+            let components = calendar.dateComponents([.year, .month, .day], from: Date())
+            let startOfMonth = calendar.date(from:components)!
+            let numberOfDays = calendar.range(of: .day, in: .quarter, for: startOfMonth)!.upperBound
+            let allDays = Array(0..<numberOfDays).map{ calendar.date(byAdding:.day, value: $0, to: startOfMonth)!}
+            if (availabilitySelection == "Everyday") {
+                calAvail = []
+            }
+            else if (availabilitySelection == "Weekdays") {
+                calAvail = allDays.filter{ calendar.isDateInWeekend($0) }
+            }
+            else if (availabilitySelection == "Weekends") {
+                calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
+            }
+        }
+        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": ["postalCode": postalCode, "latitude": lat, "longitude": lon], "UID": getCurrentUserUid()] as [String : Any]
+        if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: listingFields)) {
+            NSLog("error");
+        }
+        // upload images and add paths to data fields
+        var index = 1
+        var imgPath = ""
+        var arrayImgs:[String] = []
+        for pic in pictures {
+            imgPath = "listingimages/" + editListing.id + "/" + String(index) + ".jpg"
+            arrayImgs.append(imgPath)
+            storageManager.upload(image: pic, path: imgPath)
+            index += 1
+        }
+        if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: ["image_path" : arrayImgs])) {
+            NSLog("error");
+        }
+        showPostAlertX = true
+    }
+    func validatePost () -> Bool {
         if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
-            (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty)) {
+            (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
             errorInField = true
+            return false
         }
-        if (!errorInField) {
-            // upload data fields
-            var calAvail = [Any]()
-            if (!availabilityCalendar.selectedDates.isEmpty) {
-                for date in availabilityCalendar.selectedDates {
-                    calAvail.append(date)
+        return true
+    }
+    func intializeEditor () {
+        isEditing = editListing.title != ""
+        if (isEditing) {
+            title = editListing.title
+            description = editListing.description
+            cost = editListing.price
+            postalCode = editListing.address["postalCode"] as? String ?? "ERROR"
+            availabilityCalendar.selectedDates = editListing.availability
+            imagesCount = editListing.imagepath.count
+            categorySelection = editListing.category
+            imagesCount = (imagesCount <  5) ? imagesCount + 1 : imagesCount
+            for path in editListing.imagepath {
+                let storageRef = Storage.storage().reference(withPath: path)
+                storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                    if let error = error {
+                        print (error)
+                    } else {
+                        //Image Returned Successfully:
+                        let image = UIImage(data: data!)
+                        pictures.append(image!)
+                    }
                 }
             }
-            else {
-                let calendar = Calendar.current
-                let components = calendar.dateComponents([.year, .month, .day], from: Date())
-                let startOfMonth = calendar.date(from:components)!
-                let numberOfDays = calendar.range(of: .day, in: .quarter, for: startOfMonth)!.upperBound
-                let allDays = Array(0..<numberOfDays).map{ calendar.date(byAdding:.day, value: $0, to: startOfMonth)!}
-                if (availabilitySelection == "Everyday") {
-                    calAvail = []
-                }
-                else if (availabilitySelection == "Weekdays") {
-                    calAvail = allDays.filter{ calendar.isDateInWeekend($0) }
-                }
-                else if (availabilitySelection == "Weekends") {
-                    calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
-                }
-            }
-            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": postalCode, "UID": getCurrentUserUid()] as [String : Any]
-            let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
-            
-            // upload images and add paths to data fields
-            var index = 1
-            var imgPath = ""
-            var arrayImgs:[String] = []
-            for pic in pictures {
-                imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
-                arrayImgs.append(imgPath)
-                storageManager.upload(image: pic, path: imgPath)
-                index += 1
-            }
-            if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
-                NSLog("error");
-            }
-            showPostAlertX = true
-
-            //reset inputs
-            resetInputs()
         }
+    }
+    func validateUpdate () -> Bool {
+        if (title == editListing.title && description == editListing.description
+            && cost == editListing.price && postalCode == editListing.address["postalCode"] as! String
+            && availabilityCalendar.selectedDates == editListing.availability
+            && picturesUnchanged && categorySelection == editListing.category) {
+            return false
+        }
+        return true
     }
     
     var body: some View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
-            
+
             if (currentUser.isGuest()) {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
             else {
                 ScrollViewReader { value in
                     ScrollView([.vertical]) {
-                        Text("New Post")
-                            .font(.title2)
-                            .bold()
+                        Text(isEditing ? "Edit Listing" : "New Post")
+                            .font(.title.bold())
+                            .frame(width: screenSize.width * 0.9, alignment: .leading)
                             .id(1)
                         
                         imageView
@@ -282,30 +399,44 @@ struct CreateListingView: View {
                             
                         availabilityView
                         
-                        // Post button
+                        // update button is editing, else Post button
                         Button(action: {
-                            withAnimation(.easeInOut(duration: 1)) {
-                                value.scrollTo(1)
+                            if (isEditing) {
+                                if (validatePost()) {
+                                    update()
+                                }
                             }
-                            // validate entries
-                            validatePost()
-                            
+                            else {
+                                withAnimation(.easeInOut(duration: 1)) {
+                                    value.scrollTo(1)
+                                }
+                                // validate entries
+                                if (validatePost()) {
+                                    post()
+                                }
+                            }
                         }) {
-                            Text("Post")
+                            Text((isEditing) ? "Update" : "Post")
                                 .fontWeight(.semibold)
                                 .frame(width: screenSize.width * 0.9, height: 20)
                                 .padding()
                                 .foregroundColor(.white)
-                                .background(Color.primaryDark)
+                                .background((isEditing && shouldDisableUpdateButton) ? .grey : Color.primaryDark)
                                 .cornerRadius(40)
                         }
+                        .disabled(isEditing && shouldDisableUpdateButton)
                         
-                        // Cancel button
+                        // delete listing if editing, else Cancel button
                         Button(action: {
-                            resetInputs()
-                            showCancelAlertX.toggle()
-                            withAnimation(.easeInOut(duration: 1)) {
-                                value.scrollTo(1)
+                            if (isEditing) {
+                                self.presentationMode.wrappedValue.dismiss()
+                            }
+                            else {
+                                resetInputs()
+                                showCancelAlertX.toggle()
+                                withAnimation(.easeInOut(duration: 1)) {
+                                    value.scrollTo(1)
+                                }
                             }
                         })
                         {
@@ -313,10 +444,10 @@ struct CreateListingView: View {
                                 .fontWeight(.semibold)
                                 .frame(width: screenSize.width * 0.9, height: 10)
                                 .padding()
-                                .foregroundColor(.primaryDark)
+                                .foregroundColor(.errorColour)
                                 .background(.white)
                                 .cornerRadius(40)
-                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.primaryDark, lineWidth: 2))
+                                .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.errorColour, lineWidth: 2))
                         }
                         .padding(.bottom)
                     }
@@ -325,10 +456,22 @@ struct CreateListingView: View {
                 .sheet(isPresented: $showCal) {
                     RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
                 }
+                .onChange(of: [title, description, cost, postalCode, categorySelection], perform: { newVal in
+                    if (!isEditing) { return }
+                    shouldDisableUpdateButton = !validateUpdate()
+                })
+                .onChange(of: [picturesUnchanged], perform: { newVal in
+                    if (!isEditing) { return }
+                    shouldDisableUpdateButton = !validateUpdate()
+                })
+                .onChange(of: showCal, perform: { newVal in
+                    if (!isEditing) { return }
+                    shouldDisableUpdateButton = !validateUpdate()
+                })
 
                 PopUp(show: $errorInField) {
                     VStack {
-                        Text("ERROR: Entries missing")
+                        Text("Entries missing or incorrectly filled")
                             .foregroundColor(.errorColour)
                             .bold()
                             .padding(.bottom)
@@ -344,15 +487,17 @@ struct CreateListingView: View {
                     .frame(width: screenSize.width * 0.9, height: 130)
                     .background(.white)
                     .cornerRadius(30)
-                    
                 }
                 PopUp(show: $showPostAlertX) {
                     VStack {
-                        Text("Listing Posted!")
+                        Text((isEditing) ? "Listing Updated!" : "Listing Posted!")
                             .foregroundColor(.primaryDark)
                             .bold()
                             .padding(.bottom)
                         Button(action: {
+                            if (isEditing) {
+                                self.presentationMode.wrappedValue.dismiss()
+                            }
                             showPostAlertX.toggle()
                         })
                         {
@@ -384,9 +529,11 @@ struct CreateListingView: View {
                     .frame(width: screenSize.width * 0.9, height: 130)
                     .background(.white)
                     .cornerRadius(30)
-                    
                 }
             }
+        }
+        .onAppear() {
+            intializeEditor()
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }

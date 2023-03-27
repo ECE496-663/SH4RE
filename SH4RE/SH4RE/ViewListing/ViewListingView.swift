@@ -16,16 +16,19 @@ import FirebaseStorage
 //if you need to create more variables create filler class variable and we will connect to database in later commit
 
 struct ViewListingView: View {
+    @Environment(\.presentationMode) var presentationMode
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser
     
     //parameters passed in from search nav link
-    var listing: Listing
+    @State var listing: Listing
     var chatLogViewModel: ChatLogViewModel
     @State var listingPaths: [String] = []
     @State var images : [UIImage?] = []
     @State private var showCal = false
     @State private var showPopUp = false
+    @State private var showDeleteConfirmation = false
+    @State private var showDeleted = false
     
     @State var numberOfStars: Float = 0
     @State var numberOfReviews = 0
@@ -97,13 +100,23 @@ struct ViewListingView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            Button(action: {
-                showPopUp.toggle()
-            }, label: {
-                HStack {
-                    Text("Message")
-                        .font(.body)
-                        .foregroundColor(.white)
+            if (listing.uid != getCurrentUserUid()) {
+                Button(action: {
+                    showPopUp.toggle()
+                }, label: {
+                    HStack {
+                        Text("Message")
+                            .font(.body)
+                            .foregroundColor(.white)
+                        
+                        Image(systemName: "message")
+                            .foregroundColor(.white)
+                    }
+                    .frame(alignment: .trailing)
+                    .padding()
+                    .background(startDateText == "" ? Color.grey : Color.primaryDark)
+                    .cornerRadius(40)
+                    .padding()
                     
                     Image(systemName: "message")
                         .foregroundColor(.white)
@@ -115,11 +128,58 @@ struct ViewListingView: View {
                 .cornerRadius(40)
                 .padding()
                 
-            })
+            )}
 //            .disabled(startDateText == "") // TODO: hannah add when request already submitted
+            else {
+                NavigationLink(destination: {
+                    CreateListingView(tabSelection: $tabSelection, editListing: $listing)
+                }, label: {
+                    HStack {
+                        Text("Edit")
+                            .font(.body)
+                            .foregroundColor(.white)
+                        
+                        Image(systemName: "pencil.tip.crop.circle")
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: screenSize.width * 0.2)
+                    .padding()
+                    .background(Color.primaryDark)
+                    .cornerRadius(40)
+                    .padding([.top, .bottom])
+                })
+                Button(action: {
+                    showDeleteConfirmation.toggle()
+                }, label: {
+                    HStack {
+                        Text("Delete")
+                            .font(.body)
+                            .foregroundColor(.red)
+                        
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                    }
+                    .frame(width: screenSize.width * 0.2, alignment: .trailing)
+                    .padding()
+                    .background(Color.backgroundGrey)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 40)
+                            .stroke(.red, lineWidth: 2)
+                    )
+                    .padding([.top, .bottom])
+                })
+            }
         }
         .padding([.horizontal])
         .background(.white)
+        .onChange(of: showDeleted, perform: { newVal in
+            if (showDeleted) {
+                deleteListing(lid: listing.id)
+            }
+            else {
+                self.presentationMode.wrappedValue.dismiss()
+            }
+        })
     }
     
     var body: some View {
@@ -195,30 +255,45 @@ struct ViewListingView: View {
             }
             
             sendMessagePopUp
+            showDeleteConfirmation
+            showDeletedPopUp
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
-            availabilityCalendar.disabledDates = listing.availability
-            numberOfImages = listing.imagepath.count
-            
-            getListingReviews(uid: listing.uid, lid: listing.id, completion: { reviews in
-                    allReviews = reviews
-                    numberOfReviews = reviews.count
-            })
-            
-            getListingRating(uid: listing.uid, lid: listing.id, completion: { rating in
-                numberOfStars = rating
-            })
-            
-            for path in listing.imagepath {
-                let storageRef = Storage.storage().reference(withPath: path)
-                storageRef.getData(maxSize: 1 * 1024 * 1024 as Int64) { [self] data, error in
-                    if let error = error {
-                        print (error)
-                    } else {
-                        //Image Returned Successfully:
-                        let image = UIImage(data: data!)
-                        images.append(image)
+            if (listing.uid == getCurrentUserUid()) {
+                fetchSingleListing(lid: listing.id, completion: { result in
+                    listing = result
+                    availabilityCalendar.disabledDates = result.availability
+                    numberOfImages = result.imagepath.count
+                    images.removeAll()
+                    for path in result.imagepath {
+                        let storageRef = Storage.storage().reference(withPath: path)
+                        storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                            if let error = error {
+                                print (error)
+                            } else {
+                                //Image Returned Successfully:
+                                let image = UIImage(data: data!)
+                                images.append(image)
+                            }
+                        }
+                    }
+                    
+                })
+            }
+            else {
+                availabilityCalendar.disabledDates = listing.availability
+                numberOfImages = listing.imagepath.count
+                for path in listing.imagepath {
+                    let storageRef = Storage.storage().reference(withPath: path)
+                    storageRef.getData(maxSize: 1 * 1024 * 1024 as Int64) { [self] data, error in
+                        if let error = error {
+                            print (error)
+                        } else {
+                            //Image Returned Successfully:
+                            let image = UIImage(data: data!)
+                            images.append(image)
+                        }
                     }
                 }
             }
@@ -277,6 +352,58 @@ struct ViewListingView: View {
             
         }
     }
+
+    private var showDeleteConfirmationPopUp: some View {
+        PopUp(show: $showDeleteConfirmation) {
+            VStack {
+                Text("Delete listing?")
+                    .foregroundColor(.primaryDark)
+                    .bold()
+                    .padding(.bottom)
+                Button(action: {
+                    showDeleteConfirmation.toggle()
+                    showDeleted.toggle()
+                })
+                {
+                    Text("Yes")
+                }
+                .buttonStyle(primaryButtonStyle())
+                Button(action: {
+                    showDeleteConfirmation.toggle()
+                })
+                {
+                    Text("Cancel")
+                }
+                .buttonStyle(secondaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 160)
+            .background(.white)
+            .cornerRadius(30)
+        }
+    }
+
+    private var showDeletedPopUp: some View {
+        PopUp(show: $showDeleted) {
+            VStack {
+                Text("Post Deleted")
+                    .foregroundColor(.primaryDark)
+                    .bold()
+                    .padding(.bottom)
+                Button(action: {
+                    showDeleted.toggle()
+                })
+                {
+                    Text("OK")
+                }
+                .buttonStyle(primaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 130)
+            .background(.white)
+            .cornerRadius(30)
+        }
+    }
     
     func getTextFromDate(date: Date!) -> String {
         let formatter = DateFormatter()
@@ -293,7 +420,7 @@ struct ViewListingView: View {
 
 struct ViewListingView_Previews: PreviewProvider {
     static var previewListing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : [
-        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: "20.00")
+        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: "20.00", address: ["latitude": 43.66, "longitude": -79.37])
     static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "123", uid: "123", name: "Random"))
     
     static var previews: some View {
