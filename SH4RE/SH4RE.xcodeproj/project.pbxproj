@@ -29,6 +29,10 @@
 		1ECFE34A29BFA49A0036F19A /* SH4RE Stickers.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1ECFE34329BFA4970036F19A /* SH4RE Stickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1ECFE34F29BFA5C80036F19A /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1ECFE34529BFA49A0036F19A /* Stickers.xcassets */; };
 		1ECFE35029BFA5E90036F19A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5939D36129132D7200866FA5 /* Assets.xcassets */; };
+		391AF85129C7B8A400FB1053 /* MyListingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391AF85029C7B8A400FB1053 /* MyListingsView.swift */; };
+		391AF85329C7C16500FB1053 /* EditAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391AF85229C7C16500FB1053 /* EditAccountView.swift */; };
+		391AF85529C7C1AA00FB1053 /* ReviewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391AF85429C7C1AA00FB1053 /* ReviewsView.swift */; };
+		391AF85729C7C1D500FB1053 /* FavouritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391AF85629C7C1D500FB1053 /* FavouritesView.swift */; };
 		39ABA1BB29CB571500838275 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39ABA1BA29CB571500838275 /* ProfileView.swift */; };
 		1ED168DC29C5180C00287CE8 /* FavouritesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */; };
 		1EE1D5C629BFB1A500A59AC1 /* Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE1D5C529BFB1A500A59AC1 /* Categories.swift */; };
@@ -129,6 +133,10 @@
 		1ECFE34329BFA4970036F19A /* SH4RE Stickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "SH4RE Stickers.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ECFE34529BFA49A0036F19A /* Stickers.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Stickers.xcassets; sourceTree = "<group>"; };
 		1ECFE34729BFA49A0036F19A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		391AF85029C7B8A400FB1053 /* MyListingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListingsView.swift; sourceTree = "<group>"; };
+		391AF85229C7C16500FB1053 /* EditAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountView.swift; sourceTree = "<group>"; };
+		391AF85429C7C1AA00FB1053 /* ReviewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsView.swift; sourceTree = "<group>"; };
+		391AF85629C7C1D500FB1053 /* FavouritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesView.swift; sourceTree = "<group>"; };
 		39ABA1BA29CB571500838275 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesModel.swift; sourceTree = "<group>"; };
 		1EE1D5C529BFB1A500A59AC1 /* Categories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Categories.swift; sourceTree = "<group>"; };
@@ -370,6 +378,10 @@
 			isa = PBXGroup;
 			children = (
 				9D080593292FE9F400094169 /* AccountView.swift */,
+				391AF85029C7B8A400FB1053 /* MyListingsView.swift */,
+				391AF85229C7C16500FB1053 /* EditAccountView.swift */,
+				391AF85429C7C1AA00FB1053 /* ReviewsView.swift */,
+				391AF85629C7C1D500FB1053 /* FavouritesView.swift */,
 				39ABA1BA29CB571500838275 /* ProfileView.swift */,
 				1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */,
 			);
@@ -599,6 +611,7 @@
 			files = (
 				9DB46C5B296E5E31005F0216 /* PopUp.swift in Sources */,
 				9D080583292FE62200094169 /* SearchView.swift in Sources */,
+				391AF85729C7C1D500FB1053 /* FavouritesView.swift in Sources */,
 				5939D38929132D8500866FA5 /* FirebaseDB.swift in Sources */,
 				9D05185F2998497400366A10 /* RKColorSettings.swift in Sources */,
 				9D250D1C29847597009AA895 /* MessagesChat.swift in Sources */,
@@ -621,12 +634,15 @@
 				9D16B1EB29958786007F99D8 /* MainMessagesViewModel.swift in Sources */,
 				9D16B1F229958910007F99D8 /* Placeholder.swift in Sources */,
 				D120FAB42966533800CCD7A5 /* LandingView.swift in Sources */,
+				391AF85329C7C16500FB1053 /* EditAccountView.swift in Sources */,
 				9D250D1E298475B6009AA895 /* MessagesInboxView.swift in Sources */,
 				5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */,
+				391AF85529C7C1AA00FB1053 /* ReviewsView.swift in Sources */,
 				39ABA1BB29CB571500838275 /* ProfileView.swift in Sources */,
 				9D16B1F0299588E8007F99D8 /* MessageView.swift in Sources */,
 				1E1208A82988388700604D68 /* CurrentLocationButton.swift in Sources */,
 				D119C0482928313700E83142 /* ImagePicker.swift in Sources */,
+				391AF85129C7B8A400FB1053 /* MyListingsView.swift in Sources */,
 				9D0518622998497400366A10 /* RKViewController.swift in Sources */,
 				D120FAB6296658A100CCD7A5 /* TutorialView.swift in Sources */,
 				9D250D20298475FA009AA895 /* ChatMessageModel.swift in Sources */,
