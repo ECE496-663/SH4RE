@@ -72,15 +72,15 @@ func getListingReviews(uid: String, lid: String, completion: @escaping([Review])
             var reviewname: String = ""
             getUserName(uid: uid , completion: { name in
                 reviewname = name
+                
+                let review = Review(id:id,uid:uid, lid:lid, rating:rating, description:description, name: reviewname)
+                reviews.append(review)
+                
+                if reviews.count == snapshot?.documents.count {
+                    print(reviews)
+                    completion(reviews)
+                }
             })
-            
-            let review = Review(id:id,uid:uid, lid:lid, rating:rating, description:description, name: reviewname)
-            reviews.append(review)
-            
-            if reviews.count == snapshot?.documents.count {
-                print(reviews)
-                completion(reviews)
-            }
         })
     }
 }
