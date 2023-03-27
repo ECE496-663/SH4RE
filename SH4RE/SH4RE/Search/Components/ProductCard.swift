@@ -7,16 +7,36 @@
 
 import SwiftUI
 
+struct FavButtonBounce: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 1.5 : 1)
+            .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+    }
+}
+
 struct ProductCard: View {
+    @ObservedObject var favouritesModel: FavouritesModel
     var listing: Listing;
     var image:UIImage
+    @State var favourited: Bool
     private let width:CGFloat = 170
     private let height:CGFloat = 175
 
+    init(favouritesModel: FavouritesModel, listing: Listing, image: UIImage) {
+        self.favouritesModel = favouritesModel
+        self.listing = listing
+        self.image = image
+        self.favourited = favouritesModel.isFavourited(listingID: listing.id)
+    }
+
+    func toggleFav(){
+        favourited = favouritesModel.toggleFavourite(listingID: listing.id)
+    }
         
     var body: some View {
         
-        ZStack (){
+        ZStack (alignment: .topTrailing){
             
             VStack (spacing: 0){
                 Image(uiImage: self.image)
@@ -36,6 +56,19 @@ struct ProductCard: View {
                 .padding()
                 .frame(width: width, height: 75, alignment: .leading)
                 .background(.white)
+                
+            }
+            //Don't show the fav button for their own listing
+            if (listing.uid != getCurrentUserUid()) {
+                Button(action: {toggleFav()}){
+                    Image(systemName: favourited ? "heart.fill" : "heart")
+                        .padding(6)
+                        .foregroundColor(.black)
+                        .background(.white)
+                        .cornerRadius(50)
+                        .padding()
+                }
+                .buttonStyle(FavButtonBounce())
             }
         }
         .frame(width: width, height: height + 75)
@@ -46,7 +79,7 @@ struct ProductCard: View {
 
 struct ProductCard_Previews: PreviewProvider {
     static var previews: some View {
-        let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00")
-        ProductCard(listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+        let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00", address: ["latitude": 43.66, "longitude": -79.37])
+        ProductCard(favouritesModel: FavouritesModel(), listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 //Remove once real listing is here
-let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00")
+let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00", address: ["latitude": 43.66, "longitude": -79.37])
 
 //This probably shouldnt go here but it will for now, allows for safe and easy bounds checking
 extension Collection {
@@ -22,6 +22,7 @@ extension Collection {
 struct HomeView: View {
     @Binding var tabSelection: Int
     @ObservedObject var searchModel: SearchModel
+    @ObservedObject var favouritesModel: FavouritesModel
     let categories = getCategoriesAndImg()
 
     var body: some View {
@@ -74,9 +75,9 @@ struct HomeView: View {
                                 Text("Recent Posts")
                                     .font(.title2.bold())
                                 HStack(){
-                                    ProductCard(listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+                                    ProductCard(favouritesModel: favouritesModel, listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
                                     Spacer()
-                                    ProductCard(listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+                                    ProductCard(favouritesModel: favouritesModel, listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
                                 }
                             }
                             //Categories
@@ -148,6 +149,6 @@ struct CategoryCardView: View {
 
 struct Previews_HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(tabSelection: .constant(1), searchModel: SearchModel())
+        HomeView(tabSelection: .constant(1), searchModel: SearchModel(), favouritesModel:FavouritesModel())
     }
 }
