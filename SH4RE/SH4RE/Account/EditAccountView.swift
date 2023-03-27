@@ -112,28 +112,17 @@ struct EditAccountView: View {
                     update()
                 }) {
                     Text("Update")
-                        .fontWeight(.semibold)
-                        .frame(width: screenSize.width * 0.8, height: 20)
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color.primaryDark)
-                        .cornerRadius(40)
                 }
-                
+                .buttonStyle(primaryButtonStyle())
+
                 // Cancel button
                 Button(action: {
                     self.presentationMode.wrappedValue.dismiss()
                 })
                 {
                     Text("Cancel")
-                        .fontWeight(.semibold)
-                        .frame(width: screenSize.width * 0.8, height: 10)
-                        .padding()
-                        .foregroundColor(.primaryDark)
-                        .background(.white)
-                        .cornerRadius(40)
-                        .overlay(RoundedRectangle(cornerRadius: 40) .stroke(Color.primaryDark, lineWidth: 2))
                 }
+                .buttonStyle(secondaryButtonStyle())
                 .padding(.bottom)
             }
             PopUp(show: $showPosted) {
