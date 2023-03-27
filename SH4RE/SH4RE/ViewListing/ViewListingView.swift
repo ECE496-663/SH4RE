@@ -289,7 +289,7 @@ struct ViewListingView: View {
 
 struct ViewListingView_Previews: PreviewProvider {
     static var previewListing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : [
-        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: "20.00")
+        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: "20.00", ownerName: "name")
     static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "123", uid: "123", name: "Random"))
     
     static var previews: some View {

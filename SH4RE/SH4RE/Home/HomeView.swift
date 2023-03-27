@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 //Remove once real listing is here
-let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00")
+let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00", ownerName: "name")
 
 //This probably shouldnt go here but it will for now, allows for safe and easy bounds checking
 extension Collection {
