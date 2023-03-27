@@ -29,6 +29,7 @@
 		1ECFE34A29BFA49A0036F19A /* SH4RE Stickers.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1ECFE34329BFA4970036F19A /* SH4RE Stickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1ECFE34F29BFA5C80036F19A /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1ECFE34529BFA49A0036F19A /* Stickers.xcassets */; };
 		1ECFE35029BFA5E90036F19A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5939D36129132D7200866FA5 /* Assets.xcassets */; };
+		39ABA1BB29CB571500838275 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39ABA1BA29CB571500838275 /* ProfileView.swift */; };
 		1ED168DC29C5180C00287CE8 /* FavouritesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */; };
 		1EE1D5C629BFB1A500A59AC1 /* Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE1D5C529BFB1A500A59AC1 /* Categories.swift */; };
 		5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D35D29132D7000866FA5 /* SH4REApp.swift */; };
@@ -128,6 +129,7 @@
 		1ECFE34329BFA4970036F19A /* SH4RE Stickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "SH4RE Stickers.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ECFE34529BFA49A0036F19A /* Stickers.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Stickers.xcassets; sourceTree = "<group>"; };
 		1ECFE34729BFA49A0036F19A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		39ABA1BA29CB571500838275 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesModel.swift; sourceTree = "<group>"; };
 		1EE1D5C529BFB1A500A59AC1 /* Categories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Categories.swift; sourceTree = "<group>"; };
 		5939D35A29132D7000866FA5 /* SH4RE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SH4RE.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -368,6 +370,7 @@
 			isa = PBXGroup;
 			children = (
 				9D080593292FE9F400094169 /* AccountView.swift */,
+				39ABA1BA29CB571500838275 /* ProfileView.swift */,
 				1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */,
 			);
 			path = Account;
@@ -620,6 +623,7 @@
 				D120FAB42966533800CCD7A5 /* LandingView.swift in Sources */,
 				9D250D1E298475B6009AA895 /* MessagesInboxView.swift in Sources */,
 				5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */,
+				39ABA1BB29CB571500838275 /* ProfileView.swift in Sources */,
 				9D16B1F0299588E8007F99D8 /* MessageView.swift in Sources */,
 				1E1208A82988388700604D68 /* CurrentLocationButton.swift in Sources */,
 				D119C0482928313700E83142 /* ImagePicker.swift in Sources */,
