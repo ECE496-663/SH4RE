@@ -16,7 +16,14 @@ struct MyListingsView: View {
     var body: some View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
-
+            if (listingsView.listings.isEmpty) {
+                Text("You have no active listings")
+                    .font(.system(size: 16))
+                    .foregroundColor(.primaryDark)
+                    .frame(maxWidth: screenSize.width * 0.8)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
             ScrollView {
                 NavigationStack {
                     LazyVGrid(columns: columns, spacing: 15){
@@ -26,17 +33,21 @@ struct MyListingsView: View {
                             NavigationLink(destination: {
                                 ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title))).environmentObject(currentUser)
                             }, label: {
-                                ProductCard(listing: listing, image: productImage)
+                                ProductCard(favouritesModel: FavouritesModel(), listing: listing, image: productImage)
                             })
                         }
                     }
                 }
             }
         }
+        .padding()
         .navigationTitle("My Listings")
         .onAppear(){
-            // TODO: change this to fetch current user listings (not all)
             fetchUsersListings(uid: getCurrentUserUid(), completion: { listings in
+                if (listings.isEmpty) {
+                    self.listingsView.listings.removeAll()
+                    return
+                }
                 self.listingsView.listings = listings
                 self.listingsView.fetchProductMainImage( completion: { success in
                     if !success {

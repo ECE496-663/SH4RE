@@ -136,8 +136,7 @@ struct AccountView: View {
                 NavigationStack {
                     VStack {
                         Text("My Account")
-                            .font(.title2)
-                            .bold()
+                            .font(.title.bold())
                             .frame(width: screenSize.width * 0.9, alignment: .leading)
                         profile
                             .padding(.bottom)

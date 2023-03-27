@@ -25,8 +25,10 @@ extension Color {
 
 struct ContentView: View {
     @State private var tabSelection = 1
+    @State var listing: Listing = Listing()
     @StateObject var currentUser = CurrentUser()
     @ObservedObject var searchModel = SearchModel()
+    @StateObject var favouritesModel = FavouritesModel()
     init() {
         UITabBar.appearance().backgroundColor = UIColor(.backgroundGrey)
     }
@@ -35,18 +37,18 @@ struct ContentView: View {
         ZStack {
             if (currentUser.hasLoggedIn) {
                 TabView(selection: $tabSelection) {
-                    HomeView(tabSelection: $tabSelection, searchModel: searchModel)
+                    HomeView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: favouritesModel)
                         .tabItem {
                             Label("Home", systemImage: "house.fill")
                         }
                         .tag(1)
-                    SearchView(tabSelection: $tabSelection, searchModel: searchModel)
+                    SearchView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: favouritesModel)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Search", systemImage: "safari.fill")
                         }
                         .tag(2)
-                    CreateListingView(tabSelection: $tabSelection)
+                    CreateListingView(tabSelection: $tabSelection, editListing: $listing)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Post", systemImage: "plus.square.fill")
