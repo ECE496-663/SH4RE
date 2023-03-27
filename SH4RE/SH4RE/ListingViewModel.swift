@@ -22,7 +22,7 @@ struct Listing : Identifiable{
     var price:String
     var imageDict = UIImage()
     var availability = [Date]()
-
+    var address:Dictionary<String,Any>
 }
 
 class ListingViewModel : ObservableObject{
@@ -47,11 +47,12 @@ class ListingViewModel : ObservableObject{
                 let imagepath = data["image_path"] as? [String] ?? []
                 let price = data["Price"] as? String ?? ""
                 let timeAvailability = data["Availability"] as? [Timestamp] ?? []
+                let address = data["Address"] as? Dictionary<String,Any> ?? ["latitude": -1, "longitude": -1]
                 var availability:[Date] = []
                 for timestamp in timeAvailability{
                     availability.append(timestamp.dateValue())
                 }
-                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability)
+                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, address: address)
             }
             if QuerySnapshot!.isEmpty{
                 completion(false)
@@ -113,11 +114,12 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void){
             let imagepath = data["image_path"] as? [String] ?? []
             let price = data["Price"] as? String ?? ""
             let timeAvailability = data["Availability"] as? [Timestamp] ?? []
+            let address = data["Address"] as? Dictionary<String,Any> ?? ["latitude": -1, "longitude": -1]
             var availability:[Date] = []
             for timestamp in timeAvailability{
                 availability.append(timestamp.dateValue())
             }
-            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability)
+            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, address: address)
             listings.append(listing)
             if listings.count == snapshot?.documents.count {
                 completion(listings)
