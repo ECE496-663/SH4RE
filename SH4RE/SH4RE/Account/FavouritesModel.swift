@@ -6,31 +6,18 @@
 //
 
 import SwiftUI
-import Firebase
-import FirebaseAuth
 
 class FavouritesModel: ObservableObject {
+    //TODO: Bryan - grab favourites from server and reset this
     @Published var favourites:Set<String> = []
     
-    init(){
-        if(Auth.auth().currentUser != nil){
-            Firestore.firestore().collection("User Info").document(getCurrentUserUid()).collection("Favourites").getDocuments() {(snapshot, error) in
-                snapshot?.documents.forEach({ (document) in
-                    let data = document.data()
-                    let id = document.documentID
-                    self.favourites.insert(id)
-                })
-            }
-        }
-    }
-    
     func addFavourite(listingID:String){
-        Firestore.firestore().collection("User Info").document(getCurrentUserUid()).collection("Favourites").document(listingID).setData(["exists":true])
+        //TODO: Bryan - push to favourites table in firebase here
         favourites.insert(listingID)
     }
     
     func removeFavourite(listingID:String) {
-        Firestore.firestore().collection("User Info").document(getCurrentUserUid()).collection("Favourites").document(listingID).delete()
+        //TODO: Bryan - remove form favourites table in firebase here
         favourites.remove(listingID)
     }
     
