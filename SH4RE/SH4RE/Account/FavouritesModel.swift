@@ -7,17 +7,20 @@
 
 import SwiftUI
 import Firebase
+import FirebaseAuth
 
 class FavouritesModel: ObservableObject {
     @Published var favourites:Set<String> = []
     
     init(){
-        Firestore.firestore().collection("User Info").document(getCurrentUserUid()).collection("Favourites").getDocuments() {(snapshot, error) in
-            snapshot?.documents.forEach({ (document) in
-                let data = document.data()
-                let id = document.documentID
-                self.favourites.insert(id)
-            })
+        if(Auth.auth().currentUser != nil){
+            Firestore.firestore().collection("User Info").document(getCurrentUserUid()).collection("Favourites").getDocuments() {(snapshot, error) in
+                snapshot?.documents.forEach({ (document) in
+                    let data = document.data()
+                    let id = document.documentID
+                    self.favourites.insert(id)
+                })
+            }
         }
     }
     

@@ -24,7 +24,8 @@ struct ChatMessage: Codable, Identifiable {
 
 struct ChatUser: Codable, Identifiable {
     @DocumentID var id: String?
-    let uid, name: String
+    let uid: String
+    let name: String
 }
 
 struct RecentMessage: Identifiable {
@@ -37,12 +38,14 @@ struct RecentMessage: Identifiable {
     let datesRequested: String
     let listingId: String
     let requestId: String
+    var profilePic: UIImage
     
     var timeAgo: String {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .abbreviated
         return formatter.localizedString(for: timestamp, relativeTo: Date())
     }
+    
 }
 
 struct FirebaseConstants {

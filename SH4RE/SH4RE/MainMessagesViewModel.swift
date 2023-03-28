@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import FirebaseFirestoreSwift
+import FirebaseStorage
 
 class MainMessagesViewModel: ObservableObject {
     
@@ -32,7 +33,6 @@ class MainMessagesViewModel: ObservableObject {
     
     func fetchRecentMessages() {
         guard let uid = FirebaseManager.shared.auth.currentUser?.uid else { return }
-        
         firestoreListener?.remove()
         self.recentMessages.removeAll()
         
@@ -47,10 +47,13 @@ class MainMessagesViewModel: ObservableObject {
                     print(error)
                     return
                 }
-                
-                querySnapshot?.documentChanges.forEach({ change in
+                guard let changes = querySnapshot?.documentChanges else{
+                    return
+                }
+                self.recentMessages = []
+                for change in changes {
                     let docId = change.document.documentID
-                    
+
                     if let index = self.recentMessages.firstIndex(where: { rm in
                         return rm.id == docId
                     }) {
@@ -68,10 +71,13 @@ class MainMessagesViewModel: ObservableObject {
                         let datesRequested = data["datesRequested"] as? String ?? ""
                         let listingId = data["listingId"] as? String ?? ""
                         let requestId = data["requestId"] as? String ?? ""
-                        let rm = RecentMessage(id: docId, text: text, name:name, fromId: fromId, toId: toId, timestamp: timestamp, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId: requestId)
+            
+                        let rm = RecentMessage(id: docId, text: text, name:name, fromId: fromId, toId: toId, timestamp: timestamp, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId: requestId, profilePic: UIImage())
                         self.recentMessages.insert(rm, at: 0)
+                        
+                                        
                     }
-                })
+                }
             }
     }
     

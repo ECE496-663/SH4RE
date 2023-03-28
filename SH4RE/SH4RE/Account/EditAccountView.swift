@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseStorage
+import Firebase
 
 struct EditAccountView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -17,27 +18,49 @@ struct EditAccountView: View {
     @State private var pfpChanged: Bool = false
     @State private var name: String = ""
     @State private var password: String = ""
-    @State private var confirmPassword: String = ""
+    @State private var newPassword: String = ""
     @State private var errorInField: Bool = false
     @State private var showPosted: Bool = false
     @State private var dataToChange:Dictionary<String, Any> = [String: Any]()
     
     func update() {
+        
+        let docRef = Firestore.firestore().collection("User Info").document(getCurrentUserUid())
+        
         dataToChange.removeAll()
         if (name != user.name && name != "") {
-            dataToChange["name"] = name
+            documentUpdate(collectionPath: "User Info", documentID: getCurrentUserUid(), data: ["name": name])
         }
-        if (pfpChanged) {
-            dataToChange["pfp"] = profilePicture
+        else if (pfpChanged) {
+            let imgPath = "profilepictures/" + docRef.documentID + "/profile.jpg"
+            let storageManager = StorageManager()
+            storageManager.upload(image: profilePicture, path: imgPath)
+            if (documentUpdate(collectionPath: "User Info", documentID: docRef.documentID, data: ["pfp_path" : imgPath])) {
+                NSLog("error");
+            }
         }
-        if (!password.isEmpty && !confirmPassword.isEmpty && password == confirmPassword) {
-            dataToChange["pwd"] = password
+        else if (!password.isEmpty && !newPassword.isEmpty) {
+            getCurrentUser(completion: {  user in
+                let credential = EmailAuthProvider.credential(withEmail: user.email, password: password)
+                Auth.auth().currentUser?.reauthenticate(with: credential, completion: { (authResult, error) in
+                //TODO Proper error messages
+                if (error != nil) {
+                  print("Password isn't correct")
+                } else {
+                    Auth.auth().currentUser?.updatePassword(to: newPassword) { (error) in
+                        if (error != nil){
+                            print("error updating password")
+                        }
+                    }
+                }
+              })
+            })
         }
-        if (dataToChange.count == 0) {
+        else {
             errorInField.toggle()
             return
         }
-        // bryan TODO: update user fields
+        
         showPosted.toggle()
     }
     
@@ -51,7 +74,7 @@ struct EditAccountView: View {
                 .frame(width: screenSize.width * 0.8)
                 .textFieldStyle(textInputStyle())
                 .padding(.bottom)
-            Text("Password")
+            Text("Old Password")
                 .font(.system(size: 18))
                 .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
             SecureField("Your password", text: $password)
@@ -60,10 +83,10 @@ struct EditAccountView: View {
                 .frame(width: screenSize.width * 0.8)
                 .textFieldStyle(textInputStyle())
                 .padding(.bottom)
-            Text("Confirm Password")
+            Text("New Password")
                 .font(.system(size: 18))
                 .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
-            SecureField("Your password", text: $confirmPassword)
+            SecureField("Your password", text: $newPassword)
                 .disableAutocorrection(true)
                 .autocapitalization(.none)
                 .frame(width: screenSize.width * 0.8)

@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseStorage
 
 struct MessagesChat: View {
     @Environment(\.presentationMode) var presentationMode
@@ -65,7 +67,9 @@ struct MessagesChat: View {
         .onAppear() {
             name = vm.chatUser?.name ?? "error" // if reverting back to name
             uid = vm.chatUser?.uid ?? ""
+            profilePicture = vm.profilePic
         }
+
     }
     
     private var messagesView: some View {

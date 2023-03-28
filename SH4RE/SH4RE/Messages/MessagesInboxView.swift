@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import FirebaseFirestoreSwift
+import FirebaseStorage
 
 struct MessagesInboxView: View {
     @Binding var tabSelection: Int
@@ -16,6 +17,7 @@ struct MessagesInboxView: View {
     @ObservedObject var vm = MainMessagesViewModel()
     @State var shouldNavigateToChatLogView = false
     var chatLogViewModel = ChatLogViewModel(chatUser: nil)
+    @State var profilePicDict : [String:UIImage] = [:]
     
     var body: some View {
 
@@ -43,6 +45,7 @@ struct MessagesInboxView: View {
                 }.onAppear(){
                     vm.fetchCurrentUser()
                     vm.fetchRecentMessages()
+                    //feprint(vm.recentMessages)
                 }
             }
         }
@@ -67,20 +70,23 @@ struct MessagesInboxView: View {
     }
     
     private var messagesView: some View {
+        
         ScrollView {
                 ForEach(vm.recentMessages) { recentMessage in
+                    
                     VStack {
                         Button {
                             let uid = FirebaseManager.shared.auth.currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
                             
                             self.chatUser = .init(id: uid, uid: uid, name: recentMessage.name)
-                            
                             self.chatLogViewModel.chatUser = self.chatUser
                             self.chatLogViewModel.fetchMessages()
+                            self.chatLogViewModel.profilePic = profilePicDict[recentMessage.toId] ?? UIImage(named: "ProfilePhotoPlaceholder")!
                             self.shouldNavigateToChatLogView.toggle()
+                            
                         } label: {
                             HStack(spacing: 16) {
-                                Image("ProfilePhotoPlaceholder") // TODO: this will become a profile picture
+                                Image(uiImage: profilePicDict[recentMessage.toId] ?? UIImage(named: "ProfilePhotoPlaceholder")!) // TODO: this will become a profile picture
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .clipShape(Circle())
@@ -109,9 +115,43 @@ struct MessagesInboxView: View {
                     
                 }
             .padding(.bottom, 50)
+        }.onAppear(){
+            for recentMessage in self.vm.recentMessages{
+                Firestore.firestore().collection("User Info").document(recentMessage.toId).getDocument() { (document, error) in
+                    guard let document = document else{
+                        return
+                    }
+                    let data = document.data()!
+                    let imagePath = data["pfp_path"] as? String ?? ""
+                    
+                    if(imagePath != ""){
+                        let storageRef = Storage.storage().reference(withPath: imagePath)
+                        storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                            
+                            if let error = error {
+                                //Error:
+                                print (error)
+                                
+                            } else {
+                                guard let image = UIImage(data: data!) else{
+                                    return
+                                }
+                                
+                                self.profilePicDict[recentMessage.toId] = image
+                                
+                            }
+                        }
+                    }else{
+                        self.profilePicDict[recentMessage.toId] = UIImage(named: "ProfilePhotoPlaceholder")!
+                    }
+                    
+                }
+            }
         }
     }
         
     @State var chatUser: ChatUser?
     
 }
+
+
