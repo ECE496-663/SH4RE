@@ -25,7 +25,7 @@ struct AccountView: View {
     @State private var showTutorial:Bool = false;
     @State private var profilePicture:UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
     @State private var name:String = "Placeholder"
-    var numberOfStars:Float = 4
+    var numberOfStars: Float = 0
     
     private var profile: some View {
         VStack {
@@ -175,6 +175,10 @@ struct AccountView: View {
                                 }
                             }
                         }
+                        
+                        getUserRating(uid: getCurrentUserUid(), completion: { rating in
+                            numberOfStars = rating
+                        })
                     }
                 }
                 .accentColor(.primaryDark)

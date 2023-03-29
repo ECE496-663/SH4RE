@@ -176,7 +176,6 @@ struct MessagesChat: View {
                 Button(action: {
                     showPopUp.toggle()
                     
-                    var reviewname: String = ""
                     guard let uid = self.vm.chatUser?.uid else{
                         return
                     }
@@ -192,9 +191,9 @@ struct MessagesChat: View {
                                 
                                 var reviewToPost:Review
                                 if ownerId == uid{
-                                    reviewToPost = Review(uid: uid, lid: listingId, rating: Float(reviewRating), description: review, name: reviewname)
+                                    reviewToPost = Review(uid: uid, lid: listingId, rating: Float(reviewRating), description: review, name: name)
                                 }else{
-                                    reviewToPost = Review(uid: uid, lid: "renter", rating: Float(reviewRating), description: review, name: reviewname)
+                                    reviewToPost = Review(uid: uid, lid: "renter", rating: Float(reviewRating), description: review, name: name)
                                 }
                                 Firestore.firestore().collection("messages").document(fromId).collection(uid).whereField("isReviewRequest", isEqualTo: true).getDocuments() {(snapshot, err) in
                                     snapshot?.documents.forEach({ (document) in
@@ -218,7 +217,8 @@ struct MessagesChat: View {
                 {
                     Text("Send")
                 }
-                .buttonStyle(primaryButtonStyle())
+                .buttonStyle(review == "" || reviewRating == 0.0 ? disabledButtonStyle() : primaryButtonStyle())
+                .disabled(review == "" || reviewRating == 0.0)
             
                 Button(action: {
                     showPopUp.toggle()

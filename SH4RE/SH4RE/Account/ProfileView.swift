@@ -82,6 +82,7 @@ struct ProfileView: View {
             getUserName(uid: uid, completion: { result in
                 name = result // if not name
             })
+            
             fetchUsersListings(uid: uid, completion: { listings in
                 self.listingsView.listings = listings
                 self.listingsView.fetchProductMainImage( completion: { success in
@@ -89,6 +90,10 @@ struct ProfileView: View {
                         print("Failed to load images")
                     }
                 })
+            })
+            
+            getUserRating(uid: uid, completion: { rating in
+                numberOfStars = rating
             })
         }
     }
