@@ -60,7 +60,7 @@ struct ProductCard: View {
                 
             }
             //Don't show the fav button for their own listing
-            if (listing.uid != getCurrentUserUid() && Auth.auth().currentUser != nil) {
+            if (!(Auth.auth().currentUser?.isAnonymous ?? true) && listing.uid != getCurrentUserUid()) {
                 Button(action: {toggleFav()}){
                     Image(systemName: favourited ? "heart.fill" : "heart")
                         .padding(6)
