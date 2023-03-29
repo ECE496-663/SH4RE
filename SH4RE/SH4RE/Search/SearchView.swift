@@ -28,6 +28,9 @@ struct SearchView: View {
     @State var showFilterButton = true
     @State var scrollOffset: CGFloat = 0.00
     
+    //Used to focus on the keyboard when the search icon is clicked
+    @FocusState var isFocusOn: Bool
+    
     //Possibly move these to a FilterModel or just SearchModel, and add a function that is like FilterModel.reset()
     @State var dropDownSelection: String = ""
     @State var location: String = ""
@@ -51,6 +54,26 @@ struct SearchView: View {
         searchModel.recentSearchQueries = savedValues
     }
 
+    fileprivate func searchBar() -> some View {
+        return TextField("What are you looking for?", text: $searchModel.searchQuery)
+            .textFieldStyle(
+                iconInputStyle(
+                    button: Button(action:{
+                        isFocusOn = true
+                    }, label:{
+                        Image(systemName: "magnifyingglass")
+                    }),
+                    colour: .gray
+                )
+            )
+            .focused($isFocusOn)
+            .onSubmit {
+                guard searchModel.searchQuery.isEmpty == false else{ return }
+                addRecentSearch(searchQuery: searchModel.searchQuery)
+                //doSearch()
+            }
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .top) {
@@ -58,13 +81,7 @@ struct SearchView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Search")
                         .font(.title.bold())
-                    TextField("What are you looking for?", text: $searchModel.searchQuery)
-                        .textFieldStyle(textInputStyle())
-                        .onSubmit {
-                            guard searchModel.searchQuery.isEmpty == false else{ return }
-                            addRecentSearch(searchQuery: searchModel.searchQuery)
-                            //doSearch()
-                        }
+                    searchBar()
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 15){
                             ForEach(listingsView.listings) { listing in

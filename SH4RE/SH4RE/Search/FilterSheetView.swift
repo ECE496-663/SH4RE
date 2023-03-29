@@ -14,7 +14,7 @@ struct LocationEntryField: View {
         HStack {
             TextField("Location", text: $location)
                 .textFieldStyle(
-                    locationInputStyle(
+                    iconInputStyle(
                         button: Button(action:{
                             // Currently no action, have to set up location
                             // This could be a staring point https://www.youtube.com/watch?v=cOD1l2lv2Jw&ab_channel=azamsharp

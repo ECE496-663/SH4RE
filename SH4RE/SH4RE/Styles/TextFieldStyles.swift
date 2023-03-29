@@ -38,14 +38,21 @@ struct textInputStyle: TextFieldStyle{
     }
 }
 
-/// This style expects a button with an image as the label to place at the beginning of the tet field
-struct locationInputStyle: TextFieldStyle{
+/// This style expects a button with an image as the label to place at the beginning of the text field
+struct iconInputStyle: TextFieldStyle{
     
     var button: Button<Image>
+    var disableButton: Bool = false
+    var colour: Color = .accentColor
+    
+    var buttonColour: Color {
+        return disableButton ? .gray : colour
+    }
 
     func _body(configuration: TextField<Self._Label>) -> some View {
         HStack {
-            button
+            button.disabled(disableButton)
+                .foregroundColor(buttonColour)
             configuration
                 .textFieldStyle(PlainTextFieldStyle())
             // Text alignment.
@@ -90,7 +97,7 @@ struct TextFieldStyles_PreviewsHelper: View {
             TextField("Location", text: $username)
                 .frame(width: screenSize.width * 0.8)
                 .textFieldStyle(
-                    locationInputStyle(button: Button(action:{},
+                    iconInputStyle(button: Button(action:{},
                                                       label:{
                                                           Image(systemName: "scope")
                                                       }))

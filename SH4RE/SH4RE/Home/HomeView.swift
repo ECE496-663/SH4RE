@@ -23,8 +23,31 @@ struct HomeView: View {
     @Binding var tabSelection: Int
     @ObservedObject var searchModel: SearchModel
     @ObservedObject var favouritesModel: FavouritesModel
+
+    //Used to focus on the keyboard when the search icon is clicked
+    @FocusState var isFocusOn: Bool
     let categories = getCategoriesAndImg()
 
+    fileprivate func homeSearchBar() -> some View {
+        return TextField("What are you looking for?", text: $searchModel.searchQuery)
+            .textFieldStyle(
+                iconInputStyle(
+                    button: Button(action:{
+                        isFocusOn = true
+                    }, label:{
+                        Image(systemName: "magnifyingglass")
+                    }),
+                    colour: .gray
+                )
+            )
+            .focused($isFocusOn)
+            .onSubmit {
+                guard searchModel.searchQuery.isEmpty == false else{ return }
+                searchModel.searchReady = true
+                tabSelection = 2
+            }
+    }
+    
     var body: some View {
         NavigationStack{
             ZStack(alignment: .top){
@@ -32,13 +55,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Search")
                         .font(.title.bold())
-                    TextField("What are you looking for?", text: $searchModel.searchQuery)
-                        .textFieldStyle(textInputStyle())
-                        .onSubmit {
-                            guard searchModel.searchQuery.isEmpty == false else{ return }
-                            searchModel.searchReady = true
-                            tabSelection = 2
-                        }
+                    homeSearchBar()
                     ScrollView {
                         //Body
                         VStack(alignment: .leading){
