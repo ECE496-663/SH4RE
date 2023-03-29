@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct FavButtonBounce: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -59,7 +60,7 @@ struct ProductCard: View {
                 
             }
             //Don't show the fav button for their own listing
-            if (listing.uid != getCurrentUserUid()) {
+            if (listing.uid != getCurrentUserUid() && Auth.auth().currentUser != nil) {
                 Button(action: {toggleFav()}){
                     Image(systemName: favourited ? "heart.fill" : "heart")
                         .padding(6)
