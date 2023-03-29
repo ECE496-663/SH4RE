@@ -25,7 +25,7 @@ struct AccountView: View {
     @State private var showTutorial:Bool = false;
     @State private var profilePicture:UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
     @State private var name:String = "Placeholder"
-    var numberOfStars: Float = 0
+    @State var numberOfStars: Float = 0
     
     private var profile: some View {
         VStack {

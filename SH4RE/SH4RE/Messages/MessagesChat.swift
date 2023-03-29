@@ -217,8 +217,9 @@ struct MessagesChat: View {
                 {
                     Text("Send")
                 }
-                .buttonStyle(review == "" || reviewRating == 0.0 ? disabledButtonStyle() : primaryButtonStyle())
+                .buttonStyle(primaryButtonStyle())
                 .disabled(review == "" || reviewRating == 0.0)
+                .background(review == "" || reviewRating == 0.0 ? Color.grey : Color.primaryDark)
             
                 Button(action: {
                     showPopUp.toggle()

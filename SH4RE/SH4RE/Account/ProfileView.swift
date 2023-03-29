@@ -15,6 +15,7 @@ struct ProfileView: View {
     @State private var name:String = "" // if not name
     @State private var numberOfStars:Float = 4.0
     @StateObject private var listingsView = ListingViewModel()
+    @State var allReviews = [Review]()
     
     private var profile: some View {
         VStack {
@@ -59,11 +60,25 @@ struct ProfileView: View {
     }
     
     private var reviews: some View {
-        VStack (alignment: .leading) {
-            Text(name + "'s Reviews")
-                .font(.title2.bold())
+        Group {
+            VStack (alignment: .leading) {
+                Text(name + "'s Reviews")
+                    .font(.title2.bold())
+            }
+            .frame(width: screenSize.width)
+            if (allReviews.count == 0) {
+                VStack(alignment: .leading) {
+                    ForEach(allReviews) { review in
+                        ReviewView(reviewName: review.name, reviewRating: review.rating as Float, reviewDescription: review.description, reviewUID: review.uid)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Text(name + " has no reviews")
+                    .font(.body)
+                    .padding()
+            }
         }
-        .frame(width: screenSize.width)
     }
     
     var body: some View {
@@ -94,6 +109,10 @@ struct ProfileView: View {
             
             getUserRating(uid: uid, completion: { rating in
                 numberOfStars = rating
+            })
+            
+            getUserReviews(uid: uid, completion: { reviews in
+                allReviews = reviews
             })
         }
     }
