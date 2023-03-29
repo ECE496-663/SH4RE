@@ -25,7 +25,6 @@ class FavouritesModel: ObservableObject {
     }
     
     func addFavourite(listingID:String){
-        print(getCurrentUserUid())
         Firestore.firestore().collection("User Info").document(getCurrentUserUid()).collection("Favourites").document(listingID).setData(["exists":true])
         favourites.insert(listingID)
     }
