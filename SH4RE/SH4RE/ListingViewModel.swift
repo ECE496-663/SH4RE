@@ -141,51 +141,51 @@ class ListingViewModel : ObservableObject{
             }
             query.filters = filters
             index.search(query: query) { result in
-                if case .success(let response) = result {
-                    do{
-                        let hitsData = try JSONEncoder().encode(response.hits.map(\.object))
-                        let decoder = JSONDecoder()
-                        decoder.dateDecodingStrategy = .millisecondsSince1970
-                        let hits = try decoder.decode(Array<Hit>.self, from: hitsData)
-                        if hits.count != 0{
-                            for hit in hits{
-                                getListingRating(uid: hit.UID, lid:hit.objectID, completion: { rating in
-                                    if(rating >= Float(minRating)){
-                                        var available = true
-                                        if(startDate != Date(timeIntervalSinceReferenceDate: 0)){
-                                            if(hit.Availability.contains(startDate)){
-                                                available = false
-                                            }
-                                            if(endDate != Date(timeIntervalSinceReferenceDate: 0)){
-                                                var date = startDate
-                                                let fmt = DateFormatter()
-                                                fmt.dateFormat = "dd/MM/yyyy"
-                                                while date <= endDate {
-                                                    fmt.string(from: date)
-                                                    if(hit.Availability.contains(date)){
-                                                        available = false
-                                                        break
-                                                    }
-                                                    date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
-                                                }
-                                            }
-                                        }
-                                        if(available == true){
-                                            let listing = Listing(uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc)
-                                            self.listings.append(listing)
-                                        }
-                                        
-                                        
-                                        
-                                    }
-                                    completion(true)
-                                })
-                            }
-                        }
-                    } catch let error {
-                        print("Hits decoding error :\(error)")
-                    }
-                }
+              if case .success(let response) = result {
+                  do{
+                      let hitsData = try JSONEncoder().encode(response.hits.map(\.object))
+                      let decoder = JSONDecoder()
+                      decoder.dateDecodingStrategy = .millisecondsSince1970
+                      let hits = try decoder.decode(Array<Hit>.self, from: hitsData)
+                      if hits.count != 0{
+                          for hit in hits{
+                              getListingRating(uid: hit.UID, lid:hit.objectID, completion: { rating in
+                                  if(rating >= Float(minRating)){
+                                      var available = true
+                                      if(startDate != Date(timeIntervalSinceReferenceDate: 0)){
+                                          if(hit.Availability.contains(startDate)){
+                                              available = false
+                                          }
+                                          if(endDate != Date(timeIntervalSinceReferenceDate: 0)){
+                                              var date = startDate
+                                              let fmt = DateFormatter()
+                                              fmt.dateFormat = "dd/MM/yyyy"
+                                              while date <= endDate {
+                                                  fmt.string(from: date)
+                                                  if(hit.Availability.contains(date)){
+                                                      available = false
+                                                      break
+                                                  }
+                                                  date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
+                                              }
+                                          }
+                                      }
+                                      if(available == true){
+                                          let listing = Listing(id:hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc)
+                                          self.listings.append(listing)
+                                      }
+                                      
+                                      
+                                      
+                                  }
+                                  completion(true)
+                              })
+                          }
+                      }
+                  } catch let error {
+                    print("Hits decoding error :\(error)")
+                  }
+              }
             }
         }
         completion(false)
