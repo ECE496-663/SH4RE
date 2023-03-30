@@ -182,8 +182,6 @@ struct AccountView: View {
         }
     }
 }
-<<<<<<< HEAD
-=======
 
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
@@ -191,4 +189,4 @@ struct AccountView_Previews: PreviewProvider {
             .environmentObject(CurrentUser())
     }
 }
->>>>>>> 3fa0f83 (squashed)
+

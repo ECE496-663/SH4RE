@@ -339,7 +339,7 @@ struct CreateListingView: View {
         }
         showPostAlertX = true
     }
-    func validatePost () {
+    func validatePost () -> Bool{
         if (title.isEmpty || costText.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
             (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
@@ -461,7 +461,7 @@ struct CreateListingView: View {
                 .sheet(isPresented: $showCal) {
                     RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
                 }
-                .onChange(of: [title, description, cost, postalCode, categorySelection], perform: { newVal in
+                .onChange(of: [title, description, costText, postalCode, categorySelection], perform: { newVal in
                     if (!isEditing) { return }
                     shouldDisableUpdateButton = !validateUpdate()
                 })

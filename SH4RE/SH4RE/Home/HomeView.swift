@@ -147,10 +147,6 @@ struct CategoryCardView: View {
 
 struct Previews_HomeView_Previews: PreviewProvider {
     static var previews: some View {
-<<<<<<< HEAD
-        HomeView(tabSelection: .constant(1), searchModel: SearchModel(), favouritesModel:FavouritesModel())
-=======
         HomeView(tabSelection: .constant(1), searchModel: SearchModel(), favouritesModel: FavouritesModel())
->>>>>>> 3fa0f83 (squashed)
     }
 }

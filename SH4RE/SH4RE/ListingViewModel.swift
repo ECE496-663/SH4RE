@@ -19,11 +19,11 @@ struct Listing : Identifiable{
     var title:String = ""
     var description:String = ""
     var imagepath = [String]()
-    var price:Float
+    var price:Float = 0
     var imageDict = UIImage()
     var availability = [Date]()
-    var category: String
-    var address:Dictionary<String,Double>
+    var category: String = ""
+    var address:Dictionary<String,Double> = [:]
 }
 
 struct Hit: Codable, Equatable{
@@ -63,7 +63,6 @@ class ListingViewModel : ObservableObject{
                 let timeAvailability = data["Availability"] as? [Timestamp] ?? []
                 let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
                 var availability:[Date] = []
-                let category = data["Category"] as? String ?? ""
                 for timestamp in timeAvailability{
                     availability.append(timestamp.dateValue())
                 }
@@ -240,7 +239,6 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void){
             let category = data["Category"] as? String ?? ""
             let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
             var availability:[Date] = []
-            let category = data["Category"] as? String ?? ""
             for timestamp in timeAvailability{
                 availability.append(timestamp.dateValue())
             }
@@ -267,10 +265,10 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         let title = data!["Title"] as? String ?? ""
         let description = data!["Description"] as? String ?? ""
         let imagepath = data!["image_path"] as? [String] ?? []
-        let price = data!["Price"] as? String ?? ""
+        let price = data!["Price"] as? Float ?? 0
         let timeAvailability = data!["Availability"] as? [Timestamp] ?? []
         var availability:[Date] = []
-        let address = data!["Address"] as? Dictionary<String,Any> ?? ["latitude": -1, "longitude": -1]
+        let address = data!["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
         let category = data!["Category"] as? String ?? ""
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
