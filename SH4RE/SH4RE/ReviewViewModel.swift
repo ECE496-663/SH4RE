@@ -36,6 +36,10 @@ func postReview(review : Review){
 func getUserReviews(uid: String, completion: @escaping([Review]) -> Void) {
     var reviews = [Review]()
     Firestore.firestore().collection("User Info").document(uid).collection("Reviews").getDocuments { (snapshot, error) in
+        if let snapshot = snapshot, snapshot.isEmpty {
+            completion(reviews)
+            return
+        }
         snapshot?.documents.forEach({ (document) in
             let data = document.data()
             let id = document.documentID
@@ -61,6 +65,10 @@ func getUserReviews(uid: String, completion: @escaping([Review]) -> Void) {
 func getListingReviews(uid: String, lid: String, completion: @escaping([Review]) -> Void) {
     var reviews = [Review]()
     Firestore.firestore().collection("User Info").document(uid).collection("Reviews").whereField("lid", isEqualTo: lid).getDocuments() { (snapshot, error) in
+        if let snapshot = snapshot, snapshot.isEmpty {
+            completion(reviews)
+            return
+        }
         snapshot?.documents.forEach({ (document) in
             let data = document.data()
             let id = document.documentID
@@ -88,6 +96,10 @@ func getListingReviews(uid: String, lid: String, completion: @escaping([Review])
 func getUserRating(uid: String, completion: @escaping(Float) -> Void) {
     var ratings = [Float]()
     Firestore.firestore().collection("User Info").document(uid).collection("Reviews").getDocuments() { (snapshot, error) in
+        if let snapshot = snapshot, snapshot.isEmpty {
+            completion(0)
+            return
+        }
         snapshot?.documents.forEach({ (document) in
             let data = document.data()
             let rating : Float = data["rating"] as! Float
@@ -102,6 +114,10 @@ func getUserRating(uid: String, completion: @escaping(Float) -> Void) {
 func getListingRating(uid: String, lid:String, completion: @escaping(Float) -> Void) {
     var ratings = [Float]()
     Firestore.firestore().collection("User Info").document(uid).collection("Reviews").whereField("lid", isEqualTo: lid).getDocuments() { (snapshot, error) in
+        if let snapshot = snapshot, snapshot.isEmpty {
+            completion(0)
+            return
+        }
         snapshot?.documents.forEach({ (document) in
             let data = document.data()
             let rating : Float = data["rating"] as! Float

@@ -46,10 +46,11 @@ struct CreateListingView: View {
     // text fields
     @State private var title: String = ""
     @State private var postalCode: String = ""
+    @State var costText = ""
+    @State var cost:Float = 0.0
     @State private var isPostalCodeValid:Bool = false
     @State private var lat:Double = 0.0
     @State private var lon:Double = 0.0
-    @State var cost = ""
     @State private var description: String = ""
     
     // drop down fields
@@ -164,14 +165,16 @@ struct CreateListingView: View {
                 .padding()
             
             // cost per day entry
-            TextField("Cost per day", text: $cost)
+            TextField("Cost per day", text: $costText)
                 .textFieldStyle(textInputStyle())
                 .keyboardType(.numberPad)
-                .onReceive(Just(cost)) { newValue in
-                    let filtered = newValue.filter { "0123456789".contains($0) }
-                    if filtered != newValue {
-                        cost = filtered
+                .onReceive(Just(costText)) { newValue in
+                    let numberFormatter = NumberFormatter()
+                    let number = numberFormatter.number(from:newValue)
+                    guard let number = number else{
+                        return
                     }
+                    cost = number.floatValue
                 }
                 .frame(width: screenSize.width * 0.9)
                 .padding()
@@ -242,13 +245,15 @@ struct CreateListingView: View {
         imagesCount = 1
         title = ""
         description = ""
-        cost = ""
+        cost = 0.0
+        costText = ""
         postalCode = ""
         categorySelection = ""
         availabilitySelection = ""
         availabilityCalendar.selectedDates = []
         showCal = false
     }
+    
     func post() {
         var calAvail = [Any]()
         if (!availabilityCalendar.selectedDates.isEmpty) {
@@ -340,8 +345,8 @@ struct CreateListingView: View {
         }
         showPostAlertX = true
     }
-    func validatePost () -> Bool {
-        if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
+    func validatePost () -> Bool{
+        if (title.isEmpty || costText.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
             (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
             errorInField = true
@@ -464,7 +469,7 @@ struct CreateListingView: View {
                 .sheet(isPresented: $showCal) {
                     RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
                 }
-                .onChange(of: [title, description, cost, postalCode, categorySelection], perform: { newVal in
+                .onChange(of: [title, description, costText, postalCode, categorySelection], perform: { newVal in
                     if (!isEditing) { return }
                     shouldDisableUpdateButton = !validateUpdate()
                 })

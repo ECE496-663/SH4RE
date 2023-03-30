@@ -57,26 +57,20 @@ struct ViewListingView: View {
     private var bottomBar: some View {
         HStack {
             VStack {
-                if (listing.price.isEmpty) {
-                    Text("Message user for more pricing info")
-                        .foregroundColor(.darkGrey)
-                        .font(.caption)
-                }
-                else {
-                    Text("Price")
-                        .font(.callout)
+                Text("Price")
+                    .font(.callout)
+                    .bold()
+                    .foregroundColor(.darkGrey)
+                    .frame(alignment: .leading)
+                HStack {
+                    Text("$\(String(format: "%.2f", listing.price))")
+                        .font(.headline)
                         .bold()
+                    Text("/ day")
+                        .font(.caption)
                         .foregroundColor(.darkGrey)
-                        .frame(alignment: .leading)
-                    HStack {
-                        Text("$\(listing.price)")
-                            .font(.headline)
-                            .bold()
-                        Text("/day")
-                            .font(.caption)
-                            .foregroundColor(.darkGrey)
-                    }
                 }
+                
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -409,7 +403,8 @@ struct ViewListingView: View {
 
 struct ViewListingView_Previews: PreviewProvider {
     static var previewListing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : [
-        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: "20.00", address: ["latitude": 43.66, "longitude": -79.37], ownerName: "name")
+        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: 20, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
+    
     static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "123", uid: "123", name: "Random"))
     
     static var previews: some View {

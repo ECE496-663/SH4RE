@@ -32,14 +32,36 @@ struct FilterSheetView: View {
     
     var dropDownList = ["Film & Photography", "Audio Visual Equipment", "Projectors & Screens", "Drones", "DJ Equipment", "Transport", "Storage", "Electronics", "Party & Events", "Sports", "Musical Instruments", "Home, Office & Garden", "Holiday & Travel", "Clothing"]
     
-    @Binding var dropDownSelection: String
-    @Binding var location: String
-    @Binding var minPrice: String
-    @Binding var maxPrice: String
-    @Binding var maxDistance: String
-    @Binding var minRating: Double
-    
+    @ObservedObject var searchModel: SearchModel
+    @State private var category: String = ""
+    @State private var location: String = ""
+    @State private var minPrice: String = ""
+    @State private var maxPrice: String = ""
+    @State private var maxDistance: String = ""
+    @State private var minRating = 0.0
     @Binding var showingFilterSheet: Bool
+    var doSearch: () -> Void
+    
+    init(searchModel: SearchModel, showingFilterSheet: Binding<Bool>, doSearch: @escaping () -> Void ) {
+        category = searchModel.category
+        location = searchModel.location
+        minPrice = searchModel.minPrice
+        maxPrice = searchModel.maxPrice
+        maxDistance = searchModel.maxDistance
+        minRating = searchModel.minRating
+        self._showingFilterSheet = showingFilterSheet
+        self.searchModel = searchModel
+        self.doSearch = doSearch
+    }
+    
+    fileprivate func setFilters(){
+        searchModel.category = category
+        searchModel.location = location
+        searchModel.minPrice = minPrice
+        searchModel.maxPrice = maxPrice
+        searchModel.maxDistance = maxDistance
+        searchModel.minRating = minRating
+    }
     
     fileprivate func NumericTextField(label: String, textEntry: Binding<String>, error: Bool = false) -> some View {
         return TextField(label, text: textEntry)
@@ -72,6 +94,8 @@ struct FilterSheetView: View {
                         Spacer()
                         Button("Apply", action: {
                             if (!minMaxError(min: minPrice, max: maxPrice)){
+                                setFilters()
+                                doSearch()
                                 showingFilterSheet.toggle()
                             }
                         }).buttonStyle(primaryButtonStyle(width: 80))
@@ -96,7 +120,7 @@ struct FilterSheetView: View {
                     VStack (alignment: .leading){
                         Text("Category")
                             .font(.title2)
-                        DropdownMenu(label: "Categories", options: dropDownList, selection: $dropDownSelection, useClear: true, clearValue: "")
+                        DropdownMenu(label: "Categories", options: dropDownList, selection: $category, useClear: true, clearValue: "")
                     }
                     
                     //Price
@@ -126,22 +150,10 @@ struct FilterSheetView: View {
 }
 
 
-struct FilterSheetView_PreviewsHelper: View {
-    @State var dropDownSelection: String = ""
-    @State var showingFilterSheet = true
-    @State var location: String = ""
-    @State var minPrice: String = ""
-    @State var maxPrice: String = ""
-    @State var maxDistance: String = ""
-    @State var minRating = 0.0
-    var body: some View {
-        FilterSheetView(dropDownSelection: $dropDownSelection, location: $location, minPrice: $minPrice, maxPrice:$maxPrice, maxDistance: $maxDistance, minRating:$minRating, showingFilterSheet: $showingFilterSheet)
-    }
-}
 
 struct FilterSheetView_Previews: PreviewProvider {
     static var previews: some View {
-        FilterSheetView_PreviewsHelper()
+        FilterSheetView(searchModel: SearchModel(), showingFilterSheet: .constant(true), doSearch: {})
     }
 }
 
