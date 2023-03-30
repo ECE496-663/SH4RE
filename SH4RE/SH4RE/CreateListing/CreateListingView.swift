@@ -278,7 +278,7 @@ struct CreateListingView: View {
             }
         }
         getUserName(uid: getCurrentUserUid(), completion: { name in
-            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name] as [String : Any]
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name, "timestamp": Timestamp(date:Date())] as [String : Any]
             let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
             
             

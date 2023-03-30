@@ -25,6 +25,7 @@ struct Listing : Identifiable{
     var category: String = ""
     var address:Dictionary<String,Double> = [:]
     var ownerName:String = ""
+    var timestamp: Date = Date(timeIntervalSinceReferenceDate: 0)
 }
 
 struct Hit: Codable, Equatable{
@@ -37,7 +38,8 @@ struct Hit: Codable, Equatable{
     var Price:Float
     var image_path = [String]()
     var _geoloc = Dictionary<String, Double>()
-    var ownerName:String = ""
+    var ownerName:String
+    var timestamp: Date
 }
 
 class ListingViewModel : ObservableObject{
@@ -65,13 +67,14 @@ class ListingViewModel : ObservableObject{
                 let imagepath = data["image_path"] as? [String] ?? []
                 let price = data["Price"] as? Float ?? 0
                 let timeAvailability = data["Availability"] as? [Timestamp] ?? []
+                let created = data["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
                 let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
                 var availability:[Date] = []
                 for timestamp in timeAvailability{
                     availability.append(timestamp.dateValue())
                 }
                 
-                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName)
+                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, timestamp: created.dateValue())
                 
             }
             if QuerySnapshot!.isEmpty{
@@ -172,7 +175,7 @@ class ListingViewModel : ObservableObject{
                                           }
                                       }
                                       if(available == true){
-                                          let listing = Listing(id:hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName)
+                                          let listing = Listing(id:hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName, timestamp:hit.timestamp)
                                           self.listings.append(listing)
                                       }
                                       
@@ -243,6 +246,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
             let imagepath = data["image_path"] as? [String] ?? []
             let price = data["Price"] as? Float ?? 0
             let timeAvailability = data["Availability"] as? [Timestamp] ?? []
+            let created = data["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
             let category = data["Category"] as? String ?? ""
             let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
             var availability:[Date] = []
@@ -250,7 +254,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
                 availability.append(timestamp.dateValue())
             }
             
-            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName)
+            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, timestamp:created.dateValue())
             
             listings.append(listing)
             if listings.count == snapshot?.documents.count {
@@ -280,10 +284,11 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         var availability:[Date] = []
         let address = data!["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
         let category = data!["Category"] as? String ?? ""
+        let created = data!["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
         }
-        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName)
+        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName, timestamp:created.dateValue())
         completion(listing)
     }
 }
