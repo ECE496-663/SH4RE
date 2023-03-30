@@ -9,11 +9,7 @@ import Foundation
 import SwiftUI
 
 //Remove once real listing is here
-<<<<<<< HEAD
-let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00", address: ["latitude": 43.66, "longitude": -79.37], ownerName: "name")
-=======
 let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: 10, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
->>>>>>> ca308d0d1864a39580475aa0a011f880505ae7b6
 
 //This probably shouldnt go here but it will for now, allows for safe and easy bounds checking
 extension Collection {
