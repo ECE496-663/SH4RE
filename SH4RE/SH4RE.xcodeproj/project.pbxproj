@@ -16,6 +16,7 @@
 		1226521C2970B55C006F5955 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1226521B2970B55C006F5955 /* FirebaseStorageCombine-Community */; };
 		1247410729821407009B2145 /* ReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1247410629821407009B2145 /* ReviewViewModel.swift */; };
 		12870D3629787414006CFA2B /* CurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12870D3529787414006CFA2B /* CurrentUser.swift */; };
+		1288008729C958EC00EB34BE /* AlgoliaSearchClient in Frameworks */ = {isa = PBXBuildFile; productRef = 1288008629C958EC00EB34BE /* AlgoliaSearchClient */; };
 		12A7A36E296F6C1C000B18D4 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A7A36D296F6C1C000B18D4 /* UserViewModel.swift */; };
 		1E1208A82988388700604D68 /* CurrentLocationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1208A72988388700604D68 /* CurrentLocationButton.swift */; };
 		1E29DDA92936B22F0089F703 /* ProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E29DDA82936B22F0089F703 /* ProductCard.swift */; };
@@ -193,6 +194,7 @@
 				D120FAB12965428500CCD7A5 /* AlertX in Frameworks */,
 				122652142970B55C006F5955 /* FirebaseFirestore in Frameworks */,
 				1226521C2970B55C006F5955 /* FirebaseStorageCombine-Community in Frameworks */,
+				1288008729C958EC00EB34BE /* AlgoliaSearchClient in Frameworks */,
 				122652122970B55C006F5955 /* FirebaseAuthCombine-Community in Frameworks */,
 				122652162970B55C006F5955 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				1226521A2970B55C006F5955 /* FirebaseStorage in Frameworks */,
@@ -475,6 +477,7 @@
 				122652172970B55C006F5955 /* FirebaseFirestoreSwift */,
 				122652192970B55C006F5955 /* FirebaseStorage */,
 				1226521B2970B55C006F5955 /* FirebaseStorageCombine-Community */,
+				1288008629C958EC00EB34BE /* AlgoliaSearchClient */,
 			);
 			productName = SH4RE;
 			productReference = 5939D35A29132D7000866FA5 /* SH4RE.app */;
@@ -554,6 +557,7 @@
 			packageReferences = (
 				D120FAAF2965428500CCD7A5 /* XCRemoteSwiftPackageReference "AlertX" */,
 				1226520E2970B55C006F5955 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				1288008529C958EC00EB34BE /* XCRemoteSwiftPackageReference "algoliasearch-client-swift" */,
 			);
 			productRefGroup = 5939D35B29132D7000866FA5 /* Products */;
 			projectDirPath = "";
@@ -1079,6 +1083,14 @@
 				kind = branch;
 			};
 		};
+		1288008529C958EC00EB34BE /* XCRemoteSwiftPackageReference "algoliasearch-client-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/algolia/algoliasearch-client-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 		D120FAAF2965428500CCD7A5 /* XCRemoteSwiftPackageReference "AlertX" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/neel-makhecha/AlertX.git";
@@ -1124,6 +1136,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1226520E2970B55C006F5955 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
+		};
+		1288008629C958EC00EB34BE /* AlgoliaSearchClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1288008529C958EC00EB34BE /* XCRemoteSwiftPackageReference "algoliasearch-client-swift" */;
+			productName = AlgoliaSearchClient;
 		};
 		D120FAB02965428500CCD7A5 /* AlertX */ = {
 			isa = XCSwiftPackageProductDependency;

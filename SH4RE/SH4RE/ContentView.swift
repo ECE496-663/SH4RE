@@ -28,6 +28,7 @@ struct ContentView: View {
     @State var listing: Listing = Listing()
     @StateObject var currentUser = CurrentUser()
     @ObservedObject var searchModel = SearchModel()
+    @StateObject var favouritesModel = FavouritesModel()
     init() {
         UITabBar.appearance().backgroundColor = UIColor(.backgroundGrey)
     }
