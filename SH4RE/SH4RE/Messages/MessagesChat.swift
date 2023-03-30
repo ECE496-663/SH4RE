@@ -217,7 +217,7 @@ struct MessagesChat: View {
                 {
                     Text("Send")
                 }
-                .buttonStyle(primaryButtonStyle())
+                .buttonStyle(primaryButtonStyle(isDisabled: review == "" || reviewRating == 0.0))
                 .disabled(review == "" || reviewRating == 0.0)
             
                 Button(action: {
