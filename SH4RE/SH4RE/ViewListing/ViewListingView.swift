@@ -304,7 +304,7 @@ struct ViewListingView: View {
                 }.simultaneousGesture(TapGesture().onEnded {
 
                     if (startDateText != "") {
-                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
+                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: self.listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
                     }
                     
                     self.chatLogViewModel.fetchMessages()
