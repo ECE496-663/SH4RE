@@ -88,13 +88,11 @@ struct ViewListingView: View {
                     }
                     .frame(alignment: .trailing)
                     .padding()
-                    // .background(startDateText == "" ? Color.grey : Color.primaryDark)
                     .background(Color.primaryDark)
                     .cornerRadius(40)
                     .padding()
                     
                 })
-            //    .disabled(startDateText == "")
             }
             else {
                 NavigationLink(destination: {

@@ -24,6 +24,7 @@ struct Listing : Identifiable{
     var availability = [Date]()
     var category: String = ""
     var address:Dictionary<String,Double> = [:]
+    var ownerName:String = ""
 }
 
 struct Hit: Codable, Equatable{
