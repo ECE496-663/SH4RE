@@ -9,8 +9,8 @@ import Foundation
 import Firebase
 import SwiftUI
 import FirebaseStorage
-
-
+import AlgoliaSearchClient
+import CoreLocation
 
 //Struct for listing TODO add more properties
 struct Listing : Identifiable{
@@ -19,11 +19,23 @@ struct Listing : Identifiable{
     var title:String = ""
     var description:String = ""
     var imagepath = [String]()
-    var price:String = ""
+    var price:Float = 0
     var imageDict = UIImage()
     var availability = [Date]()
-    var category = ""
-    var address:Dictionary<String,Any> = [String:Any]()
+    var category: String = ""
+    var address:Dictionary<String,Double> = [:]
+}
+
+struct Hit: Codable, Equatable{
+    let objectID:String
+    var Title:String
+    var Description:String
+    var Category:String
+    var UID:String
+    var Availability = [Date]()
+    var Price:Float
+    var image_path = [String]()
+    var _geoloc = Dictionary<String, Double>()
 }
 
 class ListingViewModel : ObservableObject{
@@ -45,12 +57,12 @@ class ListingViewModel : ObservableObject{
                 let uid = data["UID"] as? String ?? ""
                 let title = data["Title"] as? String ?? ""
                 let description = data["Description"] as? String ?? ""
-                let imagepath = data["image_path"] as? [String] ?? []
-                let price = data["Price"] as? String ?? ""
-                let timeAvailability = data["Availability"] as? [Timestamp] ?? []
-                let address = data["Address"] as? Dictionary<String,Any> ?? ["latitude": -1, "longitude": -1]
-                var availability:[Date] = []
                 let category = data["Category"] as? String ?? ""
+                let imagepath = data["image_path"] as? [String] ?? []
+                let price = data["Price"] as? Float ?? 0
+                let timeAvailability = data["Availability"] as? [Timestamp] ?? []
+                let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
+                var availability:[Date] = []
                 for timestamp in timeAvailability{
                     availability.append(timestamp.dateValue())
                 }
@@ -64,6 +76,115 @@ class ListingViewModel : ObservableObject{
         }
         
     }
+    func searchListings(completedSearch: CompletedSearchQuery, completion: @escaping (Bool) -> Void){
+        let searchString: String = completedSearch.searchQuery
+        let minCost = completedSearch.minPrice
+        let maxCost = completedSearch.maxPrice
+        let category = completedSearch.category
+        let minRating = completedSearch.minRating
+        let postalCode = completedSearch.location
+        let rad = completedSearch.maxDistance
+        let startDate: Date = completedSearch.startDate
+        let endDate: Date = completedSearch.endDate
+        
+        let client = SearchClient(appID: "38ISXBU2JG", apiKey: "ae4db4f6b76b86da5b2b8b859a1c747e")
+        let index = client.index(withName: "Search")
+        let settings = Settings()
+          .set(\.searchableAttributes, to: ["Title", "Description", "Category"])
+          .set(\.attributesForFaceting, to: ["Category"])
+
+        index.setSettings(settings) { result in
+          switch result {
+          case .failure(let error):
+            print("Error when applying settings: \(error)")
+          case .success:
+              break
+          }
+        }
+        var isPostalCodeValid = false
+        var lat:Double = 0.0
+        var lon:Double = 0.0
+        let geoCoder = CLGeocoder()
+        geoCoder.geocodeAddressString(postalCode) { (placemarks, error) in
+            if placemarks != nil{
+                let location = placemarks!.first?.location
+                isPostalCodeValid = true
+                lat = location!.coordinate.latitude
+                lon = location!.coordinate.longitude
+            }
+            var query = Query(searchString)
+            if(isPostalCodeValid){
+                query.aroundLatLng = Point(latitude: lat, longitude: lon)
+                query.aroundRadius = .meters(rad * 1000)
+            }
+
+            var filters = ""
+            if (minCost > 0 && maxCost == 0){
+                filters = "Price >= " + String(minCost)
+            }else if(minCost == 0 && maxCost > 0){
+                filters = "Price <=" + String(maxCost)
+            }else if(minCost > 0  && maxCost > 0){
+                filters = "Price <=" + String(maxCost) + " AND " + "Price >=" + String(minCost)
+            }
+            
+            if(category != ""){
+                if(filters == ""){
+                    filters = "Category:'" + category + "'"
+                }else{
+                    filters = filters + " AND Category:'" + category + "'"
+                }
+            }
+            query.filters = filters
+            index.search(query: query) { result in
+              if case .success(let response) = result {
+                  do{
+                      let hitsData = try JSONEncoder().encode(response.hits.map(\.object))
+                      let decoder = JSONDecoder()
+                      decoder.dateDecodingStrategy = .millisecondsSince1970
+                      let hits = try decoder.decode(Array<Hit>.self, from: hitsData)
+                      if hits.count != 0{
+                          for hit in hits{
+                              getListingRating(uid: hit.UID, lid:hit.objectID, completion: { rating in
+                                  if(rating >= Float(minRating)){
+                                      var available = true
+                                      if(startDate != Date(timeIntervalSinceReferenceDate: 0)){
+                                          if(hit.Availability.contains(startDate)){
+                                              available = false
+                                          }
+                                          if(endDate != Date(timeIntervalSinceReferenceDate: 0)){
+                                              var date = startDate
+                                              let fmt = DateFormatter()
+                                              fmt.dateFormat = "dd/MM/yyyy"
+                                              while date <= endDate {
+                                                  fmt.string(from: date)
+                                                  if(hit.Availability.contains(date)){
+                                                      available = false
+                                                      break
+                                                  }
+                                                  date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
+                                              }
+                                          }
+                                      }
+                                      if(available == true){
+                                          let listing = Listing(uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc)
+                                          self.listings.append(listing)
+                                      }
+                                      
+                                      
+                                      
+                                  }
+                                  completion(true)
+                              })
+                          }
+                      }
+                  } catch let error {
+                    print("Hits decoding error :\(error)")
+                  }
+              }
+            }
+        }
+        completion(false)
+    }
     public func fetchProductMainImage(completion: @escaping (Bool) -> Void) {
         
         //Clear Image Array:
@@ -74,7 +195,6 @@ class ListingViewModel : ObservableObject{
             
             if(listing.imagepath != []){
                 let storageRef = Storage.storage().reference(withPath: listing.imagepath[0])
-                
                 //Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
                 storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
                     
@@ -114,11 +234,11 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void){
             let title = data["Title"] as? String ?? ""
             let description = data["Description"] as? String ?? ""
             let imagepath = data["image_path"] as? [String] ?? []
-            let price = data["Price"] as? String ?? ""
+            let price = data["Price"] as? Float ?? 0
             let timeAvailability = data["Availability"] as? [Timestamp] ?? []
-            let address = data["Address"] as? Dictionary<String,Any> ?? ["latitude": -1, "longitude": -1]
-            var availability:[Date] = []
             let category = data["Category"] as? String ?? ""
+            let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
+            var availability:[Date] = []
             for timestamp in timeAvailability{
                 availability.append(timestamp.dateValue())
             }
@@ -145,10 +265,10 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         let title = data!["Title"] as? String ?? ""
         let description = data!["Description"] as? String ?? ""
         let imagepath = data!["image_path"] as? [String] ?? []
-        let price = data!["Price"] as? String ?? ""
+        let price = data!["Price"] as? Float ?? 0
         let timeAvailability = data!["Availability"] as? [Timestamp] ?? []
         var availability:[Date] = []
-        let address = data!["Address"] as? Dictionary<String,Any> ?? ["latitude": -1, "longitude": -1]
+        let address = data!["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
         let category = data!["Category"] as? String ?? ""
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
