@@ -171,7 +171,7 @@ class ListingViewModel : ObservableObject{
                                           }
                                       }
                                       if(available == true){
-                                          let listing = Listing(uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc)
+                                          let listing = Listing(id:hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc)
                                           self.listings.append(listing)
                                       }
                                       
