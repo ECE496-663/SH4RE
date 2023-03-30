@@ -306,7 +306,8 @@ struct ViewListingView: View {
                     if (startDateText != "") {
                         sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
                     }
-
+                    
+                    self.chatLogViewModel.fetchMessages()
                     availabilityCalendar.startDate = nil
                     availabilityCalendar.endDate = nil
                     

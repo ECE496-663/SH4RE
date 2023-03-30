@@ -25,7 +25,8 @@ struct ChatMessage: Codable, Identifiable {
 
 struct ChatUser: Codable, Identifiable {
     @DocumentID var id: String?
-    let uid, name: String
+    let uid: String
+    var name: String
 }
 
 struct RecentMessage: Identifiable {

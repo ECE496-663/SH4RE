@@ -63,7 +63,7 @@ struct MessagesChat: View {
                     .padding(.bottom)
             }
             ToolbarItem(placement: .navigationBarLeading) {
-                Text(vm.chatUser?.name ?? "")
+                Text(name)
                     .padding(.bottom)
             }
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -75,7 +75,7 @@ struct MessagesChat: View {
             }
         }
         .onAppear() {
-            name = vm.chatUser?.name ?? "error" // if reverting back to name
+            name = vm.chatUser?.name ?? ""
             uid = vm.chatUser?.uid ?? ""
         }
     }
@@ -252,10 +252,9 @@ struct MessagesChat: View {
         db.collection("Listings").whereField("UID", isEqualTo: fromId).getDocuments() {(snapshotIds, error) in
             snapshotIds?.documents.forEach({ (document) in
                 let docId = document.documentID
-                db.collection("Listings").document(docId).collection("Requests").whereField("UID", isEqualTo: toId.uid).getDocuments() {(snapshot, err) in
+                db.collection("Listings").document(docId).collection("Requests").whereField("UID", isEqualTo: toId.uid).addSnapshotListener{(snapshot, Error) in
                     snapshot?.documents.forEach({ (document) in
                         let data = document.data()
-                        let title = data["title"] as? String ?? ""
                         let status = data["status"] as? String ?? ""
                         let startDate = data["start"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSince1970: 0))
                         let returned = data["returned"] as? String ?? "no"

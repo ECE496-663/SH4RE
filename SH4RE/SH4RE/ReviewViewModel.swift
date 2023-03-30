@@ -85,7 +85,7 @@ func getListingReviews(uid: String, lid: String, completion: @escaping([Review])
                 reviews.append(review)
                 
                 if reviews.count == snapshot?.documents.count {
-                    print(reviews)
+
                     completion(reviews)
                 }
             })

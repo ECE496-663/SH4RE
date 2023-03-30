@@ -46,7 +46,7 @@ struct ProfileView: View {
                             // If theres no image for a listing, just use the placeholder
                             let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                             NavigationLink(destination: {
-                                ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title))).environmentObject(currentUser)
+                                ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: ""))).environmentObject(currentUser)
                             }, label: {
                                 ProductCard(favouritesModel: FavouritesModel(), listing: listing, image: productImage)
                             })

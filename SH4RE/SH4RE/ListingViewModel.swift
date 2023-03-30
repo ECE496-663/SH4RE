@@ -37,6 +37,7 @@ struct Hit: Codable, Equatable{
     var Price:Float
     var image_path = [String]()
     var _geoloc = Dictionary<String, Double>()
+    var ownerName:String = ""
 }
 
 class ListingViewModel : ObservableObject{
@@ -58,7 +59,7 @@ class ListingViewModel : ObservableObject{
                 let id = QueryDocumentSnapshot.documentID
                 let uid = data["UID"] as? String ?? ""
                 let title = data["Title"] as? String ?? ""
-                let ownerName = data["name"] as? String ?? ""
+                let ownerName = data["ownerName"] as? String ?? ""
                 let description = data["Description"] as? String ?? ""
                 let category = data["Category"] as? String ?? ""
                 let imagepath = data["image_path"] as? [String] ?? []
@@ -171,7 +172,7 @@ class ListingViewModel : ObservableObject{
                                           }
                                       }
                                       if(available == true){
-                                          let listing = Listing(id:hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc)
+                                          let listing = Listing(id:hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName)
                                           self.listings.append(listing)
                                       }
                                       
@@ -237,7 +238,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
             let id = document.documentID
             let uid = data["UID"] as? String ?? ""
             let title = data["Title"] as? String ?? ""
-            let ownerName = data["name"] as? String ?? ""
+            let ownerName = data["ownerName"] as? String ?? ""
             let description = data["Description"] as? String ?? ""
             let imagepath = data["image_path"] as? [String] ?? []
             let price = data["Price"] as? Float ?? 0
@@ -271,6 +272,7 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         let id = lid
         let uid = data!["UID"] as? String ?? ""
         let title = data!["Title"] as? String ?? ""
+        let ownerName = data!["ownerName"] as? String ?? ""
         let description = data!["Description"] as? String ?? ""
         let imagepath = data!["image_path"] as? [String] ?? []
         let price = data!["Price"] as? Float ?? 0
@@ -281,7 +283,7 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
         }
-        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address)
+        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName)
         completion(listing)
     }
 }
