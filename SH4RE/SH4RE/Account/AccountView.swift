@@ -182,11 +182,3 @@ struct AccountView: View {
         }
     }
 }
-
-struct AccountView_Previews: PreviewProvider {
-    static var previews: some View {
-        AccountView(tabSelection: .constant(1))
-            .environmentObject(CurrentUser())
-    }
-}
-
