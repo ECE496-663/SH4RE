@@ -12,7 +12,7 @@ struct LocationEntryField: View {
     @Binding var location: String
     var body: some View {
         HStack {
-            TextField("Location", text: $location)
+            TextField("Postal Code e.g. A1A 1A1", text: $location)
                 .textFieldStyle(
                     locationInputStyle(
                         button: Button(action:{
@@ -113,7 +113,7 @@ struct FilterSheetView: View {
                     VStack (alignment: .leading) {
                         Text("Max Distance")
                             .font(.title2)
-                        NumericTextField(label: "Max Distance", textEntry: $maxDistance)
+                        NumericTextField(label: "Distance in Kilometers", textEntry: $maxDistance)
                     }
                     
                     //Categories
