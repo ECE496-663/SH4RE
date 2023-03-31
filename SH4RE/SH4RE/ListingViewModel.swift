@@ -194,6 +194,7 @@ class ListingViewModel : ObservableObject{
         }
         completion(false)
     }
+    
     public func fetchProductMainImage(completion: @escaping (Bool) -> Void) {
         
         //Clear Image Array:
@@ -290,6 +291,66 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         }
         listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName, timestamp:created.dateValue())
         completion(listing)
+    }
+}
+
+func fetchMainImage(listing:Listing, completion: @escaping (UIImage) -> Void) {
+    
+    if(listing.imagepath != []){
+        let storageRef = Storage.storage().reference(withPath: listing.imagepath[0])
+        //Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
+        storageRef.getData(maxSize: 1 * 1024 * 1024) {data, error in
+            
+            if let error = error {
+                //Error:
+                print (error)
+                
+            } else {
+                completion(UIImage(data: data!)!)
+            }
+        }
+    }else{
+        completion(UIImage(named: "ProfilePhotoPlaceholder")!)
+    }
+}
+
+func fetchRecentListings(completion: @escaping ([Listing]) -> Void){
+    var listings = [Listing]()
+    let client = SearchClient(appID: "38ISXBU2JG", apiKey: "ae4db4f6b76b86da5b2b8b859a1c747e")
+    let index = client.index(withName: "Search")
+    let settings = Settings()
+        .set(\.ranking, to: [.desc("timestamp")])
+
+   
+    index.setSettings(settings) { result in
+        switch result {
+        case .failure(let error):
+            print("Error when applying settings: \(error)")
+        case .success:
+            break
+        }
+    }
+    let query = Query("")
+    index.search(query: query) { result in
+        if case .success(let response) = result {
+            do{
+                let hitsData = try JSONEncoder().encode(response.hits.map(\.object))
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .millisecondsSince1970
+                let hits = try decoder.decode(Array<Hit>.self, from: hitsData)
+                if hits.count != 0{
+                    for hit in hits{
+                        let listing = Listing(id:hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName, timestamp:hit.timestamp)
+                        listings.append(listing)
+                        if listings.count == hits.count {
+                            completion(listings)
+                        }
+                    }
+                }
+            }catch let error {
+                print("Hits decoding error :\(error)")
+            }
+        }
     }
 }
 

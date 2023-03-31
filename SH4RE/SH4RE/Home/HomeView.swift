@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 //Remove once real listing is here
-let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: 10, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
+let empty_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"", description: "Test Description", imagepath : ["path"], price: 10, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
 
 //This probably shouldnt go here but it will for now, allows for safe and easy bounds checking
 extension Collection {
@@ -24,6 +24,9 @@ struct HomeView: View {
     @ObservedObject var searchModel: SearchModel
     @ObservedObject var favouritesModel: FavouritesModel
     let categories = getCategoriesAndImg()
+    @State private var recentListings = [Listing]()
+    @State private var recentListing1Image: UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
+    @State private var recentListing2Image: UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
 
     var body: some View {
         NavigationStack{
@@ -74,9 +77,9 @@ struct HomeView: View {
                                 Text("Recent Posts")
                                     .font(.title2.bold())
                                 HStack(){
-                                    ProductCard(favouritesModel: favouritesModel, listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+                                    ProductCard(favouritesModel: favouritesModel, listing: recentListings.count >= 1 ? recentListings[0] : empty_listing, image: recentListing1Image)
                                     Spacer()
-                                    ProductCard(favouritesModel: favouritesModel, listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+                                    ProductCard(favouritesModel: favouritesModel, listing: recentListings.count >= 2 ? recentListings[1] : empty_listing, image: recentListing2Image)
                                 }
                             }
                             //Categories
@@ -95,6 +98,23 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
             }
+        }.onAppear(){
+            fetchRecentListings(completion: { listings in
+                recentListings = listings
+                guard let listing1 = listings.count >= 1 ? listings[0] : nil else{
+                    return
+                }
+                
+                fetchMainImage(listing: listing1, completion: { image1 in
+                    recentListing1Image = image1
+                })
+                guard let listing2 = listings.count >= 2 ? listings[1] : nil else{
+                    return
+                }
+                fetchMainImage(listing: listing2, completion: { image2 in
+                    recentListing2Image = image2
+                })
+            })
         }
     }
 }
