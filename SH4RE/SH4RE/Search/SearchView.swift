@@ -28,7 +28,6 @@ struct SearchView: View {
     @State var showFilterButton = true
     @State var scrollOffset: CGFloat = 0.00
     
-    //TODO Americo set these with filters
     @State var startDate = Date(timeIntervalSinceReferenceDate: 0)
     @State var endDate = Date(timeIntervalSinceReferenceDate: 0)
 
