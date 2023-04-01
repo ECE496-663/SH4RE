@@ -554,7 +554,7 @@ func sendRentalStatusMessage(statusMessage: String, messagePreview: String, user
         }
     }
     
-    let userDocRef = Firestore.firestore().collection("User Info").document(renterId)
+    //let userDocRef = Firestore.firestore().collection("User Info").document(renterId)
     
     
     let recentMsgDoc = FirebaseManager.shared.firestore
@@ -563,61 +563,59 @@ func sendRentalStatusMessage(statusMessage: String, messagePreview: String, user
         .collection(FirebaseConstants.messages)
         .document(renterId)
     
-    userDocRef.getDocument(completion: { (document, err) in
-        if let document = document {
-            let data = document.data()
-            let name = document["name"] as? String ?? ""
+    getUserName(uid: renterId, completion: { renterName in
+        let docData = [
+            FirebaseConstants.timestamp: Date(),
+            FirebaseConstants.text: messagePreview,
+            FirebaseConstants.fromId: userId,
+            FirebaseConstants.toId: renterId,
+            "name": renterName,
+            "isRequest": false,
+            "listingTitle": "",
+            "datesRequested": "",
+            "listingId": "",
+            "requestId": ""
             
-            let docData = [
-                FirebaseConstants.timestamp: Date(),
-                FirebaseConstants.text: messagePreview,
-                FirebaseConstants.fromId: userId,
-                FirebaseConstants.toId: renterId,
-                "name": name,
-                "isRequest": false,
-                "listingTitle": "",
-                "datesRequested": "",
-                "listingId": "",
-                "requestId": ""
-                
-            ] as [String : Any]
-            
-            recentMsgDoc.setData(docData) { error in
-                if let error = error {
-                    print("Failed to save recent message: \(error)")
-                    return
-                }
-            }
-            
-            let recipientRecentMessageDictionary = [
-                FirebaseConstants.timestamp: Date(),
-                FirebaseConstants.text: messagePreview,
-                FirebaseConstants.fromId: renterId,
-                FirebaseConstants.toId: userId,
-                "name": name,
-                "isRequest": false,
-                "listingTitle": "",
-                "datesRequested": "",
-                "listingId": "",
-                "requestId": ""
-                
-                
-            ] as [String : Any]
-            
-            let recipDoc = FirebaseManager.shared.firestore
-                .collection(FirebaseConstants.recentMessages)
-                .document(renterId)
-                .collection(FirebaseConstants.messages)
-                .document(userId)
-            
-            recipDoc.setData(recipientRecentMessageDictionary) { error in
-                if let error = error {
-                    print("Failed to save recent message: \(error)")
-                    return
-                }
+        ] as [String : Any]
+        
+        recentMsgDoc.setData(docData) { error in
+            if let error = error {
+                print("Failed to save recent message: \(error)")
+                return
             }
         }
     })
+            
+    getUserName(uid: userId, completion: { userName in
+        let recipientRecentMessageDictionary = [
+            FirebaseConstants.timestamp: Date(),
+            FirebaseConstants.text: messagePreview,
+            FirebaseConstants.fromId: renterId,
+            FirebaseConstants.toId: userId,
+            "name": userName,
+            "isRequest": false,
+            "listingTitle": "",
+            "datesRequested": "",
+            "listingId": "",
+            "requestId": ""
+            
+            
+        ] as [String : Any]
+        
+        let recipDoc = FirebaseManager.shared.firestore
+            .collection(FirebaseConstants.recentMessages)
+            .document(renterId)
+            .collection(FirebaseConstants.messages)
+            .document(userId)
+        
+        recipDoc.setData(recipientRecentMessageDictionary) { error in
+            if let error = error {
+                print("Failed to save recent message: \(error)")
+                return
+            }
+        }
+    })
+
     
     
 }

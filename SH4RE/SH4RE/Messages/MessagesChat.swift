@@ -182,19 +182,19 @@ struct MessagesChat: View {
                     
                     guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
                     
-                    getUserName(uid: uid, completion: { name in
+                    getUserName(uid: fromId, completion: { name in
                         
                         Firestore.firestore().collection("Listings").document(listingId).getDocument { (document, error) in
                             if let document = document, document.exists {
                                 let data = document.data()!
-                                let ownerId = data["UID"] as? String ?? ""
-                                
+                                let ownerId = data["UID"] as? String ?? ""                             
                                 var reviewToPost:Review
                                 if ownerId == uid{
-                                    reviewToPost = Review(uid: uid, lid: listingId, rating: Float(reviewRating), description: review, name: name)
+                                    reviewToPost = Review(uid: uid, lid: listingId, rating: Float(reviewRating), description: review, name: name, reviewerId : fromId)
                                 }else{
-                                    reviewToPost = Review(uid: uid, lid: "renter", rating: Float(reviewRating), description: review, name: name)
+                                    reviewToPost = Review(uid: uid, lid: "renter", rating: Float(reviewRating), description: review, name: name, reviewerId : fromId)
                                 }
+                                
                                 Firestore.firestore().collection("messages").document(fromId).collection(uid).whereField("isReviewRequest", isEqualTo: true).getDocuments() {(snapshot, err) in
                                     snapshot?.documents.forEach({ (document) in
                                         Firestore.firestore().collection("messages").document(fromId).collection(uid).document(document.documentID).delete()
