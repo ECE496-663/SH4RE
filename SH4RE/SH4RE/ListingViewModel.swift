@@ -84,9 +84,10 @@ class ListingViewModel : ObservableObject{
         let minRating = completedSearch.minRating
         let postalCode = completedSearch.location
         let rad = completedSearch.maxDistance
-        let startDate: Date = completedSearch.startDate
-        let endDate: Date = completedSearch.endDate
-        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        let startDate:Date = dateFormatter.date(from: dateFormatter.string(from: completedSearch.startDate))!
+        let endDate:Date = dateFormatter.date(from: dateFormatter.string(from: completedSearch.endDate))!
         let client = SearchClient(appID: "38ISXBU2JG", apiKey: "ae4db4f6b76b86da5b2b8b859a1c747e")
         let index = client.index(withName: "Search")
         let settings = Settings()
@@ -145,13 +146,13 @@ class ListingViewModel : ObservableObject{
                       if hits.count != 0{
                           for hit in hits{
                               getListingRating(uid: hit.UID, lid:hit.objectID, completion: { rating in
-                                  if(rating >= Float(minRating)){
+                                  if(rating >= Float(minRating) || Float(minRating) == 0){
                                       var available = true
                                       if(startDate != Date(timeIntervalSinceReferenceDate: 0)){
                                           if(hit.Availability.contains(startDate)){
                                               available = false
                                           }
-                                          if(endDate != Date(timeIntervalSinceReferenceDate: 0)){
+                                          if(endDate != startDate && endDate != Date(timeIntervalSinceReferenceDate: 0)){
                                               var date = startDate
                                               let fmt = DateFormatter()
                                               fmt.dateFormat = "dd/MM/yyyy"
@@ -166,7 +167,7 @@ class ListingViewModel : ObservableObject{
                                           }
                                       }
                                       if(available == true){
-                                          let listing = Listing(uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc)
+                                          let listing = Listing(id: hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc)
                                           self.listings.append(listing)
                                       }
                                       

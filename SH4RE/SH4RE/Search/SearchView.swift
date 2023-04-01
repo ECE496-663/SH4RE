@@ -122,7 +122,6 @@ struct SearchView: View {
 //        dateFormatter.dateFormat = "MM/dd/yyyy"
 //        startDate = dateFormatter.date(from: string)!
 //        endDate = dateFormatter.date(from: string1)!
-        
         listingsView.listings = [Listing]()
         listingsView.searchListings(completedSearch: searchModel.getCompletedSearch()) { success in
             listingsView.fetchProductMainImage( completion: { success in

@@ -44,6 +44,6 @@ class SearchModel: ObservableObject {
     }
     
     func getCompletedSearch() -> CompletedSearchQuery {
-        return CompletedSearchQuery(searchQuery: searchQuery, category: category, location: location, minPrice: Int(minPrice) ?? 0, maxPrice: Int(maxPrice) ?? 0, maxDistance: Int(maxDistance) ?? 0, minRating: minRating, startDate: startDate, endDate: startDate)
+        return CompletedSearchQuery(searchQuery: searchQuery, category: category, location: location, minPrice: Int(minPrice) ?? 0, maxPrice: Int(maxPrice) ?? 0, maxDistance: Int(maxDistance) ?? 0, minRating: minRating, startDate: startDate, endDate: endDate)
     }
 }
