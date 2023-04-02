@@ -45,7 +45,6 @@ struct MessagesInboxView: View {
                 }.onAppear(){
                     vm.fetchCurrentUser()
                     vm.fetchRecentMessages()
-                    //feprint(vm.recentMessages)
                 }
             }
         }
@@ -86,7 +85,7 @@ struct MessagesInboxView: View {
                             
                         } label: {
                             HStack(spacing: 16) {
-                                Image(uiImage: profilePicDict[recentMessage.toId] ?? UIImage(named: "ProfilePhotoPlaceholder")!) // TODO: this will become a profile picture
+                                Image(uiImage: profilePicDict[recentMessage.toId] ?? UIImage(named: "ProfilePhotoPlaceholder")!)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .clipShape(Circle())

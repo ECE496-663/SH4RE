@@ -28,18 +28,21 @@ struct EditAccountView: View {
         let docRef = Firestore.firestore().collection("User Info").document(getCurrentUserUid())
         
         dataToChange.removeAll()
+        var changed = false
         if (name != user.name && name != "") {
             documentUpdate(collectionPath: "User Info", documentID: getCurrentUserUid(), data: ["name": name])
+            changed = true
         }
-        else if (pfpChanged) {
+        if (pfpChanged) {
             let imgPath = "profilepictures/" + docRef.documentID + "/profile.jpg"
             let storageManager = StorageManager()
             storageManager.upload(image: profilePicture, path: imgPath)
             if (documentUpdate(collectionPath: "User Info", documentID: docRef.documentID, data: ["pfp_path" : imgPath])) {
                 NSLog("error");
             }
+            changed = true
         }
-        else if (!password.isEmpty && !newPassword.isEmpty) {
+        if (!password.isEmpty && !newPassword.isEmpty) {
             getCurrentUser(completion: {  user in
                 let credential = EmailAuthProvider.credential(withEmail: user.email, password: password)
                 Auth.auth().currentUser?.reauthenticate(with: credential, completion: { (authResult, error) in
@@ -52,11 +55,12 @@ struct EditAccountView: View {
                             print("error updating password")
                         }
                     }
+                    changed = true
                 }
               })
             })
         }
-        else {
+        if (!changed) {
             errorInField.toggle()
             return
         }
