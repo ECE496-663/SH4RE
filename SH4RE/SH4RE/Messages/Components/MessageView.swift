@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+enum RequestStatus: Int {
+    case requested = 0
+    case accepted = 1
+    case declined = 2
+    case cancelled = 3
+}
+
 struct MessageView: View {
     let message: ChatMessage
     @State var requestStatus: Int = -1
@@ -35,21 +42,21 @@ struct MessageView: View {
                                     Text(message.datesRequested).bold()
                                         .foregroundColor(.white)
                                 }
-                                if(requestStatus == 0){
+                                if(requestStatus == RequestStatus.requested.rawValue){
                                     Button(action: {
                                         cancelRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.fromId, renterId: message.toId)
-                                        requestStatus = 3
+                                        requestStatus = RequestStatus.cancelled.rawValue
                                     })
                                     {
                                         Text("Cancel Request")
                                     }
                                     .buttonStyle(secondaryButtonStyle())
                                 }
-                                else if(requestStatus == 1){
+                                else if(requestStatus == RequestStatus.accepted.rawValue){
                                     Text("Accepted").foregroundColor(.white)
-                                }else if(requestStatus == 2){
+                                }else if(requestStatus == RequestStatus.declined.rawValue){
                                     Text("Declined").foregroundColor(.white)
-                                }else if(requestStatus == 3){
+                                }else if(requestStatus == RequestStatus.cancelled.rawValue){
                                     Text("Cancelled").foregroundColor(.white)
                                 }
                             }
@@ -89,10 +96,10 @@ struct MessageView: View {
                                     Text(message.datesRequested).bold()
                                         .foregroundColor(.white)
                                 }
-                                if (requestStatus == 0){
+                                if (requestStatus == RequestStatus.requested.rawValue){
                                     Button(action: {
                                         acceptRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.toId, renterId: message.fromId)
-                                        requestStatus = 1
+                                        requestStatus = RequestStatus.accepted.rawValue
                                     })
                                     {
                                         Text("Accept Request")
@@ -101,18 +108,18 @@ struct MessageView: View {
                                     
                                     Button(action: {
                                         denyRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.toId, renterId: message.fromId)
-                                        requestStatus = 2
+                                        requestStatus = RequestStatus.declined.rawValue
                                     })
                                     {
                                         Text("Deny Request")
                                     }
                                     .buttonStyle(secondaryButtonStyle())
                                 
-                                }else if(requestStatus == 1){
+                                }else if(requestStatus == RequestStatus.accepted.rawValue){
                                     Text("Accepted").foregroundColor(.white)
-                                }else if(requestStatus == 2){
+                                }else if(requestStatus == RequestStatus.declined.rawValue){
                                     Text("Declined").foregroundColor(.white)
-                                }else if(requestStatus == 2){
+                                }else if(requestStatus == RequestStatus.cancelled.rawValue){
                                     Text("Cancelled").foregroundColor(.white)
                                 }
                                 

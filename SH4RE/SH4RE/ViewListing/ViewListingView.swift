@@ -49,7 +49,7 @@ struct ViewListingView: View {
                 .padding()
             
             ForEach(allReviews) { review in
-                ReviewView(reviewName: review.name, reviewRating: review.rating as Float, reviewDescription: review.description, reviewUID: review.uid)
+                ReviewView(reviewName: review.name, reviewRating: review.rating as Float, reviewDescription: review.description, reviewUID: review.uid, reviewProfilePic:review.profilePic)
             }
         }
     }

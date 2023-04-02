@@ -66,10 +66,10 @@ struct ProfileView: View {
                     .font(.title2.bold())
             }
             .frame(width: screenSize.width)
-            if (allReviews.count == 0) {
+            if (allReviews.count != 0) {
                 VStack(alignment: .leading) {
                     ForEach(allReviews) { review in
-                        ReviewView(reviewName: review.name, reviewRating: review.rating as Float, reviewDescription: review.description, reviewUID: review.uid)
+                        ReviewView(reviewName: review.name, reviewRating: review.rating as Float, reviewDescription: review.description, reviewUID: review.uid, reviewProfilePic:review.profilePic)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -16,12 +16,12 @@ struct ReviewView: View {
     private var reviewUID: String
     @State var profilePicture: UIImage
     
-    init(reviewName: String, reviewRating: Float, reviewDescription: String, reviewUID: String) {
+    init(reviewName: String, reviewRating: Float, reviewDescription: String, reviewUID: String, reviewProfilePic:UIImage) {
         self.reviewName = reviewName
         self.reviewRating = reviewRating
         self.reviewDescription = reviewDescription
         self.reviewUID = reviewUID
-        self.profilePicture = UIImage(named: "ProfilePhotoPlaceholder")!
+        self.profilePicture = reviewProfilePic
     }
     
     var body: some View {
@@ -65,8 +65,8 @@ struct ReviewView: View {
 
 struct Review_Previews: PreviewProvider {
     static var previews: some View {
-        ReviewView(reviewName: "John Doe", reviewRating: 4.0, reviewDescription: "Super easy interaction and exchange. Product exactly as described.", reviewUID: "123")
-        ReviewView(reviewName: "John Doe", reviewRating: 4.0, reviewDescription: "Super easy interaction and exchange. Product exactly as described.", reviewUID: "123")
-        ReviewView(reviewName: "John Doe", reviewRating: 4.0, reviewDescription: "Super easy interaction and exchange. Product exactly as described.", reviewUID: "123")
+        ReviewView(reviewName: "John Doe", reviewRating: 4.0, reviewDescription: "Super easy interaction and exchange. Product exactly as described.", reviewUID: "123", reviewProfilePic: UIImage(named: "ProfilePhotoPlaceholder")!)
+        ReviewView(reviewName: "John Doe", reviewRating: 4.0, reviewDescription: "Super easy interaction and exchange. Product exactly as described.", reviewUID: "123",reviewProfilePic: UIImage(named: "ProfilePhotoPlaceholder")!)
+        ReviewView(reviewName: "John Doe", reviewRating: 4.0, reviewDescription: "Super easy interaction and exchange. Product exactly as described.", reviewUID: "123", reviewProfilePic: UIImage(named: "ProfilePhotoPlaceholder")!)
     }
 }
