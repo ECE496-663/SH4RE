@@ -31,6 +31,13 @@ class CurrentUser : ObservableObject{
         return false
     }
     
+    func reloadUser() {
+        print("Reloading user")
+        Auth.auth().currentUser?.reload(completion: { (error) in
+            print(error)
+        })
+    }
+    
     func isGuest() -> Bool{
         if(self.hasLoggedIn){
             return Auth.auth().currentUser!.isAnonymous

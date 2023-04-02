@@ -26,13 +26,23 @@ struct UnverifiedView: View {
                 .padding()
             
             Button(action: {
+                currentUser.reloadUser()
+                currentUser.hasLoggedIn = false
+                tabSelection = 1
+            })
+            {
+                Text("I already verified my email")
+            }
+            .buttonStyle(primaryButtonStyle())
+            
+            Button(action: {
                 showSentPopUp.toggle()
                 currentUser.sendVerificationMail()
             })
             {
                 Text("Send verification email")
             }
-            .buttonStyle(primaryButtonStyle())
+            .buttonStyle(secondaryButtonStyle())
         }
         .frame(maxWidth: screenSize.width * 0.9)
         
