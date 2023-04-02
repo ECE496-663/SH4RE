@@ -21,6 +21,7 @@ extension Collection {
 
 struct HomeView: View {
     @Binding var tabSelection: Int
+    @EnvironmentObject var currentUser : CurrentUser
     @ObservedObject var searchModel: SearchModel
     @ObservedObject var favouritesModel: FavouritesModel
     let categories = getCategoriesAndImg()
@@ -77,9 +78,19 @@ struct HomeView: View {
                                 Text("Recent Posts")
                                     .font(.title2.bold())
                                 HStack(){
-                                    ProductCard(favouritesModel: favouritesModel, listing: recentListings.count >= 1 ? recentListings[0] : empty_listing, image: recentListing1Image)
+                                    let listing1 = recentListings.count >= 1 ? recentListings[0] : empty_listing
+                                    let listing2 = recentListings.count >= 2 ? recentListings[1] : empty_listing
+                                    NavigationLink(destination: {
+                                        ViewListingView(tabSelection: $tabSelection, listing: listing1, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing1.uid,uid: listing1.uid, name: listing1.ownerName))).environmentObject(currentUser)
+                                    }, label: {
+                                        ProductCard(favouritesModel: favouritesModel, listing: listing1, image: recentListing1Image)
+                                    })
                                     Spacer()
-                                    ProductCard(favouritesModel: favouritesModel, listing: recentListings.count >= 2 ? recentListings[1] : empty_listing, image: recentListing2Image)
+                                    NavigationLink(destination: {
+                                        ViewListingView(tabSelection: $tabSelection, listing: listing2, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing2.uid,uid: listing2.uid, name: listing2.ownerName))).environmentObject(currentUser)
+                                    }, label: {
+                                        ProductCard(favouritesModel: favouritesModel, listing: listing2, image: recentListing2Image)
+                                    })
                                 }
                             }
                             //Categories
