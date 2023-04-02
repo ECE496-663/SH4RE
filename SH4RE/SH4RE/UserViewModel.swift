@@ -2,6 +2,7 @@ import Foundation
 import Firebase
 import SwiftUI
 import FirebaseAuth
+import FirebaseStorage
 
 
 //Functions used to extract data about users
@@ -37,6 +38,24 @@ func getCurrentUser(completion: @escaping(User) -> Void){
     }
 }
 
+func getUser(uid: String, completion: @escaping(User) -> Void){
+    let docRef = Firestore.firestore().collection("User Info").document(uid)
+    docRef.getDocument{ (document, error) in
+        guard error == nil else{
+            print("Error reading document:", error ?? "")
+            return
+        }
+        if let document = document, document.exists {
+            let data = document.data()!
+            let id = document.documentID
+            let name = data["name"] as? String ?? ""
+            let email = data["email"] as? String ?? ""
+            let pfpPath = data["pfp_path"] as? String ?? ""
+            completion(User(id:id,name:name,email:email,pfpPath:pfpPath))
+        }
+    }
+}
+
 func fetchAllUsers(completion: @escaping([User]) -> Void) {
         var users = [User]()
         Firestore.firestore().collection("User Info").getDocuments { (snapshot, error) in
@@ -56,7 +75,6 @@ func fetchAllUsers(completion: @escaping([User]) -> Void) {
     }
 
 func getUserName(uid:String, completion: @escaping(String) -> Void){
-    //let curUser = Auth.auth().currentUser!
     let docRef = Firestore.firestore().collection("User Info").document(uid)
     docRef.getDocument{ (document, error) in
         guard error == nil else{

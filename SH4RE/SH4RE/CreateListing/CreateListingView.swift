@@ -46,12 +46,13 @@ struct CreateListingView: View {
     // text fields
     @State private var title: String = ""
     @State private var postalCode: String = ""
+    @State var costText = ""
+    @State var cost:Float = 0.0
     @State private var isPostalCodeValid:Bool = false
     @State private var lat:Double = 0.0
     @State private var lon:Double = 0.0
-    @State var cost = ""
     @State private var description: String = ""
-
+    
     // drop down fields
     @State var categorySelection = ""
     var categoryList = ["Film & Photography", "Audio Visual Equipment", "Projectors & Screens", "Drones", "DJ Equipment", "Transport", "Storage", "Electronics", "Party & Events", "Sports", "Musical Instruments", "Home, Office & Garden", "Holiday & Travel", "Clothing"]
@@ -143,6 +144,7 @@ struct CreateListingView: View {
                 .padding(.top)
         }
     }
+    
     private var fieldEntriesView: some View {
         Group {
             // title entry
@@ -163,14 +165,16 @@ struct CreateListingView: View {
                 .padding()
             
             // cost per day entry
-            TextField("Cost per day", text: $cost)
+            TextField("Cost per day", text: $costText)
                 .textFieldStyle(textInputStyle())
                 .keyboardType(.numberPad)
-                .onReceive(Just(cost)) { newValue in
-                    let filtered = newValue.filter { "0123456789".contains($0) }
-                    if filtered != newValue {
-                        cost = filtered
+                .onReceive(Just(costText)) { newValue in
+                    let numberFormatter = NumberFormatter()
+                    let number = numberFormatter.number(from:newValue)
+                    guard let number = number else{
+                        return
                     }
+                    cost = number.floatValue
                 }
                 .frame(width: screenSize.width * 0.9)
                 .padding()
@@ -219,8 +223,8 @@ struct CreateListingView: View {
             DropdownMenu(label: "Availability for the Next 3 Months", options: availabilityList, selection: $availabilitySelection)
                 .frame(maxWidth: screenSize.width * 0.9)
                 .onChange(of: availabilitySelection) { value in
-                        availabilityCalendar.selectedDates = []
-                    }
+                    availabilityCalendar.selectedDates = []
+                }
             
             HStack {
                 Text("or set")
@@ -241,13 +245,15 @@ struct CreateListingView: View {
         imagesCount = 1
         title = ""
         description = ""
-        cost = ""
+        cost = 0.0
+        costText = ""
         postalCode = ""
         categorySelection = ""
         availabilitySelection = ""
         availabilityCalendar.selectedDates = []
         showCal = false
     }
+    
     func post() {
         var calAvail = [Any]()
         if (!availabilityCalendar.selectedDates.isEmpty) {
@@ -271,26 +277,31 @@ struct CreateListingView: View {
                 calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
             }
         }
-        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": ["postalCode": postalCode, "latitude": lat, "longitude": lon], "UID": getCurrentUserUid()] as [String : Any]
-        let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
-        
-        // upload images and add paths to data fields
-        var index = 1
-        var imgPath = ""
-        var arrayImgs:[String] = []
-        for pic in pictures {
-            imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
-            arrayImgs.append(imgPath)
-            storageManager.upload(image: pic, path: imgPath)
-            index += 1
-        }
-        if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
-            NSLog("error");
-        }
-        showPostAlertX = true
-
-        //reset inputs
-        resetInputs()
+        getUserName(uid: getCurrentUserUid(), completion: { name in
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name] as [String : Any]
+            let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
+            
+            
+            
+            // upload images and add paths to data fields
+            var index = 1
+            var imgPath = ""
+            var arrayImgs:[String] = []
+            for pic in pictures {
+                imgPath = "listingimages/" + documentID + "/" + String(index) + ".jpg"
+                arrayImgs.append(imgPath)
+                storageManager.upload(image: pic, path: imgPath)
+                index += 1
+            }
+            if (documentUpdate(collectionPath: "Listings", documentID: documentID, data: ["image_path" : arrayImgs])) {
+                NSLog("error");
+            }
+            
+            showPostAlertX = true
+            
+            //reset inputs
+            resetInputs()
+        })
     }
     func update() {
         var calAvail = [Any]()
@@ -334,8 +345,8 @@ struct CreateListingView: View {
         }
         showPostAlertX = true
     }
-    func validatePost () -> Bool {
-        if (title.isEmpty || cost.isEmpty || postalCode.isEmpty ||
+    func validatePost () -> Bool{
+        if (title.isEmpty || costText.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
             (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
             errorInField = true
@@ -343,6 +354,7 @@ struct CreateListingView: View {
         }
         return true
     }
+    
     func intializeEditor () {
         isEditing = editListing.title != ""
         if (isEditing) {
@@ -368,6 +380,7 @@ struct CreateListingView: View {
             }
         }
     }
+    
     func validateUpdate () -> Bool {
         if (title == editListing.title && description == editListing.description
             && cost == editListing.price && postalCode == editListing.address["postalCode"] as! String
@@ -381,7 +394,7 @@ struct CreateListingView: View {
     var body: some View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
-
+            
             if (currentUser.isGuest()) {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
@@ -396,7 +409,7 @@ struct CreateListingView: View {
                         imageView
                         
                         fieldEntriesView
-                            
+                        
                         availabilityView
                         
                         // update button is editing, else Post button
@@ -456,7 +469,7 @@ struct CreateListingView: View {
                 .sheet(isPresented: $showCal) {
                     RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
                 }
-                .onChange(of: [title, description, cost, postalCode, categorySelection], perform: { newVal in
+                .onChange(of: [title, description, costText, postalCode, categorySelection], perform: { newVal in
                     if (!isEditing) { return }
                     shouldDisableUpdateButton = !validateUpdate()
                 })
@@ -468,7 +481,7 @@ struct CreateListingView: View {
                     if (!isEditing) { return }
                     shouldDisableUpdateButton = !validateUpdate()
                 })
-
+                
                 PopUp(show: $errorInField) {
                     VStack {
                         Text("Entries missing or incorrectly filled")

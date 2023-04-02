@@ -37,12 +37,12 @@ struct ContentView: View {
         ZStack {
             if (currentUser.hasLoggedIn) {
                 TabView(selection: $tabSelection) {
-                    HomeView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: favouritesModel)
+                    HomeView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: FavouritesModel())
                         .tabItem {
                             Label("Home", systemImage: "house.fill")
                         }
                         .tag(1)
-                    SearchView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: favouritesModel)
+                    SearchView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: FavouritesModel())
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Search", systemImage: "safari.fill")
