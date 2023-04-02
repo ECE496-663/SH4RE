@@ -289,6 +289,9 @@ struct ViewListingView: View {
                 Text("You must verify your email before messaging users.")
                     .bold()
                     .padding(.bottom)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
+                
                 Button(action: {
                     showVerifyEmailPopUp.toggle()
                 })
