@@ -36,7 +36,7 @@ struct MessagesChat: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .onDisappear {
-            vm.firestoreListener?.remove()
+            //vm.firestoreListener?.remove()
         }.onAppear(){
             self.hasUnreturnedRental(toId: vm.chatUser, completion: { ret in
                 rentalNeedsReturn = ret
