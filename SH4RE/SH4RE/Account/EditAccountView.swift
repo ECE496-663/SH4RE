@@ -27,45 +27,59 @@ struct EditAccountView: View {
         
         let docRef = Firestore.firestore().collection("User Info").document(getCurrentUserUid())
         
-        dataToChange.removeAll()
-        var changed = false
-        if (name != user.name && name != "") {
-            documentUpdate(collectionPath: "User Info", documentID: getCurrentUserUid(), data: ["name": name])
-            changed = true
-        }
-        if (pfpChanged) {
-            let imgPath = "profilepictures/" + docRef.documentID + "/profile.jpg"
-            let storageManager = StorageManager()
-            storageManager.upload(image: profilePicture, path: imgPath)
-            if (documentUpdate(collectionPath: "User Info", documentID: docRef.documentID, data: ["pfp_path" : imgPath])) {
-                NSLog("error");
-            }
-            changed = true
-        }
-        if (!password.isEmpty && !newPassword.isEmpty) {
-            getCurrentUser(completion: {  user in
-                let credential = EmailAuthProvider.credential(withEmail: user.email, password: password)
-                Auth.auth().currentUser?.reauthenticate(with: credential, completion: { (authResult, error) in
-                //TODO Proper error messages
-                if (error != nil) {
-                  print("Password isn't correct")
-                } else {
-                    Auth.auth().currentUser?.updatePassword(to: newPassword) { (error) in
-                        if (error != nil){
-                            print("error updating password")
-                        }
-                    }
-                    changed = true
-                }
-              })
-            })
-        }
-        if (!changed) {
+        if(name == ""){
             errorInField.toggle()
             return
         }
         
-        showPosted.toggle()
+        if(password.isEmpty && newPassword.isEmpty){
+            if (name != user.name) {
+                documentUpdate(collectionPath: "User Info", documentID: getCurrentUserUid(), data: ["name": name])
+            }
+            if (pfpChanged) {
+                let imgPath = "profilepictures/" + docRef.documentID + "/profile.jpg"
+                let storageManager = StorageManager()
+                storageManager.upload(image: profilePicture, path: imgPath)
+                documentUpdate(collectionPath: "User Info", documentID: docRef.documentID, data: ["pfp_path" : imgPath])
+            }
+            showPosted.toggle()
+        }else{
+            if (!password.isEmpty && !newPassword.isEmpty) {
+                getCurrentUser(completion: {  user in
+                    let credential = EmailAuthProvider.credential(withEmail: user.email, password: password)
+                    Auth.auth().currentUser?.reauthenticate(with: credential, completion: { (authResult, error) in
+                    //TODO Proper error messages
+                    if (error != nil) {
+                        errorInField.toggle()
+                        return
+                    } else {
+                        Auth.auth().currentUser?.updatePassword(to: newPassword) { (error) in
+                            if (error != nil){
+                                errorInField.toggle()
+                                return
+                            }else{
+                                if (name != user.name) {
+                                    documentUpdate(collectionPath: "User Info", documentID: getCurrentUserUid(), data: ["name": name])
+                                }
+                                if (pfpChanged) {
+                                    let imgPath = "profilepictures/" + docRef.documentID + "/profile.jpg"
+                                    let storageManager = StorageManager()
+                                    storageManager.upload(image: profilePicture, path: imgPath)
+                                    documentUpdate(collectionPath: "User Info", documentID: docRef.documentID, data: ["pfp_path" : imgPath])
+                                }
+                                showPosted.toggle()
+                            }
+                        }
+                        
+                    }
+                  })
+                })
+            }else{
+                errorInField.toggle()
+                return
+            }
+        }
+
     }
     
     private var fields: some View {
