@@ -172,7 +172,7 @@ class ListingViewModel : ObservableObject{
                                           }
                                       }
                                       if(available == true){
-                                          let listing = Listing(id: hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc)
+                                          let listing = Listing(id: hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName)
                                           self.listings.append(listing)
                                       }
                                       
@@ -385,8 +385,6 @@ func sendBookingRequest(uid: String, listing_id : String, title:String, start: D
                             .addDocument(data: msg)
                         
                         
-                        print("3")
-                        
                         Firestore.firestore().collection("User Info").document(renterId).getDocument() { (document, err) in
                             
                             if let document = document, document.exists {
@@ -441,7 +439,6 @@ func sendBookingRequest(uid: String, listing_id : String, title:String, start: D
                                     .document(renterId)
                                     .collection(FirebaseConstants.messages)
                                     .document(uid)
-                                print("4")
                                 
                                 recipDoc.setData(recipientRecentMessageDictionary) { error in
                                     if let error = error {
