@@ -30,9 +30,8 @@ struct ViewListingView: View {
     @State private var showDeleteConfirmation = false
     @State private var showDeleted = false
     
-    var numberOfStars: Float = 4
-    var hasHalfStar = true
-    var numberOfReviews = 3
+    @State var numberOfStars: Float = 0
+    @State var allReviews = [Review]()
     @State var numberOfImages = 0
     @State var description:String = ""
     @State var title:String = ""
@@ -45,30 +44,14 @@ struct ViewListingView: View {
     
     private var reviews: some View {
         VStack(alignment: .leading) {
-            Text("Reviews (\(numberOfReviews))")
+            Text("Reviews (\(allReviews.count))")
                 .font(.headline)
                 .padding()
             
-            HStack(alignment: .top) {
-                Image("placeholder")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .clipShape(Circle())
-                    .frame(width: 40, height: 40)
-                
-                VStack(alignment: .leading) {
-                    Text("Melissa Lim")
-                        .font(.body)
-                    
-                    StarsView(numberOfStars: 3.5)
-                    Text("Fusce non arcu non nunc ultrices hendrerit. In libero risus, auctor ac turpis in, venenatis tempus erat tincidunt et lorem ipsum.")
-                        .font(.footnote)
-                }
-                
+            ForEach(allReviews) { review in
+                ReviewView(reviewName: review.name, reviewRating: review.rating as Float, reviewDescription: review.description, reviewUID: review.uid, reviewProfilePic:review.profilePic)
             }
-            .padding([.horizontal])
         }
-        
     }
     
     private var bottomBar: some View {
@@ -105,12 +88,11 @@ struct ViewListingView: View {
                     }
                     .frame(alignment: .trailing)
                     .padding()
-                    .background(startDateText == "" ? Color.grey : Color.primaryDark)
+                    .background(Color.primaryDark)
                     .cornerRadius(40)
                     .padding()
                     
                 })
-                .disabled(startDateText == "")
             }
             else {
                 NavigationLink(destination: {
@@ -182,8 +164,8 @@ struct ViewListingView: View {
                                         .clipped()
                                         .cornerRadius(10)
                                         .overlay(RoundedRectangle(cornerRadius: 10)
-                                                    .stroke(Color.primaryDark, lineWidth: 3))
-
+                                            .stroke(Color.primaryDark, lineWidth: 3))
+                                    
                                 }
                                 .frame(width: geometry.size.width, height: 250)
                             }
@@ -199,9 +181,9 @@ struct ViewListingView: View {
                     HStack {
                         StarsView(numberOfStars: numberOfStars)
                         
-                        Text("(\(numberOfReviews) reviews)")
+                        Text("(\(allReviews.count) reviews)")
                             .font(.caption)
-                            .foregroundColor(.grey)
+                            .foregroundColor(.darkGrey)
                     }
                     .padding([.horizontal])
                     
@@ -231,99 +213,14 @@ struct ViewListingView: View {
                     }
                     
                     reviews
+                    
+                    Spacer().frame(height: 100)
                 }
             }
             
-            PopUp(show: $showPopUp) {
-                VStack(alignment: .leading) {
-                    if (endDateText == "") {
-                        Text("Send request for “\(listing.title)” for \(startDateText)")
-                            .fixedSize(horizontal: false, vertical: true)
-                            .bold()
-                    } else {
-                        Text("Send request for “\(listing.title)” for \(startDateText) - \(endDateText)")
-                            .fixedSize(horizontal: false, vertical: true)
-                            .bold()
-                    }
-                    Spacer()
-                    
-                    NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel, tabSelection: $tabSelection, currentUser: _currentUser)) {
-                        HStack {
-                            Text("Send")
-                                .font(.body)
-                                .foregroundColor(.white)
-                        }
-                    }.simultaneousGesture(TapGesture().onEnded{
-                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
-                        availabilityCalendar.startDate = nil
-                        availabilityCalendar.endDate = nil
-                    })
-                    .fontWeight(.semibold)
-                    .frame(width: screenSize.width * 0.8, height: 40)
-                    .foregroundColor(.white)
-                    .background(Color.primaryDark)
-                    .cornerRadius(40)
-                    
-                    Button(action: {
-                        showPopUp.toggle()
-                    })
-                    {
-                        Text("Cancel")
-                    }
-                    .buttonStyle(secondaryButtonStyle())
-                }
-                .padding()
-                .frame(width: screenSize.width * 0.9, height: 180)
-                .background(.white)
-                .cornerRadius(8)
-                
-            }
-            PopUp(show: $showDeleteConfirmation) {
-                VStack {
-                    Text("Delete listing?")
-                        .foregroundColor(.primaryDark)
-                        .bold()
-                        .padding(.bottom)
-                    Button(action: {
-                        showDeleteConfirmation.toggle()
-                        showDeleted.toggle()
-                    })
-                    {
-                        Text("Yes")
-                    }
-                    .buttonStyle(primaryButtonStyle())
-                    Button(action: {
-                        showDeleteConfirmation.toggle()
-                    })
-                    {
-                        Text("Cancel")
-                    }
-                    .buttonStyle(secondaryButtonStyle())
-                }
-                .padding()
-                .frame(width: screenSize.width * 0.9, height: 160)
-                .background(.white)
-                .cornerRadius(30)
-            }
-            PopUp(show: $showDeleted) {
-                VStack {
-                    Text("Post Deleted")
-                        .foregroundColor(.primaryDark)
-                        .bold()
-                        .padding(.bottom)
-                    Button(action: {
-                        showDeleted.toggle()
-                    })
-                    {
-                        Text("OK")
-                    }
-                    .buttonStyle(primaryButtonStyle())
-                }
-                .padding()
-                .frame(width: screenSize.width * 0.9, height: 130)
-                .background(.white)
-                .cornerRadius(30)
-            }
+            sendMessagePopUp
+            showDeleteConfirmationPopUp
+            showDeletedPopUp
         }
         .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
@@ -349,6 +246,7 @@ struct ViewListingView: View {
                 })
             }
             else {
+
                 availabilityCalendar.disabledDates = listing.availability
                 numberOfImages = listing.imagepath.count
                 for path in listing.imagepath {
@@ -364,9 +262,128 @@ struct ViewListingView: View {
                     }
                 }
             }
+
+            getListingReviews(uid: listing.uid, lid: listing.id, completion: { reviews in
+                allReviews = reviews
+            })
+            
+            getListingRating(uid: listing.uid, lid: listing.id, completion:{ rating in
+                numberOfStars = rating
+            })
         }
         .sheet(isPresented: $showCal, onDismiss: didDismiss) {
             RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
+        }
+    }
+    
+    private var sendMessagePopUp: some View {
+        PopUp(show: $showPopUp) {
+            VStack(alignment: .leading) {
+                if (startDateText == "" && endDateText == "") {
+                    Text("Send message about “\(listing.title)”?")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .bold()
+                }
+                else if (endDateText == "") {
+                    Text("Send request for “\(listing.title)” for \(startDateText)")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .bold()
+                } else {
+                    Text("Send request for “\(listing.title)” for \(startDateText) - \(endDateText)")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .bold()
+                }
+                Spacer()
+                
+                NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel, tabSelection: $tabSelection)) {
+                    HStack {
+                        Text("Send")
+                            .font(.body)
+                            .foregroundColor(.white)
+                    }
+                }.simultaneousGesture(TapGesture().onEnded {
+
+                    if (startDateText != "") {
+                        sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: self.listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
+                    }
+                    
+                    self.chatLogViewModel.fetchMessages()
+                    availabilityCalendar.startDate = nil
+                    availabilityCalendar.endDate = nil
+                    
+                    showPopUp.toggle()
+                })
+                .fontWeight(.semibold)
+                .frame(width: screenSize.width * 0.8, height: 40)
+                .foregroundColor(.white)
+                .background(Color.primaryDark)
+                .cornerRadius(40)
+                
+                Button(action: {
+                    showPopUp.toggle()
+                })
+                {
+                    Text("Cancel")
+                }
+                .buttonStyle(secondaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 180)
+            .background(.white)
+            .cornerRadius(8)
+            
+        }
+    }
+    
+    private var showDeleteConfirmationPopUp: some View {
+        PopUp(show: $showDeleteConfirmation) {
+            VStack {
+                Text("Delete listing?")
+                    .foregroundColor(.primaryDark)
+                    .bold()
+                    .padding(.bottom)
+                Button(action: {
+                    showDeleteConfirmation.toggle()
+                    showDeleted.toggle()
+                })
+                {
+                    Text("Yes")
+                }
+                .buttonStyle(primaryButtonStyle())
+                Button(action: {
+                    showDeleteConfirmation.toggle()
+                })
+                {
+                    Text("Cancel")
+                }
+                .buttonStyle(secondaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 160)
+            .background(.white)
+            .cornerRadius(30)
+        }
+    }
+    
+    private var showDeletedPopUp: some View {
+        PopUp(show: $showDeleted) {
+            VStack {
+                Text("Post Deleted")
+                    .foregroundColor(.primaryDark)
+                    .bold()
+                    .padding(.bottom)
+                Button(action: {
+                    showDeleted.toggle()
+                })
+                {
+                    Text("OK")
+                }
+                .buttonStyle(primaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 130)
+            .background(.white)
+            .cornerRadius(30)
         }
     }
     
