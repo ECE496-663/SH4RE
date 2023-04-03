@@ -29,6 +29,8 @@ struct ViewListingView: View {
     @State private var showPopUp = false
     @State private var showDeleteConfirmation = false
     @State private var showDeleted = false
+    @State private var showPromoConfirmation = false
+    @State private var showPromoted = false
     @State private var showVerifyEmailPopUp = false
     
     @State var numberOfStars: Float = 0
@@ -75,7 +77,7 @@ struct ViewListingView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            if (listing.uid != getCurrentUserUid()) {
+            if (listing.uid != getCurrentUserUid() && false) {
                 Button(action: {
                     if (currentUser.isEmailVerified()) {
                         showPopUp.toggle()
@@ -100,43 +102,70 @@ struct ViewListingView: View {
                 })
             }
             else {
+                if (true){//listing.sponsored == true) {
+                    Button(action: {}, label: {
+                        HStack {
+                            Text("Promoted")
+                                .font(.body)
+                                .foregroundColor(.green)
+                                .lineLimit(nil)
+                        }
+                        .frame(alignment: .center)
+                        .padding()
+                        .background(Color.backgroundGrey)
+                        .cornerRadius(40)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 40)
+                                .stroke(.green, lineWidth: 2)
+                        )
+                        .padding(.vertical)
+                    }).disabled(true)
+                }
+                else {
+                    Button(action: {
+                        showPromoConfirmation.toggle()
+                    }, label: {
+                        HStack {
+                            Text("Promo")
+                                .font(.body)
+                                .foregroundColor(.white)
+                            Image(systemName: "star.circle.fill")
+                                .foregroundColor(.white)
+                        }
+                        .frame(alignment: .center)
+                        .padding()
+                        .background(Color.green)
+                        .cornerRadius(40)
+                        .padding(.vertical)
+                    })
+                }
                 NavigationLink(destination: {
-                    CreateListingView(tabSelection: $tabSelection, editListing: $listing)
-                }, label: {
-                    HStack {
-                        Text("Edit")
-                            .font(.body)
-                            .foregroundColor(.white)
-                        
+                        CreateListingView(tabSelection: $tabSelection, editListing: $listing)
+                    }, label: {
                         Image(systemName: "pencil.tip.crop.circle")
                             .foregroundColor(.white)
-                    }
-                    .frame(width: screenSize.width * 0.2)
-                    .padding()
-                    .background(Color.primaryDark)
-                    .cornerRadius(40)
-                    .padding([.top, .bottom])
-                })
+                            .frame(alignment: .center)
+                            .padding()
+                            .background(Color.primaryDark)
+                            .cornerRadius(40)
+                            .padding(.vertical)
+                    })
                 Button(action: {
-                    showDeleteConfirmation.toggle()
-                }, label: {
-                    HStack {
-                        Text("Delete")
-                            .font(.body)
-                            .foregroundColor(.red)
-                        
-                        Image(systemName: "trash")
-                            .foregroundColor(.red)
-                    }
-                    .frame(width: screenSize.width * 0.2, alignment: .trailing)
-                    .padding()
-                    .background(Color.backgroundGrey)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 40)
-                            .stroke(.red, lineWidth: 2)
-                    )
-                    .padding([.top, .bottom])
-                })
+                        showDeleteConfirmation.toggle()
+                    }, label: {
+                        HStack {
+                            Image(systemName: "trash")
+                                .foregroundColor(.red)
+                        }
+                        .frame(alignment: .center)
+                        .padding()
+                        .background(Color.backgroundGrey)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 40)
+                                .stroke(.red, lineWidth: 2)
+                        )
+                        .padding(.vertical)
+                    })
             }
         }
         .padding([.horizontal])
@@ -231,6 +260,8 @@ struct ViewListingView: View {
             verifyEmailPopUp
             showDeleteConfirmationPopUp
             showDeletedPopUp
+            showPromoConfirmationPopUp
+            showPromotedPopUp
         }
         .onAppear() {
             if (listing.uid == getCurrentUserUid()) {
@@ -407,6 +438,64 @@ struct ViewListingView: View {
                     .padding(.bottom)
                 Button(action: {
                     showDeleted.toggle()
+                })
+                {
+                    Text("OK")
+                }
+                .buttonStyle(primaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 130)
+            .background(.white)
+            .cornerRadius(30)
+        }
+    }
+    
+    private var showPromoConfirmationPopUp: some View {
+        PopUp(show: $showPromoConfirmation) {
+            VStack {
+                Text("Promote listing?")
+                    .foregroundColor(.primaryDark)
+                    .bold()
+                    .padding(.bottom, 5)
+                Text("This listing will appear at the top of search results for one week.\n Would you like to promote?")
+                    .foregroundColor(.black)
+                    .padding(.bottom)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button(action: {
+//                    sponsorListing(lid: listing.id)
+                    showPromoConfirmation.toggle()
+                    showPromoted.toggle()
+                })
+                {
+                    Text("Pay $10")
+                }
+                .buttonStyle(primaryButtonStyle())
+                Button(action: {
+                    showPromoConfirmation.toggle()
+                })
+                {
+                    Text("Cancel")
+                }
+                .buttonStyle(secondaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 260)
+            .background(.white)
+            .cornerRadius(30)
+        }
+    }
+    
+    private var showPromotedPopUp: some View {
+        PopUp(show: $showPromoted) {
+            VStack {
+                Text("Post has been Promoted!")
+                    .foregroundColor(.primaryDark)
+                    .bold()
+                    .padding(.bottom)
+                Button(action: {
+                    showPromoted.toggle()
                 })
                 {
                     Text("OK")
