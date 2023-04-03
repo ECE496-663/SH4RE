@@ -115,7 +115,7 @@ struct CreateAccountView: View {
                                         do {
                                             try await Auth.auth().createUser(withEmail: username, password: password)
                                             currentUser.hasLoggedIn = true
-                                            currentUser.sendVerificationMail()
+                                            currentUser.sendVerificationEmail()
                                             
                                             let documentID = documentWrite(collectionPath: "User Info", uid: Auth.auth().currentUser!.uid, data: ["name": name,"email": username])
                                             

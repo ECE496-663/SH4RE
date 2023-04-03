@@ -37,7 +37,7 @@ struct UnverifiedView: View {
             
             Button(action: {
                 showSentPopUp.toggle()
-                currentUser.sendVerificationMail()
+                currentUser.sendVerificationEmail()
             })
             {
                 Text("Send verification email")

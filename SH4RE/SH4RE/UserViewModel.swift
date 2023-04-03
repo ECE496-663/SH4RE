@@ -24,6 +24,12 @@ func getCurrentUserUid() -> String {
     return ""
 }
 
+func sendForgotPasswordEmail(email: String) {
+    Auth.auth().sendPasswordReset(withEmail: email) { error in
+        print(error ?? "")
+    }
+}
+
 func getCurrentUser(completion: @escaping(User) -> Void){
     let curUser = Auth.auth().currentUser!
     let docRef = Firestore.firestore().collection("User Info").document(curUser.uid)
