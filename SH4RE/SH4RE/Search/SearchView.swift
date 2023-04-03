@@ -31,9 +31,6 @@ struct SearchView: View {
     //Used to focus on the keyboard when the search icon is clicked
     @FocusState var isFocusOn: Bool
     
-    @State var startDate = Date(timeIntervalSinceReferenceDate: 0)
-    @State var endDate = Date(timeIntervalSinceReferenceDate: 0)
-
     // Manages the three most recent searches made by the user
     func addRecentSearch(searchQuery: String){
         if (searchQuery.isEmpty || searchQuery == ""){ return }

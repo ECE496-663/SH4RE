@@ -21,6 +21,7 @@ extension EnvironmentValues {
 
 struct AccountView: View {
     @Binding var tabSelection: Int
+    @ObservedObject var searchModel: SearchModel
     @EnvironmentObject var currentUser: CurrentUser
     @State private var showTutorial:Bool = false;
     @State private var profilePicture:UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
@@ -156,6 +157,8 @@ struct AccountView: View {
                             currentUser.hasLoggedIn = false
                             //Remove some user specific info
                             UserDefaults.standard.setValue([""], forKey: "RecentSearchQueries")
+                            searchModel.searchQuery = ""
+                            searchModel.resetFilters()
                         })
                         {
                             Text("Logout")
