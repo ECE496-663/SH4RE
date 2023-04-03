@@ -41,7 +41,6 @@ struct SearchView: View {
     @State var showFilterButton = true
     @State var scrollOffset: CGFloat = 0.00
     
-    //TODO Americo set these with filters
     @State var startDate = Date(timeIntervalSinceReferenceDate: 0)
     @State var endDate = Date(timeIntervalSinceReferenceDate: 0)
 
@@ -86,7 +85,7 @@ struct SearchView: View {
                                 // If theres no image for a listing, just use the placeholder
                                 let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                                 NavigationLink(destination: {
-                                    ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title))).environmentObject(currentUser)
+                                    ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.ownerName))).environmentObject(currentUser)
                                 }, label: {
                                     ProductCard(favouritesModel: favouritesModel, listing: listing, image: productImage)
                                 })
@@ -143,7 +142,6 @@ struct SearchView: View {
 //        dateFormatter.dateFormat = "MM/dd/yyyy"
 //        startDate = dateFormatter.date(from: string)!
 //        endDate = dateFormatter.date(from: string1)!
-        
         listingsView.listings = [Listing]()
         listingsView.searchListings(completedSearch: searchModel.getCompletedSearch()) { success in
             listingsView.fetchProductMainImage( completion: { success in

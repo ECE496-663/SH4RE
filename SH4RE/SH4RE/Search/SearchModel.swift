@@ -29,9 +29,8 @@ class SearchModel: ObservableObject {
     @Published var maxPrice: String = ""
     @Published var maxDistance: String = ""
     @Published var minRating:Double = 0.0
-    //TODO Americo set these with filters
-//    @Published var startDate: Date = Date(timeIntervalSinceReferenceDate: 0)
-//    @Published var endDate: Date = Date(timeIntervalSinceReferenceDate: 0)
+    @Published var startDate: Date = Date(timeIntervalSinceReferenceDate: 0)
+    @Published var endDate: Date = Date(timeIntervalSinceReferenceDate: 0)
     
     func resetFilters(){
         category = ""
@@ -40,6 +39,8 @@ class SearchModel: ObservableObject {
         maxPrice = ""
         maxDistance = ""
         minRating = 0.0
+        startDate = Date(timeIntervalSinceReferenceDate: 0)
+        endDate = Date(timeIntervalSinceReferenceDate: 0)
     }
     
     func filtersAreApplied() -> Bool {
@@ -58,6 +59,6 @@ class SearchModel: ObservableObject {
     }
     
     func getCompletedSearch() -> CompletedSearchQuery {
-        return CompletedSearchQuery(searchQuery: searchQuery, category: category, location: location, minPrice: Int(minPrice) ?? 0, maxPrice: Int(maxPrice) ?? 0, maxDistance: Int(maxDistance) ?? 0, minRating: minRating, startDate: Date(timeIntervalSinceReferenceDate: 0), endDate: Date(timeIntervalSinceReferenceDate: 0))
+        return CompletedSearchQuery(searchQuery: searchQuery, category: category, location: location, minPrice: Int(minPrice) ?? 0, maxPrice: Int(maxPrice) ?? 0, maxDistance: Int(maxDistance) ?? 0, minRating: minRating, startDate: startDate, endDate: endDate)
     }
 }
