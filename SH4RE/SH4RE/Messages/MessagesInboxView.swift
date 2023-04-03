@@ -25,6 +25,9 @@ struct MessagesInboxView: View {
             if (currentUser.isGuest()) {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
+            else if (!currentUser.isEmailVerified()) {
+                UnverifiedView(tabSelection: $tabSelection).environmentObject(currentUser)
+            }
             else {
                 NavigationView {
                     VStack {

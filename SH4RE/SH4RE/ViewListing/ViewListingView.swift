@@ -29,6 +29,7 @@ struct ViewListingView: View {
     @State private var showPopUp = false
     @State private var showDeleteConfirmation = false
     @State private var showDeleted = false
+    @State private var showVerifyEmailPopUp = false
     
     @State var numberOfStars: Float = 0
     @State var allReviews = [Review]()
@@ -76,7 +77,11 @@ struct ViewListingView: View {
             
             if (listing.uid != getCurrentUserUid()) {
                 Button(action: {
-                    showPopUp.toggle()
+                    if (currentUser.isEmailVerified()) {
+                        showPopUp.toggle()
+                    } else {
+                        showVerifyEmailPopUp.toggle()
+                    }
                 }, label: {
                     HStack {
                         Text("Message")
@@ -217,12 +222,16 @@ struct ViewListingView: View {
                     Spacer().frame(height: 100)
                 }
             }
+
+            bottomBar
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            
             
             sendMessagePopUp
+            verifyEmailPopUp
             showDeleteConfirmationPopUp
             showDeletedPopUp
         }
-        .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
             if (listing.uid == getCurrentUserUid()) {
                 fetchSingleListing(lid: listing.id, completion: { result in
@@ -273,6 +282,30 @@ struct ViewListingView: View {
         }
         .sheet(isPresented: $showCal, onDismiss: didDismiss) {
             RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
+        }        
+    }
+    
+    private var verifyEmailPopUp: some View {
+        PopUp(show: $showVerifyEmailPopUp) {
+            VStack {
+                Text("You must verify your email before messaging users.")
+                    .bold()
+                    .padding(.bottom)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
+                
+                Button(action: {
+                    showVerifyEmailPopUp.toggle()
+                })
+                {
+                    Text("OK")
+                }
+                .buttonStyle(primaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 130)
+            .background(.white)
+            .cornerRadius(30)
         }
     }
     
@@ -401,10 +434,10 @@ struct ViewListingView: View {
 }
 
 struct ViewListingView_Previews: PreviewProvider {
-    static var previewListing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : [
-        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: 20, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
+    static var previewListing = Listing(id :"ZIRtdco4Qo6elzHP8AMH", uid: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", title:"Test Listing", description: "Test Description", imagepath : [
+        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: 20.0, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37], ownerName: "Bob")
     
-    static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "123", uid: "123", name: "Random"))
+    static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", uid: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", name: "Random"))
     
     static var previews: some View {
         ViewListingView(tabSelection: .constant(2), listing: previewListing, chatLogViewModel: previewChatLogModel)

@@ -14,9 +14,14 @@ struct User : Identifiable{
 }
 
 
-func getCurrentUserUid() -> String{
-    let curUser = Auth.auth().currentUser!
-    return curUser.uid
+func getCurrentUserUid() -> String {
+    let curUser = Auth.auth().currentUser
+
+    if (curUser != nil) {
+        return curUser!.uid
+    }
+    
+    return ""
 }
 
 func getCurrentUser(completion: @escaping(User) -> Void){

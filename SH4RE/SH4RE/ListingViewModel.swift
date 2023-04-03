@@ -440,7 +440,6 @@ func sendBookingRequest(uid: String, listing_id : String, title:String, start: D
                                     .document(renterId)
                                     .collection(FirebaseConstants.messages)
                                     .document(uid)
-
                                 
                                 recipDoc.setData(recipientRecentMessageDictionary) { error in
                                     if let error = error {

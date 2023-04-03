@@ -345,7 +345,8 @@ struct CreateListingView: View {
         }
         showPostAlertX = true
     }
-    func validatePost () -> Bool{
+    
+    func validatePost () -> Bool {
         if (title.isEmpty || costText.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
             (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
@@ -397,6 +398,9 @@ struct CreateListingView: View {
             
             if (currentUser.isGuest()) {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
+            }
+            else if (!currentUser.isEmailVerified()) {
+                UnverifiedView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
             else {
                 ScrollViewReader { value in
