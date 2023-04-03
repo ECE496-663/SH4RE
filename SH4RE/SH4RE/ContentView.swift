@@ -61,7 +61,7 @@ struct ContentView: View {
                             Label("Messages", systemImage: "message.fill")
                         }
                         .tag(4)
-                    AccountView(tabSelection: $tabSelection)
+                    AccountView(tabSelection: $tabSelection, searchModel: searchModel)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Account", systemImage: "person.crop.circle.fill")

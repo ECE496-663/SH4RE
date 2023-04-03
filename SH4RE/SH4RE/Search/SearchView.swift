@@ -42,11 +42,11 @@ struct SearchView: View {
     @State var showFilterButton = true
     @State var scrollOffset: CGFloat = 0.00
     
-    @State var startDate = Date(timeIntervalSinceReferenceDate: 0)
-    @State var endDate = Date(timeIntervalSinceReferenceDate: 0)
-    
     @State var chatLogViewModelDict : [String:ChatLogViewModel] = [:]
 
+    //Used to focus on the keyboard when the search icon is clicked
+    @FocusState var isFocusOn: Bool
+    
     // Manages the three most recent searches made by the user
     func addRecentSearch(searchQuery: String){
         if (searchQuery.isEmpty || searchQuery == ""){ return }
@@ -62,6 +62,25 @@ struct SearchView: View {
         searchModel.recentSearchQueries = savedValues
     }
 
+    fileprivate func searchBar() -> some View {
+        return TextField("What are you looking for?", text: $searchModel.searchQuery)
+            .textFieldStyle(
+                iconInputStyle(
+                    button: Button(action:{
+                        isFocusOn = true
+                    }, label:{
+                        Image(systemName: "magnifyingglass")
+                    }),
+                    colour: .gray
+                )
+            )
+            .focused($isFocusOn)
+            .onSubmit {
+                addRecentSearch(searchQuery: searchModel.searchQuery)
+                doSearch()
+            }
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .top) {
@@ -76,12 +95,7 @@ struct SearchView: View {
                                 .foregroundColor(.primaryDark)
                         }
                     }
-                    TextField("What are you looking for?", text: $searchModel.searchQuery)
-                        .textFieldStyle(textInputStyle())
-                        .onSubmit {
-                            addRecentSearch(searchQuery: searchModel.searchQuery)
-                            doSearch()
-                        }
+                    searchBar()
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 15){
                             ForEach(listingsView.listings) { listing in

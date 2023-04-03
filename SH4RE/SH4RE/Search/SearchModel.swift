@@ -49,9 +49,9 @@ class SearchModel: ObservableObject {
             minPrice == "" &&
             maxPrice == "" &&
             maxDistance == "" &&
-            minRating == 0.0
-//            startDate == Date(timeIntervalSinceReferenceDate: 0) &&
-//            endDate == Date(timeIntervalSinceReferenceDate: 0)
+            minRating == 0.0 &&
+            startDate == Date(timeIntervalSinceReferenceDate: 0) &&
+            endDate == Date(timeIntervalSinceReferenceDate: 0)
         ){
             return false
         }
