@@ -43,6 +43,21 @@ class SearchModel: ObservableObject {
         endDate = Date(timeIntervalSinceReferenceDate: 0)
     }
     
+    func filtersAreApplied() -> Bool {
+        if (category == "" &&
+            location == "" &&
+            minPrice == "" &&
+            maxPrice == "" &&
+            maxDistance == "" &&
+            minRating == 0.0
+//            startDate == Date(timeIntervalSinceReferenceDate: 0) &&
+//            endDate == Date(timeIntervalSinceReferenceDate: 0)
+        ){
+            return false
+        }
+        return true
+    }
+    
     func getCompletedSearch() -> CompletedSearchQuery {
         return CompletedSearchQuery(searchQuery: searchQuery, category: category, location: location, minPrice: Int(minPrice) ?? 0, maxPrice: Int(maxPrice) ?? 0, maxDistance: Int(maxDistance) ?? 0, minRating: minRating, startDate: startDate, endDate: endDate)
     }
