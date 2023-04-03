@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocationUI
 
 struct textInputStyle: TextFieldStyle{
     //Making an optional error variable
@@ -41,11 +42,15 @@ struct textInputStyle: TextFieldStyle{
 /// This style expects a button with an image as the label to place at the beginning of the tet field
 struct locationInputStyle: TextFieldStyle{
     
-    var button: Button<Image>
+    var button: LocationButton
 
     func _body(configuration: TextField<Self._Label>) -> some View {
         HStack {
             button
+                .background(.white)
+                .labelStyle(.iconOnly)
+                .foregroundColor(Color.primaryBase)
+                .tint(.white)
             configuration
                 .textFieldStyle(PlainTextFieldStyle())
             // Text alignment.
@@ -76,31 +81,31 @@ struct locationInputStyle: TextFieldStyle{
 }
 
 
-struct TextFieldStyles_PreviewsHelper: View {
-    @State var username: String = ""
-    var error: Bool = true
-    var body: some View {
-        VStack {
-            TextField("Your email", text: $username)
-                .frame(width: screenSize.width * 0.8)
-                .textFieldStyle(textInputStyle())
-            TextField("Your error", text: $username)
-                .frame(width: screenSize.width * 0.8)
-                .textFieldStyle(textInputStyle(error: error))
-            TextField("Location", text: $username)
-                .frame(width: screenSize.width * 0.8)
-                .textFieldStyle(
-                    locationInputStyle(button: Button(action:{},
-                                                      label:{
-                                                          Image(systemName: "scope")
-                                                      }))
-                )
-        }
-    }
-}
-
-struct TextFieldStyles_Previews: PreviewProvider {
-    static var previews: some View {
-        TextFieldStyles_PreviewsHelper()
-    }
-}
+//struct TextFieldStyles_PreviewsHelper: View {
+//    @State var username: String = ""
+//    var error: Bool = true
+//    var body: some View {
+//        VStack {
+//            TextField("Your email", text: $username)
+//                .frame(width: screenSize.width * 0.8)
+//                .textFieldStyle(textInputStyle())
+//            TextField("Your error", text: $username)
+//                .frame(width: screenSize.width * 0.8)
+//                .textFieldStyle(textInputStyle(error: error))
+//            TextField("Location", text: $username)
+//                .frame(width: screenSize.width * 0.8)
+//                .textFieldStyle(
+//                    locationInputStyle(button: Button(action:{},
+//                                                      label:{
+//                                                          Image(systemName: "scope")
+//                                                      }))
+//                )
+//        }
+//    }
+//}
+//
+//struct TextFieldStyles_Previews: PreviewProvider {
+//    static var previews: some View {
+//        TextFieldStyles_PreviewsHelper()
+//    }
+//}

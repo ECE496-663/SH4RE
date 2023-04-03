@@ -7,21 +7,22 @@
 
 import SwiftUI
 import Combine
+import CoreLocationUI
+import CoreLocation
 
 struct LocationEntryField: View {
     @Binding var location: String
+    @Binding var locationManager: LocationManager
+
     var body: some View {
         HStack {
             TextField("Postal Code e.g. A1A 1A1", text: $location)
                 .textFieldStyle(
                     locationInputStyle(
-                        button: Button(action:{
-                            // Currently no action, have to set up location
-                            // This could be a staring point https://www.youtube.com/watch?v=cOD1l2lv2Jw&ab_channel=azamsharp
-                            // Additionally, check out the file "CurrentLocationButton"
-                        }, label:{
-                            Image(systemName: "scope")
-                        })
+                        button: LocationButton {
+                            locationManager.requestLocation()
+                            location = "Current Location"
+                        }
                     )
                 )
         }
@@ -42,12 +43,14 @@ struct FilterSheetView: View {
     @State private var startDate: Date
     @State private var endDate: Date
     @Binding var showingFilterSheet: Bool
+    @Binding var locationManager: LocationManager
     var doSearch: () -> Void
     
-    init(searchModel: SearchModel, showingFilterSheet: Binding<Bool>, doSearch: @escaping () -> Void ) {
+    init(searchModel: SearchModel, showingFilterSheet: Binding<Bool>, locationManager: Binding<LocationManager>, doSearch: @escaping () -> Void ) {
         self.doSearch = doSearch
         self.searchModel = searchModel
         _showingFilterSheet = showingFilterSheet
+        _locationManager = locationManager
         _category =  State(initialValue: searchModel.category)
         _location = State(initialValue: searchModel.location)
         _minPrice = State(initialValue: searchModel.minPrice)
@@ -190,7 +193,7 @@ struct FilterSheetView: View {
                     VStack (alignment: .leading) {
                         Text("Location")
                             .font(.title2)
-                        LocationEntryField(location: $location)
+                        LocationEntryField(location: $location, locationManager: $locationManager)
                     }
 
                     //Distance
@@ -243,11 +246,11 @@ struct FilterSheetView: View {
 
 
 
-struct FilterSheetView_Previews: PreviewProvider {
-    static var previews: some View {
-        FilterSheetView(searchModel: SearchModel(), showingFilterSheet: .constant(true), doSearch: {})
-    }
-}
+//struct FilterSheetView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FilterSheetView(searchModel: SearchModel(), showingFilterSheet: .constant(true), doSearch: {})
+//    }
+//}
 
 
 

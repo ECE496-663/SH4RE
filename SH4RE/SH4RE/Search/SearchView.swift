@@ -7,6 +7,8 @@
 import SwiftUI
 import FirebaseStorage
 import Combine
+import CoreLocation
+import MapKit
 
 //Database stuff to know
 //listingView.listings if a list of Listing structs defined in ListingViewModel
@@ -19,7 +21,8 @@ struct SearchView: View {
     @ObservedObject var searchModel: SearchModel
     @ObservedObject var favouritesModel: FavouritesModel
     @EnvironmentObject var currentUser: CurrentUser
-    
+    @State private var locationManager = LocationManager()
+
     @StateObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 15)]
     
@@ -31,6 +34,9 @@ struct SearchView: View {
     @State var startDate = Date(timeIntervalSinceReferenceDate: 0)
     @State var endDate = Date(timeIntervalSinceReferenceDate: 0)
 
+    @State private var lat:Double = 43.660770
+    @State private var lon:Double = -79.396576
+    
     // Manages the three most recent searches made by the user
     func addRecentSearch(searchQuery: String){
         if (searchQuery.isEmpty || searchQuery == ""){ return }
@@ -51,8 +57,20 @@ struct SearchView: View {
             ZStack(alignment: .top) {
                 Color("BackgroundGrey").ignoresSafeArea()
                 VStack(alignment: .leading, spacing: 15) {
-                    Text("Search")
-                        .font(.title.bold())
+                    HStack {
+                        Text("Search")
+                            .font(.title.bold())
+                        Spacer()
+                        NavigationLink(destination: MapView(userLat: $lat, userLon: $lon, distance: .constant(Int(searchModel.maxDistance) ?? 10), region: $locationManager.region), label: {
+                            HStack { 
+                                Text("View Map")
+                                Image(systemName: "map.fill")
+                            }
+                        })
+                        .buttonStyle(secondaryButtonStyle(width: screenSize.width * 0.35))
+                        .opacity((listingsView.listings.isEmpty) ? 0.3 : 1)
+                        .disabled(listingsView.listings.isEmpty)
+                    }
                     TextField("What are you looking for?", text: $searchModel.searchQuery)
                         .textFieldStyle(textInputStyle())
                         .onSubmit {
@@ -143,7 +161,7 @@ struct SearchView: View {
             .buttonStyle(primaryButtonStyle(width: 120, tall: true))
             .padding(.bottom, 30)
             .sheet(isPresented: $showingFilterSheet) {
-                FilterSheetView(searchModel: searchModel, showingFilterSheet: $showingFilterSheet, doSearch: doSearch)
+                FilterSheetView(searchModel: searchModel, showingFilterSheet: $showingFilterSheet, locationManager: $locationManager, doSearch: doSearch)
                     .presentationDetents([.medium, .large])
             }
         }
