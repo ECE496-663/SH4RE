@@ -555,3 +555,17 @@ struct CreateListingView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
+
+//struct Previews_CreateListingView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        let test_listing = Listing(id: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", uid: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", title: "Chainsaw for rent 1", description: "Gas chain saw 14 inch 30cc", imagepath: [
+//            "listingimages/ZIRtdco4Qo6elzHP8AMH/1.jpg"
+//        ], price: 15.0, imageDict: UIImage(imageLiteralResourceName: "placeholder"), availability: [
+//            Date.now
+//          ], category: "Home, Office & Garden", address: [
+//            "lon": -79.3709805,
+//            "lat": 43.6629025
+//          ], ownerName: "Test User", timestamp: Date.now)
+//        CreateListingView(tabSelection: .constant(1), editListing: .constant(test_listing))
+//    }
+//}
