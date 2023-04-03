@@ -39,6 +39,7 @@ struct RecentMessage: Identifiable {
     let datesRequested: String
     let listingId: String
     let requestId: String
+    var profilePic: UIImage
     let isReviewRequest: Bool
     
     var timeAgo: String {
@@ -46,6 +47,7 @@ struct RecentMessage: Identifiable {
         formatter.unitsStyle = .abbreviated
         return formatter.localizedString(for: timestamp, relativeTo: Date())
     }
+    
 }
 
 struct FirebaseConstants {
