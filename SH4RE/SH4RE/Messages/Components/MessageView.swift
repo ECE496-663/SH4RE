@@ -7,82 +7,99 @@
 
 import SwiftUI
 
+enum RequestStatus: Int {
+    case requested = 0
+    case accepted = 1
+    case declined = 2
+    case cancelled = 3
+}
+
 struct MessageView: View {
     let message: ChatMessage
-    @State var requestStatus: Int = 0
+    @State var requestStatus: Int = -1
+    
     @State private var requestResponed = false
+    @Binding var showPopUp: Bool;
     
     var body: some View {
-        VStack {
-            if message.fromId == getCurrentUserUid() {
-                HStack {
-                    Spacer()
-                    VStack(alignment: .leading) {
-                        // TODO: add functionality for accepting/denying requests
-                        if (message.isRequest) {
-                            Text("Request sent!").italic()
-                                .foregroundColor(.white)
-                            HStack {
-                                Text("Item: ")
+            VStack {
+                if message.fromId == getCurrentUserUid() {
+                    HStack {
+                        Spacer()
+                        VStack(alignment: .leading) {
+                            if (message.isRequest) {
+                                Text("Request sent!").italic()
                                     .foregroundColor(.white)
-                                Text(message.listingTitle).bold()
-                                    .foregroundColor(.white)
+                                HStack {
+                                    Text("Item: ")
+                                        .foregroundColor(.white)
+                                    Text(message.listingTitle).bold()
+                                        .foregroundColor(.white)
+                                }
+                                HStack {
+                                    Text("Dates: ")
+                                        .foregroundColor(.white)
+                                    Text(message.datesRequested).bold()
+                                        .foregroundColor(.white)
+                                }
+                                if(requestStatus == RequestStatus.requested.rawValue){
+                                    Button(action: {
+                                        cancelRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.fromId, renterId: message.toId)
+                                        requestStatus = RequestStatus.cancelled.rawValue
+                                    })
+                                    {
+                                        Text("Cancel Request")
+                                    }
+                                    .buttonStyle(secondaryButtonStyle())
+                                }
+                                else if(requestStatus == RequestStatus.accepted.rawValue){
+                                    Text("Accepted").foregroundColor(.white)
+                                }else if(requestStatus == RequestStatus.declined.rawValue){
+                                    Text("Declined").foregroundColor(.white)
+                                }else if(requestStatus == RequestStatus.cancelled.rawValue){
+                                    Text("Cancelled").foregroundColor(.white)
+                                }
                             }
-                            HStack {
-                                Text("Dates: ")
-                                    .foregroundColor(.white)
-                                Text(message.datesRequested).bold()
-                                    .foregroundColor(.white)
-                            }
-                            if(requestStatus == 0){
+                            else if (message.isReviewRequest) {
                                 Button(action: {
-                                    cancelRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.fromId, renterId: message.toId)
-                                    requestStatus = 3
+                                    showPopUp.toggle()
                                 })
                                 {
-                                    Text("Cancel Request")
+                                    Text("Leave Review")
                                 }
-                                .buttonStyle(secondaryButtonStyle())
+                                .buttonStyle(secondaryButtonStyle(width: screenSize.width * 0.5))
                             }
-                            else if(requestStatus == 1){
-                                Text("Accepted").foregroundColor(.white)
-                            }else if(requestStatus == 2){
-                                Text("Declined").foregroundColor(.white)
-                            }else if(requestStatus == 3){
-                                Text("Cancelled").foregroundColor(.white)
+                            else {
+                                Text(message.text.replacingOccurrences(of: "\n", with: ""))
+                                    .foregroundColor(.white)
                             }
                         }
-                        else {
-                            Text(message.text.replacingOccurrences(of: "\n", with: ""))
-                                .foregroundColor(.white)
-                        }
+                        .padding()
+                        .background(Color.primaryDark)
+                        .cornerRadius(8)
                     }
-                    .padding()
-                    .background(Color.primaryDark)
-                    .cornerRadius(8)
-                }
-            } else {
-                HStack {
-                    VStack(alignment: .leading) {
-                        if (message.isRequest) {
-                            Text("New Request!").italic()
-                                .foregroundColor(.white)
-                            HStack {
-                                Text("Item: ")
+                } else {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            if (message.isRequest) {
+                                Text("New Request!").italic()
                                     .foregroundColor(.white)
-                                Text(message.listingTitle).bold()
-                                    .foregroundColor(.white)
-                            }
-                            HStack {
-                                Text("Dates: ")
-                                    .foregroundColor(.white)
-                                Text(message.datesRequested).bold()
-                                    .foregroundColor(.white)
-                            }
-                                if(requestStatus == 0){
+                                HStack {
+                                    Text("Item: ")
+                                        .foregroundColor(.white)
+                                    Text(message.listingTitle).bold()
+                                        .foregroundColor(.white)
+                                }
+                                HStack {
+                                    Text("Dates: ")
+                                        .foregroundColor(.white)
+                                    Text(message.datesRequested).bold()
+                                        .foregroundColor(.white)
+                                }
+                                if (requestStatus == RequestStatus.requested.rawValue){
                                     Button(action: {
                                         acceptRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.toId, renterId: message.fromId)
-                                        requestStatus = 1
+                                        requestStatus = RequestStatus.accepted.rawValue
                                     })
                                     {
                                         Text("Accept Request")
@@ -91,40 +108,51 @@ struct MessageView: View {
                                     
                                     Button(action: {
                                         denyRentalRequest(listing_id: message.listingId, rental_request_id: message.requestId, userId: message.toId, renterId: message.fromId)
-                                        requestStatus = 2
+                                        requestStatus = RequestStatus.declined.rawValue
                                     })
                                     {
                                         Text("Deny Request")
                                     }
                                     .buttonStyle(secondaryButtonStyle())
-                                }else if(requestStatus == 1){
+                                
+                                }else if(requestStatus == RequestStatus.accepted.rawValue){
                                     Text("Accepted").foregroundColor(.white)
-                                }else if(requestStatus == 2){
+                                }else if(requestStatus == RequestStatus.declined.rawValue){
                                     Text("Declined").foregroundColor(.white)
-                                }else if(requestStatus == 2){
+                                }else if(requestStatus == RequestStatus.cancelled.rawValue){
                                     Text("Cancelled").foregroundColor(.white)
                                 }
-
-                        } else {
-                            Text(message.text.replacingOccurrences(of: "\n", with: ""))
-                                .foregroundColor(.black)
+                                
+                            }
+                            else if (message.isReviewRequest) {
+                                Button(action: {
+                                    showPopUp.toggle()
+                                })
+                                {
+                                    Text("Leave Review")
+                                }
+                                .buttonStyle(secondaryButtonStyle(width: screenSize.width * 0.5))
+                            }
+                            else {
+                                Text(message.text.replacingOccurrences(of: "\n", with: ""))
+                                    .foregroundColor(.black)
+                            }
                         }
+                        .padding()
+                        .background(Color.darkGrey)
+                        .cornerRadius(8)
+                        Spacer()
                     }
-                    .padding()
-                    .background(Color.darkGrey)
-                    .cornerRadius(8)
-                    Spacer()
                 }
             }
-        }
-        .padding(.horizontal)
-        .padding(.top, 8)
-        .onAppear(){
-            if (message.isRequest){
-                getStatus(requestId: message.requestId, listingId: message.listingId, completion: {status in
-                    requestStatus = status
-                })
+            .padding(.horizontal)
+            .padding(.top, 8)
+            .onAppear(){
+                if (message.isRequest){
+                    getStatus(requestId: message.requestId, listingId: message.listingId, completion: {status in
+                        requestStatus = status
+                    })
+                }
             }
-        }
     }
 }
