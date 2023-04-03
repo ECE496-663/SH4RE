@@ -29,6 +29,7 @@ struct ViewListingView: View {
     @State private var showPopUp = false
     @State private var showDeleteConfirmation = false
     @State private var showDeleted = false
+    @State private var showVerifyEmailPopUp = false
     
     @State var numberOfStars: Float = 0
     @State var allReviews = [Review]()
@@ -76,7 +77,11 @@ struct ViewListingView: View {
             
             if (listing.uid != getCurrentUserUid()) {
                 Button(action: {
-                    showPopUp.toggle()
+                    if (currentUser.isEmailVerified()) {
+                        showPopUp.toggle()
+                    } else {
+                        showVerifyEmailPopUp.toggle()
+                    }
                 }, label: {
                     HStack {
                         Text("Message")
@@ -221,7 +226,9 @@ struct ViewListingView: View {
             bottomBar
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             
+            
             sendMessagePopUp
+            verifyEmailPopUp
             showDeleteConfirmationPopUp
             showDeletedPopUp
         }
@@ -276,6 +283,30 @@ struct ViewListingView: View {
         .sheet(isPresented: $showCal, onDismiss: didDismiss) {
             RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
         }        
+    }
+    
+    private var verifyEmailPopUp: some View {
+        PopUp(show: $showVerifyEmailPopUp) {
+            VStack {
+                Text("You must verify your email before messaging users.")
+                    .bold()
+                    .padding(.bottom)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
+                
+                Button(action: {
+                    showVerifyEmailPopUp.toggle()
+                })
+                {
+                    Text("OK")
+                }
+                .buttonStyle(primaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 130)
+            .background(.white)
+            .cornerRadius(30)
+        }
     }
     
     private var sendMessagePopUp: some View {
