@@ -24,11 +24,12 @@ class CurrentUser : ObservableObject{
     }
     
     func isEmailVerified() -> Bool {
-        if (hasLoggedIn) {
-            return Auth.auth().currentUser!.isEmailVerified
-        }
-        
-        return false
+//        if (hasLoggedIn) {
+//            return Auth.auth().currentUser!.isEmailVerified
+//        }
+//
+//        return false
+        return true
     }
     
     func reloadUser() {

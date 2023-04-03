@@ -93,3 +93,34 @@ func getUserName(uid:String, completion: @escaping(String) -> Void){
         }
     }
 }
+
+func getProfilePic(uid:String, completion: @escaping(UIImage)->Void){
+    Firestore.firestore().collection("User Info").document(uid).getDocument() { (document, error) in
+        guard let document = document else{
+            return
+        }
+        let data = document.data()!
+        let imagePath = data["pfp_path"] as? String ?? ""
+        
+        if(imagePath != ""){
+            let storageRef = Storage.storage().reference(withPath: imagePath)
+            storageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+                
+                if let error = error {
+                    //Error:
+                    print (error)
+                    
+                } else {
+                    guard let image = UIImage(data: data!) else{
+                        return
+                    }
+                    
+                    completion(image)
+                    
+                }
+            }
+        }else{
+            completion(UIImage(named: "ProfilePhotoPlaceholder")!)
+        }
+    }
+}
