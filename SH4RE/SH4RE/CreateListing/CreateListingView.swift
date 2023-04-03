@@ -214,20 +214,23 @@ struct CreateListingView: View {
     }
     private var availabilityView: some View {
         Group {
-            Text("Availability")
-                .font(.title2)
-                .frame(maxWidth: screenSize.width * 0.9, alignment: .leading)
-                .padding(.bottom)
-            
-            // availability
-            DropdownMenu(label: "Availability for the Next 3 Months", options: availabilityList, selection: $availabilitySelection)
-                .frame(maxWidth: screenSize.width * 0.9)
-                .onChange(of: availabilitySelection) { value in
-                    availabilityCalendar.selectedDates = []
-                }
-            
+            if(!isEditing){
+                Text("Availability")
+                    .font(.title2)
+                    .frame(maxWidth: screenSize.width * 0.9, alignment: .leading)
+                    .padding(.bottom)
+                
+                // availability
+                DropdownMenu(label: "Availability for the Next 3 Months", options: availabilityList, selection: $availabilitySelection)
+                    .frame(maxWidth: screenSize.width * 0.9)
+                    .onChange(of: availabilitySelection) { value in
+                        availabilityCalendar.selectedDates = []
+                    }
+            }
             HStack {
-                Text("or set")
+                if(!isEditing){
+                    Text("or set")
+                }
                 Button(action: {
                     showCal = true
                     availabilitySelection = ""
@@ -278,7 +281,7 @@ struct CreateListingView: View {
             }
         }
         getUserName(uid: getCurrentUserUid(), completion: { name in
-            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name, "timestamp": Timestamp(date:Date())] as [String : Any]
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name, "timestamp": Timestamp(date:Date()), "postal": postalCode] as [String : Any]
             let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
             
             
@@ -304,54 +307,47 @@ struct CreateListingView: View {
         })
     }
     func update() {
-        var calAvail = [Any]()
-        if (!availabilityCalendar.selectedDates.isEmpty) {
-            for date in availabilityCalendar.selectedDates {
-                calAvail.append(date)
+        editListing.availability = []
+        for date in availabilityCalendar.selectedDates {
+            editListing.availability.append(date)
+        }
+        
+        getUserName(uid: getCurrentUserUid(), completion: { name in
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": editListing.availability, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name,"timestamp": Timestamp(date:Date()), "postal": postalCode] as [String : Any]
+            if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: listingFields)) {
+                NSLog("error");
             }
-        }
-        else {
-            let calendar = Calendar.current
-            let components = calendar.dateComponents([.year, .month, .day], from: Date())
-            let startOfMonth = calendar.date(from:components)!
-            let numberOfDays = calendar.range(of: .day, in: .quarter, for: startOfMonth)!.upperBound
-            let allDays = Array(0..<numberOfDays).map{ calendar.date(byAdding:.day, value: $0, to: startOfMonth)!}
-            if (availabilitySelection == "Everyday") {
-                calAvail = []
+            // upload images and add paths to data fields
+            var index = 1
+            var imgPath = ""
+            var arrayImgs:[String] = []
+            for pic in pictures {
+                imgPath = "listingimages/" + editListing.id + "/" + String(index) + ".jpg"
+                arrayImgs.append(imgPath)
+                storageManager.upload(image: pic, path: imgPath)
+                index += 1
             }
-            else if (availabilitySelection == "Weekdays") {
-                calAvail = allDays.filter{ calendar.isDateInWeekend($0) }
+            if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: ["image_path" : arrayImgs])) {
+                NSLog("error");
             }
-            else if (availabilitySelection == "Weekends") {
-                calAvail = allDays.filter{ !calendar.isDateInWeekend($0) }
-            }
-        }
-        let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "Address": ["postalCode": postalCode, "latitude": lat, "longitude": lon], "UID": getCurrentUserUid()] as [String : Any]
-        if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: listingFields)) {
-            NSLog("error");
-        }
-        // upload images and add paths to data fields
-        var index = 1
-        var imgPath = ""
-        var arrayImgs:[String] = []
-        for pic in pictures {
-            imgPath = "listingimages/" + editListing.id + "/" + String(index) + ".jpg"
-            arrayImgs.append(imgPath)
-            storageManager.upload(image: pic, path: imgPath)
-            index += 1
-        }
-        if (documentUpdate(collectionPath: "Listings", documentID: editListing.id, data: ["image_path" : arrayImgs])) {
-            NSLog("error");
-        }
+        })
         showPostAlertX = true
     }
     
     func validatePost () -> Bool {
-        if (title.isEmpty || costText.isEmpty || postalCode.isEmpty ||
-            pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
-            (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
-            errorInField = true
-            return false
+        if(!isEditing){
+            if (title.isEmpty || costText.isEmpty || postalCode.isEmpty ||
+                pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
+                (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
+                errorInField = true
+                return false
+            }
+        }else{
+            if (title.isEmpty || costText.isEmpty || postalCode.isEmpty ||
+                pictures.isEmpty || categorySelection.isEmpty || description.isEmpty || !isPostalCodeValid) {
+                errorInField = true
+                return false
+            }
         }
         return true
     }
@@ -362,8 +358,36 @@ struct CreateListingView: View {
             title = editListing.title
             description = editListing.description
             cost = editListing.price
-            postalCode = editListing.address["postalCode"] as? String ?? "ERROR"
+            costText = String(format:"%.2f", editListing.price)
+            postalCode = editListing.postalCode
+
             availabilityCalendar.selectedDates = editListing.availability
+            Firestore.firestore().collection("Listings").document(editListing.id).collection("Requests").getDocuments() {(snapshot, error) in
+                snapshot?.documents.forEach({ (document) in
+                    let data = document.data()
+                    let start = data["start"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSince1970: 0))
+                    let end = data["end"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSince1970: 0))
+                    let status = data["status"] as? String ?? ""
+                    
+                    if(status == "accepted" || status == "pending"){
+                        var booking:[Date] = []
+                        if(end.dateValue() != Date(timeIntervalSince1970: 0)){
+                            var date = start.dateValue()
+                            let fmt = DateFormatter()
+                            fmt.dateFormat = "dd/MM/yyyy"
+                            while date <= end.dateValue() {
+                                fmt.string(from: date)
+                                booking.append(date)
+                                date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
+                            }
+                        }else{
+                            booking.append(start.dateValue())
+                        }
+                        availabilityCalendar.disabledDates.append(contentsOf: booking)
+                    }
+                })
+            }
+            
             imagesCount = editListing.imagepath.count
             categorySelection = editListing.category
             imagesCount = (imagesCount <  5) ? imagesCount + 1 : imagesCount
@@ -383,8 +407,9 @@ struct CreateListingView: View {
     }
     
     func validateUpdate () -> Bool {
+        print(availabilitySelection)
         if (title == editListing.title && description == editListing.description
-            && cost == editListing.price && postalCode == editListing.address["postalCode"] as! String
+            && cost == editListing.price && postalCode == editListing.postalCode
             && availabilityCalendar.selectedDates == editListing.availability
             && picturesUnchanged && categorySelection == editListing.category) {
             return false
@@ -473,7 +498,7 @@ struct CreateListingView: View {
                 .sheet(isPresented: $showCal) {
                     RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
                 }
-                .onChange(of: [title, description, costText, postalCode, categorySelection], perform: { newVal in
+                .onChange(of: [title, description, costText, postalCode, categorySelection, availabilitySelection], perform: { newVal in
                     if (!isEditing) { return }
                     shouldDisableUpdateButton = !validateUpdate()
                 })
