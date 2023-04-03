@@ -217,12 +217,14 @@ struct ViewListingView: View {
                     Spacer().frame(height: 100)
                 }
             }
+
+            bottomBar
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             
             sendMessagePopUp
             showDeleteConfirmationPopUp
             showDeletedPopUp
         }
-        .overlay(bottomBar, alignment: .bottom)
         .onAppear() {
             if (listing.uid == getCurrentUserUid()) {
                 fetchSingleListing(lid: listing.id, completion: { result in
@@ -273,7 +275,7 @@ struct ViewListingView: View {
         }
         .sheet(isPresented: $showCal, onDismiss: didDismiss) {
             RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
-        }
+        }        
     }
     
     private var sendMessagePopUp: some View {
@@ -401,10 +403,10 @@ struct ViewListingView: View {
 }
 
 struct ViewListingView_Previews: PreviewProvider {
-    static var previewListing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : [
-        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: 20, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
+    static var previewListing = Listing(id :"ZIRtdco4Qo6elzHP8AMH", uid: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", title:"Test Listing", description: "Test Description", imagepath : [
+        "listingimages/LZG4crHPdpC44A7wVGq7/1.jpg"], price: 20.0, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37], ownerName: "Bob")
     
-    static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "123", uid: "123", name: "Random"))
+    static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", uid: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", name: "Random"))
     
     static var previews: some View {
         ViewListingView(tabSelection: .constant(2), listing: previewListing, chatLogViewModel: previewChatLogModel)
