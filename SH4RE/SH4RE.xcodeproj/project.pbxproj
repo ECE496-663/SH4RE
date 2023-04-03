@@ -387,9 +387,9 @@
 				391AF85029C7B8A400FB1053 /* MyListingsView.swift */,
 				391AF85229C7C16500FB1053 /* EditAccountView.swift */,
 				391AF85429C7C1AA00FB1053 /* ReviewsView.swift */,
-				391AF85629C7C1D500FB1053 /* FavouritesView.swift */,
 				39ABA1BA29CB571500838275 /* ProfileView.swift */,
 				1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */,
+				391AF85629C7C1D500FB1053 /* FavouritesView.swift */,
 			);
 			path = Account;
 			sourceTree = "<group>";

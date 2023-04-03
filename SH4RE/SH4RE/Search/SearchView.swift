@@ -6,6 +6,7 @@
 //
 import SwiftUI
 import FirebaseStorage
+import Firebase
 import Combine
 
 extension View {
@@ -43,6 +44,8 @@ struct SearchView: View {
     
     @State var startDate = Date(timeIntervalSinceReferenceDate: 0)
     @State var endDate = Date(timeIntervalSinceReferenceDate: 0)
+    
+    @State var chatLogViewModelDict : [String:ChatLogViewModel] = [:]
 
     // Manages the three most recent searches made by the user
     func addRecentSearch(searchQuery: String){
@@ -85,7 +88,7 @@ struct SearchView: View {
                                 // If theres no image for a listing, just use the placeholder
                                 let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                                 NavigationLink(destination: {
-                                    ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.ownerName))).environmentObject(currentUser)
+                                    ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: chatLogViewModelDict[listing.id] ?? ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.ownerName)) ).environmentObject(currentUser)
                                 }, label: {
                                     ProductCard(favouritesModel: favouritesModel, listing: listing, image: productImage)
                                 })
@@ -134,19 +137,40 @@ struct SearchView: View {
     }
     
     func doSearch(){
-        
-//Testing for before front end date filter was added get rid of once added
-//        let string = "03/28/2023"
-//        let string1 = "03/30/2023"
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "MM/dd/yyyy"
-//        startDate = dateFormatter.date(from: string)!
-//        endDate = dateFormatter.date(from: string1)!
         listingsView.listings = [Listing]()
         listingsView.searchListings(completedSearch: searchModel.getCompletedSearch()) { success in
             listingsView.fetchProductMainImage( completion: { success in
                 if !success {
                     print("Failed to load images")
+                }
+                for listing in self.listingsView.listings{
+                    Firestore.firestore().collection("User Info").document(listing.uid).getDocument() { (document, error) in
+                        guard let document = document else{
+                            return
+                        }
+                        self.chatLogViewModelDict[listing.id] = ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.ownerName))
+                        let data = document.data()!
+                        let imagePath = data["pfp_path"] as? String ?? ""
+                        
+                        if(imagePath != ""){
+                            let storageRef = Storage.storage().reference(withPath: imagePath)
+                            storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                                
+                                if let error = error {
+                                    //Error:
+                                    print (error)
+                                    
+                                } else {
+                                    guard let image = UIImage(data: data!) else{
+                                        return
+                                    }
+                                    
+                                    self.chatLogViewModelDict[listing.id]?.profilePic = image
+                                    
+                                }
+                            }
+                        }
+                    }
                 }
             })
         }
