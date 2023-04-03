@@ -27,17 +27,12 @@ struct SearchView: View {
     
     @State var showFilterButton = true
     @State var scrollOffset: CGFloat = 0.00
-    
+
     //Used to focus on the keyboard when the search icon is clicked
     @FocusState var isFocusOn: Bool
     
-    //Possibly move these to a FilterModel or just SearchModel, and add a function that is like FilterModel.reset()
-    @State var dropDownSelection: String = ""
-    @State var location: String = ""
-    @State var minPrice: String = ""
-    @State var maxPrice: String = ""
-    @State var maxDistance: String = ""
-    @State var minRating = 0.0
+    @State var startDate = Date(timeIntervalSinceReferenceDate: 0)
+    @State var endDate = Date(timeIntervalSinceReferenceDate: 0)
 
     // Manages the three most recent searches made by the user
     func addRecentSearch(searchQuery: String){
@@ -68,9 +63,8 @@ struct SearchView: View {
             )
             .focused($isFocusOn)
             .onSubmit {
-                guard searchModel.searchQuery.isEmpty == false else{ return }
                 addRecentSearch(searchQuery: searchModel.searchQuery)
-                //doSearch()
+                doSearch()
             }
     }
     
@@ -88,7 +82,7 @@ struct SearchView: View {
                                 // If theres no image for a listing, just use the placeholder
                                 let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                                 NavigationLink(destination: {
-                                    ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.title))).environmentObject(currentUser)
+                                    ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.ownerName))).environmentObject(currentUser)
                                 }, label: {
                                     ProductCard(favouritesModel: favouritesModel, listing: listing, image: productImage)
                                 })
@@ -125,23 +119,31 @@ struct SearchView: View {
             }
         }
         .onAppear(){
-            if (searchModel.searchReady) {
-                searchModel.searchReady = false;
-                //resetFilter()
+            if (searchModel.searchReady == true) {
                 //If search was completed from the homescreen, then when the user clicks enter, searchReady will be set to true, and the tabs will be changed to the search tab. Here, we must call the search function
-                //I think that if someone does a search from the home screen, we can be pretty sure they dont want to keep the same filters they had before. So likely a resetFilter() funciton would be useful but depends how search works.
+                searchModel.searchReady = false
+                //If someone does a search from the home screen, we can be pretty sure they dont want to keep the same filters they had before. Also we can search the category by title, so no reason to set the filter
+                searchModel.resetFilters()
+                doSearch()
                 addRecentSearch(searchQuery: searchModel.searchQuery)
-                //doSearch(searchQuery)
             }
-            self.listingsView.fetchListings(completion: { success in
-                if success{
-                    self.listingsView.fetchProductMainImage( completion: { success in
-                        if !success {
-                            print("Failed to load images")
-                        }
-                    })
-                } else {
-                    print("Failed to query database")
+        }
+    }
+    
+    func doSearch(){
+        
+//Testing for before front end date filter was added get rid of once added
+//        let string = "03/28/2023"
+//        let string1 = "03/30/2023"
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "MM/dd/yyyy"
+//        startDate = dateFormatter.date(from: string)!
+//        endDate = dateFormatter.date(from: string1)!
+        listingsView.listings = [Listing]()
+        listingsView.searchListings(completedSearch: searchModel.getCompletedSearch()) { success in
+            listingsView.fetchProductMainImage( completion: { success in
+                if !success {
+                    print("Failed to load images")
                 }
             })
         }
@@ -158,7 +160,7 @@ struct SearchView: View {
             .buttonStyle(primaryButtonStyle(width: 120, tall: true))
             .padding(.bottom, 30)
             .sheet(isPresented: $showingFilterSheet) {
-                FilterSheetView(dropDownSelection: $dropDownSelection, location: $location, minPrice: $minPrice, maxPrice:$maxPrice, maxDistance: $maxDistance, minRating:$minRating, showingFilterSheet: $showingFilterSheet)
+                FilterSheetView(searchModel: searchModel, showingFilterSheet: $showingFilterSheet, doSearch: doSearch)
                     .presentationDetents([.medium, .large])
             }
         }

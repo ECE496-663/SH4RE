@@ -53,8 +53,8 @@ class ChatLogViewModel: ObservableObject {
                         let datesRequested = data["datesRequested"] as? String ?? ""
                         let listingId = data["listingId"] as? String ?? ""
                         let requestId = data["requestId"] as? String ?? ""
-
-                        let cm = ChatMessage(id: change.document.documentID, fromId: fromId, toId: toId, text: text, timestamp: date, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId:requestId)
+                        let isReviewRequest = data["isReviewRequest"] as? Bool ?? false
+                        let cm = ChatMessage(id: change.document.documentID, fromId: fromId, toId: toId, text: text, timestamp: date, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId:requestId, isReviewRequest: isReviewRequest)
                         //print(cm)
                         self.chatMessages.append(cm)
                     }
@@ -76,7 +76,7 @@ class ChatLogViewModel: ObservableObject {
             .collection(toId)
             .document()
 
-        let msg = ChatMessage(id: nil, fromId: fromId, toId: toId, text: chatText, timestamp: Date(), isRequest: false, listingTitle: "", datesRequested: "", listingId: "", requestId:"")
+        let msg = ChatMessage(id: nil, fromId: fromId, toId: toId, text: chatText, timestamp: Date(), isRequest: false, listingTitle: "", datesRequested: "", listingId: "", requestId:"", isReviewRequest: false)
 
         try? document.setData(from: msg) { error in
             if let error = error {

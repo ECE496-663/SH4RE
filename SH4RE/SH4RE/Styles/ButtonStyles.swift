@@ -15,10 +15,12 @@ import SwiftUI
 struct primaryButtonStyle: ButtonStyle{
     private var width: CGFloat = screenSize.width * 0.8
     private var height: CGFloat
+    private var isDisabled: Bool
 
-    init(width: CGFloat = screenSize.width * 0.8, tall: Bool = false) {
+    init(width: CGFloat = screenSize.width * 0.8, tall: Bool = false, isDisabled: Bool = false) {
         self.width = width
         self.height = tall ? 60 : 40
+        self.isDisabled = isDisabled
     }
     
     func makeBody(configuration: Self.Configuration) -> some View {
@@ -28,6 +30,7 @@ struct primaryButtonStyle: ButtonStyle{
             .foregroundColor(.white)
             .background(Color.primaryDark)
             .cornerRadius(40)
+            .opacity(isDisabled ? 0.5 : 1)
     }
 }
 
@@ -39,10 +42,12 @@ struct primaryButtonStyle: ButtonStyle{
 struct secondaryButtonStyle: ButtonStyle{
     private var width: CGFloat = screenSize.width * 0.8
     private var height: CGFloat
+    private var isDisabled: Bool
 
-    init(width: CGFloat = screenSize.width * 0.8, tall: Bool = false) {
+    init(width: CGFloat = screenSize.width * 0.8, tall: Bool = false, isDisabled: Bool = false) {
         self.width = width
         self.height = tall ? 60 : 40
+        self.isDisabled = isDisabled
     }
     
     func makeBody(configuration: Self.Configuration) -> some View {
@@ -56,6 +61,7 @@ struct secondaryButtonStyle: ButtonStyle{
                 RoundedRectangle(cornerRadius: 40)
                     .stroke(Color.primaryDark, lineWidth: 2)
             )
+            .opacity(isDisabled ? 0.5 : 1)
     }
 }
 
@@ -69,11 +75,24 @@ struct ButtonStyles_Previews: PreviewProvider {
                 Text("primaryButtonStyle")
             })
             .buttonStyle(primaryButtonStyle())
+            
+            Button(action: {}, label:
+            {
+                Text("primaryButtonStyle DISABLED")
+            })
+            .buttonStyle(primaryButtonStyle(isDisabled: true))
+            
             Button(action: {}, label:
             {
                 Text("secondaryButtonStyle")
             })
             .buttonStyle(secondaryButtonStyle())
+            
+            Button(action: {}, label:
+            {
+                Text("secondaryButtonStyle DISABLED")
+            })
+            .buttonStyle(secondaryButtonStyle(isDisabled: true))
         }
     }
 }

@@ -51,7 +51,7 @@ struct ProductCard: View {
                     Text(listing.title)
                         .bold()
                     // Todo: Figure out how were doing pricing
-                    Text("$\(listing.price) / Day")
+                    Text("$\(String(format: "%.2f", listing.price)) / Day")
                         .font(.caption)
                 }
                 .padding()
@@ -80,7 +80,7 @@ struct ProductCard: View {
 
 struct ProductCard_Previews: PreviewProvider {
     static var previews: some View {
-        let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00", address: ["latitude": 43.66, "longitude": -79.37])
+        let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: 10, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
         ProductCard(favouritesModel: FavouritesModel(), listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
     }
 }

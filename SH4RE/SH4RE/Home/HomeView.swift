@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 //Remove once real listing is here
-let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: "20.00", address: ["latitude": 43.66, "longitude": -79.37])
+let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: 10, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
 
 //This probably shouldnt go here but it will for now, allows for safe and easy bounds checking
 extension Collection {
@@ -42,7 +42,6 @@ struct HomeView: View {
             )
             .focused($isFocusOn)
             .onSubmit {
-                guard searchModel.searchQuery.isEmpty == false else{ return }
                 searchModel.searchReady = true
                 tabSelection = 2
             }
@@ -155,9 +154,8 @@ struct CategoryCardView: View {
         }
         .onTapGesture {
             searchModel.searchQuery = ""
-            //Not sure how filtersheet is going to interact with search yet, so this is temp
-            //                                            searchModel.category = category.name
             searchModel.searchQuery = category.name
+            // Not going to set the category filter because I think in this case, the user wants to browse the category, searching within the category is another story.
             searchModel.searchReady = true
             tabSelection = 2
         }
@@ -166,6 +164,6 @@ struct CategoryCardView: View {
 
 struct Previews_HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(tabSelection: .constant(1), searchModel: SearchModel(), favouritesModel:FavouritesModel())
+        HomeView(tabSelection: .constant(1), searchModel: SearchModel(), favouritesModel: FavouritesModel())
     }
 }
