@@ -38,6 +38,7 @@ struct ContentView: View {
             if (currentUser.hasLoggedIn) {
                 TabView(selection: $tabSelection) {
                     HomeView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: FavouritesModel())
+                        .environmentObject(currentUser)
                         .tabItem {
                             Label("Home", systemImage: "house.fill")
                         }

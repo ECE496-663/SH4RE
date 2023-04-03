@@ -185,7 +185,7 @@ struct MessagesChat: View {
                     }
                     
                     guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
-                    
+                 
                     getUserName(uid: fromId, completion: { name in
                         
                         Firestore.firestore().collection("Listings").document(listingId).getDocument { (document, error) in
