@@ -102,7 +102,6 @@ class ListingViewModel : ObservableObject{
         let settings = Settings()
             .set(\.searchableAttributes, to: ["Title", "Description", "Category"])
             .set(\.attributesForFaceting, to: ["Category"])
-            
         
         index.setSettings(settings) { result in
             switch result {
@@ -157,11 +156,6 @@ class ListingViewModel : ObservableObject{
                       if hits.count != 0{
                           for hit in hits{
                               getListingRating(uid: hit.UID, lid:hit.objectID, completion: { rating in
-                                  
-                                  
-                                  
-                                  
-                                  
                                   if(rating >= Float(minRating)){
                                       var available = true
                                       if(startDate != Date(timeIntervalSinceReferenceDate: 0)){
