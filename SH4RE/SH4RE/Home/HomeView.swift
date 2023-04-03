@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 //Remove once real listing is here
-let test_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"Test Listing", description: "Test Description", imagepath : ["path"], price: 10, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
+let empty_listing = Listing(id :"MNizNurWGrjm1sXNpl15", uid: "Cfr9BHVDUNSAL4xcm1mdOxjAuaG2", title:"", description: "Test Description", imagepath : ["path"], price: 10, category: "Camera", address: ["latitude": 43.66, "longitude": -79.37])
 
 //This probably shouldnt go here but it will for now, allows for safe and easy bounds checking
 extension Collection {
@@ -21,10 +21,36 @@ extension Collection {
 
 struct HomeView: View {
     @Binding var tabSelection: Int
+    @EnvironmentObject var currentUser : CurrentUser
     @ObservedObject var searchModel: SearchModel
     @ObservedObject var favouritesModel: FavouritesModel
-    let categories = getCategoriesAndImg()
 
+    //Used to focus on the keyboard when the search icon is clicked
+    @FocusState var isFocusOn: Bool
+    let categories = getCategoriesAndImg()
+    @State private var recentListings = [Listing]()
+    @State private var recentListing1Image: UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
+    @State private var recentListing2Image: UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
+
+    fileprivate func homeSearchBar() -> some View {
+        return TextField("What are you looking for?", text: $searchModel.searchQuery)
+            .textFieldStyle(
+                iconInputStyle(
+                    button: Button(action:{
+                        isFocusOn = true
+                    }, label:{
+                        Image(systemName: "magnifyingglass")
+                    }),
+                    colour: .gray
+                )
+            )
+            .focused($isFocusOn)
+            .onSubmit {
+                searchModel.searchReady = true
+                tabSelection = 2
+            }
+    }
+    
     var body: some View {
         NavigationStack{
             ZStack(alignment: .top){
@@ -32,12 +58,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Search")
                         .font(.title.bold())
-                    TextField("What are you looking for?", text: $searchModel.searchQuery)
-                        .textFieldStyle(textInputStyle())
-                        .onSubmit {
-                            searchModel.searchReady = true
-                            tabSelection = 2
-                        }
+                    homeSearchBar()
                     ScrollView {
                         //Body
                         VStack(alignment: .leading){
@@ -74,9 +95,19 @@ struct HomeView: View {
                                 Text("Recent Posts")
                                     .font(.title2.bold())
                                 HStack(){
-                                    ProductCard(favouritesModel: favouritesModel, listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+                                    let listing1 = recentListings.count >= 1 ? recentListings[0] : empty_listing
+                                    let listing2 = recentListings.count >= 2 ? recentListings[1] : empty_listing
+                                    NavigationLink(destination: {
+                                        ViewListingView(tabSelection: $tabSelection, listing: listing1, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing1.uid,uid: listing1.uid, name: listing1.ownerName))).environmentObject(currentUser)
+                                    }, label: {
+                                        ProductCard(favouritesModel: favouritesModel, listing: listing1, image: recentListing1Image)
+                                    })
                                     Spacer()
-                                    ProductCard(favouritesModel: favouritesModel, listing: test_listing, image: UIImage(named: "ProfilePhotoPlaceholder")!)
+                                    NavigationLink(destination: {
+                                        ViewListingView(tabSelection: $tabSelection, listing: listing2, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing2.uid,uid: listing2.uid, name: listing2.ownerName))).environmentObject(currentUser)
+                                    }, label: {
+                                        ProductCard(favouritesModel: favouritesModel, listing: listing2, image: recentListing2Image)
+                                    })
                                 }
                             }
                             //Categories
@@ -95,6 +126,23 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
             }
+        }.onAppear(){
+            fetchRecentListings(completion: { listings in
+                recentListings = listings
+                guard let listing1 = listings.count >= 1 ? listings[0] : nil else{
+                    return
+                }
+                
+                fetchMainImage(listing: listing1, completion: { image1 in
+                    recentListing1Image = image1
+                })
+                guard let listing2 = listings.count >= 2 ? listings[1] : nil else{
+                    return
+                }
+                fetchMainImage(listing: listing2, completion: { image2 in
+                    recentListing2Image = image2
+                })
+            })
         }
     }
 }

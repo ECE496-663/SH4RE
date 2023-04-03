@@ -14,9 +14,20 @@ struct User : Identifiable{
 }
 
 
-func getCurrentUserUid() -> String{
-    let curUser = Auth.auth().currentUser!
-    return curUser.uid
+func getCurrentUserUid() -> String {
+    let curUser = Auth.auth().currentUser
+
+    if (curUser != nil) {
+        return curUser!.uid
+    }
+    
+    return ""
+}
+
+func sendForgotPasswordEmail(email: String) {
+    Auth.auth().sendPasswordReset(withEmail: email) { error in
+        print(error ?? "")
+    }
 }
 
 func getCurrentUser(completion: @escaping(User) -> Void){

@@ -98,6 +98,13 @@ struct FilterSheetView: View {
                 .font(.title)
                 .bold()
             Spacer()
+            Button("Clear", action: {
+                searchModel.resetFilters()
+                doSearch()
+                showingFilterSheet.toggle()
+            })
+            .foregroundColor(.primaryDark)
+            .padding(.horizontal)
             Button("Apply", action: {
                 if (!minMaxError(min: minPrice, max: maxPrice)){
                     setFilters()

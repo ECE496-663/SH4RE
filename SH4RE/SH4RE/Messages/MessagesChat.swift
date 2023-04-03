@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Firebase
+import FirebaseStorage
+
 
 struct MessagesChat: View {
     @Environment(\.presentationMode) var presentationMode
@@ -77,7 +79,9 @@ struct MessagesChat: View {
         .onAppear() {
             name = vm.chatUser?.name ?? ""
             uid = vm.chatUser?.uid ?? ""
+            profilePicture = vm.profilePic
         }
+
     }
     
     private var messagesView: some View {
@@ -181,7 +185,7 @@ struct MessagesChat: View {
                     }
                     
                     guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
-                    
+                 
                     getUserName(uid: fromId, completion: { name in
                         
                         Firestore.firestore().collection("Listings").document(listingId).getDocument { (document, error) in

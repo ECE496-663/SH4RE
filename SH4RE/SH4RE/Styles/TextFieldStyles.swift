@@ -39,7 +39,6 @@ struct textInputStyle: TextFieldStyle{
     }
 }
 
-/// This style expects a button with an image as the label to place at the beginning of the tet field
 struct locationInputStyle: TextFieldStyle{
     
     var button: LocationButton
@@ -51,6 +50,50 @@ struct locationInputStyle: TextFieldStyle{
                 .labelStyle(.iconOnly)
                 .foregroundColor(Color.primaryBase)
                 .tint(.white)
+            configuration
+                .textFieldStyle(PlainTextFieldStyle())
+            // Text alignment.
+                .multilineTextAlignment(.leading)
+            // Cursor color.
+                .accentColor(.primaryDark)
+            // Text color.
+                .foregroundColor(.black)
+                .padding(.leading, 5)
+        }
+        // TextField spacing.
+        .padding(.vertical, 16)
+        .padding(.leading, 16)
+        .padding(.trailing, 20)
+        // TextField border
+        .background(border)
+        .background(.white)
+        .cornerRadius(8)
+        
+    }
+    var border: some View {
+      RoundedRectangle(cornerRadius: 8)
+        .strokeBorder(
+            .gray,
+          lineWidth: 1
+        )
+    }
+}
+        
+/// This style expects a button with an image as the label to place at the beginning of the text field
+struct iconInputStyle: TextFieldStyle{
+    
+    var button: Button<Image>
+    var disableButton: Bool = false
+    var colour: Color = .accentColor
+    
+    var buttonColour: Color {
+        return disableButton ? .gray : colour
+    }
+
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        HStack {
+            button.disabled(disableButton)
+                .foregroundColor(buttonColour)
             configuration
                 .textFieldStyle(PlainTextFieldStyle())
             // Text alignment.

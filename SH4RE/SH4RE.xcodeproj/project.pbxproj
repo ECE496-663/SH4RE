@@ -71,6 +71,7 @@
 		9D95674D29381193003F6B74 /* Stars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D95674C29381193003F6B74 /* Stars.swift */; };
 		9DB46C59296E56BB005F0216 /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB46C58296E56BB005F0216 /* DatePicker.swift */; };
 		9DB46C5B296E5E31005F0216 /* PopUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB46C5A296E5E31005F0216 /* PopUp.swift */; };
+		9DD217FE29D91A2D002692B6 /* UnverifiedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD217FD29D91A2D002692B6 /* UnverifiedView.swift */; };
 		D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C03D29280D0600E83142 /* CreateListingView.swift */; };
 		D119C04229281DBA00E83142 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C04129281DBA00E83142 /* HomeView.swift */; };
 		D119C0482928313700E83142 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D119C0472928313700E83142 /* ImagePicker.swift */; };
@@ -181,6 +182,7 @@
 		9D95674C29381193003F6B74 /* Stars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stars.swift; sourceTree = "<group>"; };
 		9DB46C58296E56BB005F0216 /* DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
 		9DB46C5A296E5E31005F0216 /* PopUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUp.swift; sourceTree = "<group>"; };
+		9DD217FD29D91A2D002692B6 /* UnverifiedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnverifiedView.swift; sourceTree = "<group>"; };
 		D119C03D29280D0600E83142 /* CreateListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
 		D119C04129281DBA00E83142 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		D119C0472928313700E83142 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -391,9 +393,9 @@
 				391AF85029C7B8A400FB1053 /* MyListingsView.swift */,
 				391AF85229C7C16500FB1053 /* EditAccountView.swift */,
 				391AF85429C7C1AA00FB1053 /* ReviewsView.swift */,
-				391AF85629C7C1D500FB1053 /* FavouritesView.swift */,
 				39ABA1BA29CB571500838275 /* ProfileView.swift */,
 				1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */,
+				391AF85629C7C1D500FB1053 /* FavouritesView.swift */,
 			);
 			path = Account;
 			sourceTree = "<group>";
@@ -440,6 +442,7 @@
 				D120FAB929668A7000CCD7A5 /* LoginView.swift */,
 				D120FABB2967B4B000CCD7A5 /* CreateAccountView.swift */,
 				D120FABD2968AD6F00CCD7A5 /* GuestView.swift */,
+				9DD217FD29D91A2D002692B6 /* UnverifiedView.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -536,7 +539,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					1ECFE34229BFA4970036F19A = {
 						CreatedOnToolsVersion = 14.1;
@@ -625,6 +628,7 @@
 				9DB46C5B296E5E31005F0216 /* PopUp.swift in Sources */,
 				9D080583292FE62200094169 /* SearchView.swift in Sources */,
 				391AF85729C7C1D500FB1053 /* FavouritesView.swift in Sources */,
+				9DD217FE29D91A2D002692B6 /* UnverifiedView.swift in Sources */,
 				5939D38929132D8500866FA5 /* FirebaseDB.swift in Sources */,
 				9D05185F2998497400366A10 /* RKColorSettings.swift in Sources */,
 				9D250D1C29847597009AA895 /* MessagesChat.swift in Sources */,
@@ -661,8 +665,6 @@
 				D120FAB6296658A100CCD7A5 /* TutorialView.swift in Sources */,
 				9D250D20298475FA009AA895 /* ChatMessageModel.swift in Sources */,
 				D120FABA29668A7000CCD7A5 /* LoginView.swift in Sources */,
-				5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */,
-				D119C0482928313700E83142 /* ImagePicker.swift in Sources */,
 				9D0518632998497400366A10 /* RKWeekdayHeader.swift in Sources */,
 				9D05185E2998497400366A10 /* RKMonth.swift in Sources */,
 				39ABA1BD29CE817000838275 /* MapView.swift in Sources */,
@@ -798,6 +800,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -819,6 +822,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -857,6 +861,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -871,6 +876,7 @@
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -884,6 +890,7 @@
 				CODE_SIGN_ENTITLEMENTS = SH4RE/SH4RE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"SH4RE/Preview Content\"";
 				DEVELOPMENT_TEAM = R5ATHRRBR9;
 				ENABLE_PREVIEWS = YES;
@@ -908,10 +915,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ece496.SH4RE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -923,6 +932,7 @@
 				CODE_SIGN_ENTITLEMENTS = SH4RE/SH4RE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"SH4RE/Preview Content\"";
 				DEVELOPMENT_TEAM = R5ATHRRBR9;
 				ENABLE_PREVIEWS = YES;
@@ -947,10 +957,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ece496.SH4RE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -961,6 +973,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -968,10 +981,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ece496.SH4RETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SH4RE.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SH4RE";
 			};
 			name = Debug;
@@ -983,6 +998,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -990,10 +1006,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ece496.SH4RETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SH4RE.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SH4RE";
 			};
 			name = Release;
@@ -1004,6 +1022,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -1011,10 +1030,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ece496.SH4REUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_TARGET_NAME = SH4RE;
 			};
 			name = Debug;
@@ -1025,6 +1046,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
@@ -1032,10 +1054,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ece496.SH4REUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_TARGET_NAME = SH4RE;
 			};
 			name = Release;

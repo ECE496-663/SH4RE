@@ -6,11 +6,13 @@
 //
 
 import Firebase
+import SwiftUI
 
 class ChatLogViewModel: ObservableObject {
     
     @Published var chatText = ""
     @Published var errorMessage = ""
+    @Published var profilePic = UIImage()
     
     @Published var chatMessages = [ChatMessage]()
     

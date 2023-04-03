@@ -278,7 +278,7 @@ struct CreateListingView: View {
             }
         }
         getUserName(uid: getCurrentUserUid(), completion: { name in
-            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name] as [String : Any]
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name, "timestamp": Timestamp(date:Date())] as [String : Any]
             let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
             
             
@@ -345,7 +345,8 @@ struct CreateListingView: View {
         }
         showPostAlertX = true
     }
-    func validatePost () -> Bool{
+    
+    func validatePost () -> Bool {
         if (title.isEmpty || costText.isEmpty || postalCode.isEmpty ||
             pictures.isEmpty || categorySelection.isEmpty || description.isEmpty ||
             (availabilitySelection.isEmpty && availabilityCalendar.selectedDates.isEmpty) || !isPostalCodeValid) {
@@ -397,6 +398,9 @@ struct CreateListingView: View {
             
             if (currentUser.isGuest()) {
                 GuestView(tabSelection: $tabSelection).environmentObject(currentUser)
+            }
+            else if (!currentUser.isEmailVerified()) {
+                UnverifiedView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
             else {
                 ScrollViewReader { value in
