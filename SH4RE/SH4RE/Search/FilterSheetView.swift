@@ -121,20 +121,32 @@ struct FilterSheetView: View {
                     "Please enter a start date",
                     selection: $startDate,
                     //Range is from today until 3 months from today
-                    in:Date.now...Calendar.current.date(byAdding: .month, value: 3, to: Date())!,
+                    in: Date.now...Calendar.current.date(byAdding: .month, value: 3, to: Date())!,
                     displayedComponents: [.date]
                 )
                 .labelsHidden()
                 .onTapGesture {
-                    //If this isn't set, it will display the date as today is selected, but in the backend, it will still be the initalValue
-                    startDate = Date.now
+                    if (startDate == Date(timeIntervalSinceReferenceDate: 0)) {
+                        //If this isn't set, it will display the date as today is selected, but in the backend, it will still be the initalValue
+                        startDate = Date.now
+                    }
                 }
-                .onSubmit({
+                .onChange(of:startDate, perform: { value in
                     //Make sure end date gets updated to
                     if(startDate > endDate){
                         endDate = startDate
                     }
                 })
+                .overlay{
+                    if (startDate == Date(timeIntervalSinceReferenceDate: 0)) {
+                        Group {
+                            Rectangle()
+                                .cornerRadius(8)
+                                .foregroundColor(Color(red: 0.914, green: 0.914, blue: 0.918))
+                            Text("MM/DD/YY")
+                        }.allowsHitTesting(false)
+                    }
+                }
             Text("-")
                 .padding(.horizontal)
             SwiftUI.DatePicker(
@@ -145,6 +157,22 @@ struct FilterSheetView: View {
                     displayedComponents: [.date]
                 )
                 .labelsHidden()
+                .onChange(of:endDate, perform: { value in
+                    //Make sure end date gets updated to
+                    if(startDate == Date(timeIntervalSinceReferenceDate: 0)){
+                        startDate = Date.now
+                    }
+                })
+                .overlay{
+                    if (endDate == Date(timeIntervalSinceReferenceDate: 0)) {
+                        Group {
+                            Rectangle()
+                                .cornerRadius(8)
+                                .foregroundColor(Color(red: 0.914, green: 0.914, blue: 0.918))
+                            Text("MM/DD/YY")
+                        }.allowsHitTesting(false)
+                    }
+                }
             Spacer()
         }
         .padding()
