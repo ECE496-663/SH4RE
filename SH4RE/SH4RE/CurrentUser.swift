@@ -15,9 +15,7 @@ class CurrentUser : ObservableObject{
         self.hasLoggedIn = Bool(Auth.auth().currentUser != nil)
     }
     
-    func sendVerificationMail() {
-        print("Sending verification email")
-        
+    func sendVerificationEmail() {
         Auth.auth().currentUser?.sendEmailVerification { error in
             print(error ?? "")
         }
@@ -32,9 +30,8 @@ class CurrentUser : ObservableObject{
     }
     
     func reloadUser() {
-        print("Reloading user")
         Auth.auth().currentUser?.reload(completion: { (error) in
-            print(error)
+            print(error ?? "")
         })
     }
     
