@@ -72,7 +72,7 @@ class MainMessagesViewModel: ObservableObject {
                         let listingId = data["listingId"] as? String ?? ""
                         let requestId = data["requestId"] as? String ?? ""
                         let isReviewRequest = data["isReviewRequest"] as? Bool ?? false
-                        let rm = RecentMessage(id: docId, text: text, name:name, fromId: fromId, toId: toId, timestamp: timestamp, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId: requestId, isReviewRequest: isReviewRequest, profilePic: UIImage())
+                        let rm = RecentMessage(id: docId, text: text, name:name, fromId: fromId, toId: toId, timestamp: timestamp, isRequest: isRequest, listingTitle: listingTitle, datesRequested:datesRequested, listingId: listingId, requestId: requestId, profilePic: UIImage(),isReviewRequest: isReviewRequest)
                         self.recentMessages.insert(rm, at: 0)
                         
                                         
