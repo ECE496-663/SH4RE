@@ -38,6 +38,7 @@ struct ContentView: View {
             if (currentUser.hasLoggedIn) {
                 TabView(selection: $tabSelection) {
                     HomeView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: FavouritesModel())
+                        .environmentObject(currentUser)
                         .tabItem {
                             Label("Home", systemImage: "house.fill")
                         }
@@ -60,7 +61,7 @@ struct ContentView: View {
                             Label("Messages", systemImage: "message.fill")
                         }
                         .tag(4)
-                    AccountView(tabSelection: $tabSelection)
+                    AccountView(tabSelection: $tabSelection, searchModel: searchModel)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Account", systemImage: "person.crop.circle.fill")

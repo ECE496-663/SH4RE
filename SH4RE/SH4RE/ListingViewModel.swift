@@ -26,6 +26,7 @@ struct Listing : Identifiable{
     var address:Dictionary<String,Double> = [:]
     var ownerName:String = ""
     var sponsored:Int = 0
+    var timestamp: Date = Date(timeIntervalSinceReferenceDate: 0)
 }
 
 struct Hit: Codable, Equatable{
@@ -40,6 +41,7 @@ struct Hit: Codable, Equatable{
     var _geoloc = Dictionary<String, Double>()
     var ownerName:String = ""
     var sponsored:Int = 0
+    var timestamp: Date
 }
 
 class ListingViewModel : ObservableObject{
@@ -68,13 +70,14 @@ class ListingViewModel : ObservableObject{
                 let price = data["Price"] as? Float ?? 0
                 let sponsored = data["sponsored"] as? Int ?? 0
                 let timeAvailability = data["Availability"] as? [Timestamp] ?? []
+                let created = data["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
                 let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
                 var availability:[Date] = []
                 for timestamp in timeAvailability{
                     availability.append(timestamp.dateValue())
                 }
                 
-                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored)
+                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored, timestamp: created.dateValue())
                 
             }
             if QuerySnapshot!.isEmpty{
@@ -93,10 +96,11 @@ class ListingViewModel : ObservableObject{
         let minRating = completedSearch.minRating
         let postalCode = completedSearch.location
         let rad = completedSearch.maxDistance
-        let startDate: Date = completedSearch.startDate
-        let endDate: Date = completedSearch.endDate
-        
         var indexedListings = [Listing]()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        let startDate:Date = dateFormatter.date(from: dateFormatter.string(from: completedSearch.startDate))!
+        let endDate:Date = dateFormatter.date(from: dateFormatter.string(from: completedSearch.endDate))!
         let client = SearchClient(appID: "38ISXBU2JG", apiKey: "ae4db4f6b76b86da5b2b8b859a1c747e")
         let index = client.index(withName: "Search")
         let settings = Settings()
@@ -156,13 +160,13 @@ class ListingViewModel : ObservableObject{
                       if hits.count != 0{
                           for hit in hits{
                               getListingRating(uid: hit.UID, lid:hit.objectID, completion: { rating in
-                                  if(rating >= Float(minRating)){
+                                  if(rating >= Float(minRating) || Float(minRating) == 0){
                                       var available = true
                                       if(startDate != Date(timeIntervalSinceReferenceDate: 0)){
                                           if(hit.Availability.contains(startDate)){
                                               available = false
                                           }
-                                          if(endDate != Date(timeIntervalSinceReferenceDate: 0)){
+                                          if(endDate != startDate && endDate != Date(timeIntervalSinceReferenceDate: 0)){
                                               var date = startDate
                                               let fmt = DateFormatter()
                                               fmt.dateFormat = "dd/MM/yyyy"
@@ -177,7 +181,7 @@ class ListingViewModel : ObservableObject{
                                           }
                                       }
                                       if(available == true){
-                                          let listing = Listing(id: hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName, sponsored: hit.sponsored)
+                                          let listing = Listing(id: hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName, sponsored: hit.sponsored, timestamp: hit.timestamp)
                                           indexedListings.append(listing)
                                           if(indexedListings.count == hitsToAdd){
                                               self.sortSponsored(indexedListings: indexedListings)
@@ -220,6 +224,7 @@ class ListingViewModel : ObservableObject{
         sponsoredListings.append(contentsOf: nonSponsoredListings)
         self.listings = sponsoredListings
     }
+    
     public func fetchProductMainImage(completion: @escaping (Bool) -> Void) {
         
         //Clear Image Array:
@@ -275,6 +280,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
             let price = data["Price"] as? Float ?? 0
             let sponsored = data["sponsored"] as? Int ?? 0
             let timeAvailability = data["Availability"] as? [Timestamp] ?? []
+            let created = data["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
             let category = data["Category"] as? String ?? ""
             let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
             var availability:[Date] = []
@@ -282,7 +288,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
                 availability.append(timestamp.dateValue())
             }
             
-            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored)
+            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored, timestamp:created.dateValue())
             
             listings.append(listing)
             if listings.count == snapshot?.documents.count {
@@ -313,13 +319,74 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         let price = data["Price"] as? Float ?? 0
         let timeAvailability = data["Availability"] as? [Timestamp] ?? []
         var availability:[Date] = []
-        let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
-        let category = data["Category"] as? String ?? ""
+        let address = data!["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
+        let category = data!["Category"] as? String ?? ""
+        let created = data!["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
         }
-        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName)
+        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName, timestamp:created.dateValue())
         completion(listing)
+    }
+}
+
+func fetchMainImage(listing:Listing, completion: @escaping (UIImage) -> Void) {
+    
+    if(listing.imagepath != []){
+        let storageRef = Storage.storage().reference(withPath: listing.imagepath[0])
+        //Download in Memory with a Maximum Size of 1MB (1 * 1024 * 1024 Bytes):
+        storageRef.getData(maxSize: 1 * 1024 * 1024) {data, error in
+            
+            if let error = error {
+                //Error:
+                print (error)
+                
+            } else {
+                completion(UIImage(data: data!)!)
+            }
+        }
+    }else{
+        completion(UIImage(named: "ProfilePhotoPlaceholder")!)
+    }
+}
+
+func fetchRecentListings(completion: @escaping ([Listing]) -> Void){
+    var listings = [Listing]()
+    let client = SearchClient(appID: "38ISXBU2JG", apiKey: "ae4db4f6b76b86da5b2b8b859a1c747e")
+    let index = client.index(withName: "Search")
+    let settings = Settings()
+        .set(\.ranking, to: [.desc("timestamp")])
+
+   
+    index.setSettings(settings) { result in
+        switch result {
+        case .failure(let error):
+            print("Error when applying settings: \(error)")
+        case .success:
+            break
+        }
+    }
+    let query = Query("")
+    index.search(query: query) { result in
+        if case .success(let response) = result {
+            do{
+                let hitsData = try JSONEncoder().encode(response.hits.map(\.object))
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .millisecondsSince1970
+                let hits = try decoder.decode(Array<Hit>.self, from: hitsData)
+                if hits.count != 0{
+                    for hit in hits{
+                        let listing = Listing(id:hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName, timestamp:hit.timestamp)
+                        listings.append(listing)
+                        if listings.count == hits.count {
+                            completion(listings)
+                        }
+                    }
+                }
+            }catch let error {
+                print("Hits decoding error :\(error)")
+            }
+        }
     }
 }
 
@@ -419,7 +486,7 @@ func sendBookingRequest(uid: String, listing_id : String, title:String, start: D
                             .collection(uid)
                             .addDocument(data: msg)
                         
-                        
+                    
                         Firestore.firestore().collection("User Info").document(renterId).getDocument() { (document, err) in
                             
                             if let document = document, document.exists {
@@ -474,7 +541,6 @@ func sendBookingRequest(uid: String, listing_id : String, title:String, start: D
                                     .document(renterId)
                                     .collection(FirebaseConstants.messages)
                                     .document(uid)
-
                                 
                                 recipDoc.setData(recipientRecentMessageDictionary) { error in
                                     if let error = error {
@@ -585,10 +651,7 @@ func sendRentalStatusMessage(statusMessage: String, messagePreview: String, user
             print(error)
             return
         }
-    }
-    
-    //let userDocRef = Firestore.firestore().collection("User Info").document(renterId)
-    
+    }    
     
     let recentMsgDoc = FirebaseManager.shared.firestore
         .collection(FirebaseConstants.recentMessages)
@@ -608,7 +671,6 @@ func sendRentalStatusMessage(statusMessage: String, messagePreview: String, user
             "datesRequested": "",
             "listingId": "",
             "requestId": ""
-            
         ] as [String : Any]
         
         recentMsgDoc.setData(docData) { error in
@@ -631,8 +693,6 @@ func sendRentalStatusMessage(statusMessage: String, messagePreview: String, user
             "datesRequested": "",
             "listingId": "",
             "requestId": ""
-            
-            
         ] as [String : Any]
         
         let recipDoc = FirebaseManager.shared.firestore
@@ -647,10 +707,7 @@ func sendRentalStatusMessage(statusMessage: String, messagePreview: String, user
                 return
             }
         }
-    })
-
-    
-    
+    }) 
 }
 
 //returns status code 0:pending, 1:accepted, 2:declined, 3:cancelled, 4:error

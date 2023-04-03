@@ -20,7 +20,7 @@ struct ProductCard: View {
     @ObservedObject var favouritesModel: FavouritesModel
     var listing: Listing;
     var image:UIImage
-    @State var favourited: Bool
+    @State var favourited = false
     private let width:CGFloat = 170
     private let height:CGFloat = 175
 
