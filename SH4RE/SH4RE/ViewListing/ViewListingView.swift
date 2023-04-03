@@ -465,6 +465,7 @@ struct ViewListingView: View {
                     .fixedSize(horizontal: false, vertical: true)
                 Button(action: {
 //                    sponsorListing(lid: listing.id)
+//                    listing.sponsored = true
                     showPromoConfirmation.toggle()
                     showPromoted.toggle()
                 })
