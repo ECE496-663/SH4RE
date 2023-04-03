@@ -407,7 +407,6 @@ struct CreateListingView: View {
     }
     
     func validateUpdate () -> Bool {
-        print(availabilitySelection)
         if (title == editListing.title && description == editListing.description
             && cost == editListing.price && postalCode == editListing.postalCode
             && availabilityCalendar.selectedDates == editListing.availability
