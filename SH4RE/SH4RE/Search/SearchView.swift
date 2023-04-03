@@ -8,6 +8,19 @@ import SwiftUI
 import FirebaseStorage
 import Combine
 
+extension View {
+    func conditionalButtonStyleModifier<M1: ButtonStyle, M2: ButtonStyle>
+        (on condition: Bool, trueCase: M1, falseCase: M2) -> some View {
+        Group {
+            if condition {
+                self.buttonStyle(trueCase)
+            } else {
+                self.buttonStyle(falseCase)
+            }
+        }
+    }
+}
+
 //Database stuff to know
 //listingView.listings if a list of Listing structs defined in ListingViewModel
 //from listing struct you can get id, title, description and cost
@@ -70,8 +83,15 @@ struct SearchView: View {
             ZStack(alignment: .top) {
                 Color("BackgroundGrey").ignoresSafeArea()
                 VStack(alignment: .leading, spacing: 15) {
-                    Text("Search")
-                        .font(.title.bold())
+                    HStack {
+                        Text("Search")
+                            .font(.title.bold())
+                        Spacer()
+                        if (searchModel.filtersAreApplied()) {
+                            Text("Filtering is Enabled")
+                                .foregroundColor(.primaryDark)
+                        }
+                    }
                     searchBar()
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 15){
@@ -147,20 +167,23 @@ struct SearchView: View {
     }
     
     fileprivate func createFilterButton() -> some View {
-            return Button(action: {
-                showingFilterSheet.toggle();
-            }, label: {
-                HStack {
-                    Label("Filter", systemImage: "slider.horizontal.3")
-                }
-            })
-            .buttonStyle(primaryButtonStyle(width: 120, tall: true))
-            .padding(.bottom, 30)
-            .sheet(isPresented: $showingFilterSheet) {
-                FilterSheetView(searchModel: searchModel, showingFilterSheet: $showingFilterSheet, doSearch: doSearch)
-                    .presentationDetents([.medium, .large])
+        return Button(action: {
+            showingFilterSheet.toggle();
+        }, label: {
+            HStack {
+                Label("Filters", systemImage: "slider.horizontal.3")
             }
+        })
+        .conditionalButtonStyleModifier(
+            on: searchModel.filtersAreApplied(),
+            trueCase: secondaryButtonStyle(width: 120, tall: true),
+            falseCase: primaryButtonStyle(width: 120, tall: true))
+        .padding(.bottom, 30)
+        .sheet(isPresented: $showingFilterSheet) {
+            FilterSheetView(searchModel: searchModel, showingFilterSheet: $showingFilterSheet, doSearch: doSearch)
+                .presentationDetents([.medium, .large])
         }
+    }
 }
 
 struct ViewOffsetKey: PreferenceKey {
@@ -171,21 +194,9 @@ struct ViewOffsetKey: PreferenceKey {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
-
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
         SearchView(tabSelection: .constant(1), searchModel: SearchModel(), favouritesModel: FavouritesModel())
             .environmentObject(CurrentUser())
     }
 }
-//struct SearchView_Previews_Helper: View {
-//    var body: some View {
-//        SearchView(tabSelection: .constant(1), searchModel: SearchModel())
-//            .environmentObject(CurrentUser())
-//    }
-//}
