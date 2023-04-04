@@ -319,9 +319,9 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         let price = data["Price"] as? Float ?? 0
         let timeAvailability = data["Availability"] as? [Timestamp] ?? []
         var availability:[Date] = []
-        let address = data!["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
-        let category = data!["Category"] as? String ?? ""
-        let created = data!["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
+        let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
+        let category = data["Category"] as? String ?? ""
+        let created = data["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
         }
