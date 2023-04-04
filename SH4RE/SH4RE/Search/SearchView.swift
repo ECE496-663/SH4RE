@@ -47,9 +47,6 @@ struct SearchView: View {
     
     @State var chatLogViewModelDict : [String:ChatLogViewModel] = [:]
 
-    @State private var lat:Double = 43.660770
-    @State private var lon:Double = -79.396576
-
     //Used to focus on the keyboard when the search icon is clicked
     @FocusState var isFocusOn: Bool
     

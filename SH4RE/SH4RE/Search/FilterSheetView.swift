@@ -106,7 +106,7 @@ struct FilterSheetView: View {
         searchModel.minRating = minRating
         searchModel.startDate = startDate
         searchModel.endDate = endDate
-        locationManager.updateDistance(distance: ((maxDistance == "") ? 3.0 : Double(maxDistance))!)
+        locationManager.updateDistance(distance: ((maxDistance == "") ? 10.0 : Double(maxDistance))!)
         updateLocation(postalCode: location)
         if (location == "Current Location") {
             searchModel.latitude = locationManager.location.coordinate.latitude
@@ -144,7 +144,8 @@ struct FilterSheetView: View {
                 searchModel.resetFilters()
                 doSearch()
                 showingFilterSheet.toggle()
-                locationManager.updateDistance(distance: 3.0)
+                locationManager.updateDistance(distance: 10.0)
+                locationManager.updateLocation(lat: 43.66, lon: -79.39)
             })
             .foregroundColor(.primaryDark)
             .padding(.horizontal)

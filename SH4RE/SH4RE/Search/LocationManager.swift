@@ -11,10 +11,10 @@ import MapKit
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     let manager = CLLocationManager()
-    @Published var locationDistance: CLLocationDistance = 3000
+    @Published var locationDistance: CLLocationDistance = 10000
     @Published var location: CLLocation = CLLocation(latitude: 43.66, longitude: -79.39)
 
-    @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 43.66, longitude: -79.39), latitudinalMeters: 3000, longitudinalMeters: 3000)
+    @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 43.66, longitude: -79.39), latitudinalMeters: 10000, longitudinalMeters: 10000)
     
     override init() {
         super.init()
