@@ -17,6 +17,8 @@ struct CompletedSearchQuery {
     var minRating: Double
     var startDate: Date
     var endDate: Date
+    var latitude: Double
+    var longitude: Double
 }
 
 class SearchModel: ObservableObject {
@@ -31,6 +33,8 @@ class SearchModel: ObservableObject {
     @Published var minRating:Double = 0.0
     @Published var startDate: Date = Date(timeIntervalSinceReferenceDate: 0)
     @Published var endDate: Date = Date(timeIntervalSinceReferenceDate: 0)
+    @Published var latitude:Double = 0.0
+    @Published var longitude:Double = 0.0
     
     func resetFilters(){
         category = ""
@@ -41,6 +45,8 @@ class SearchModel: ObservableObject {
         minRating = 0.0
         startDate = Date(timeIntervalSinceReferenceDate: 0)
         endDate = Date(timeIntervalSinceReferenceDate: 0)
+        latitude = 0.0
+        longitude = 0.0
     }
     
     func filtersAreApplied() -> Bool {
@@ -59,6 +65,6 @@ class SearchModel: ObservableObject {
     }
     
     func getCompletedSearch() -> CompletedSearchQuery {
-        return CompletedSearchQuery(searchQuery: searchQuery, category: category, location: location, minPrice: Int(minPrice) ?? 0, maxPrice: Int(maxPrice) ?? 0, maxDistance: Int(maxDistance) ?? 0, minRating: minRating, startDate: startDate, endDate: endDate)
+        return CompletedSearchQuery(searchQuery: searchQuery, category: category, location: location, minPrice: Int(minPrice) ?? 0, maxPrice: Int(maxPrice) ?? 1000000, maxDistance: Int(maxDistance) ?? 1000000, minRating: minRating, startDate: startDate, endDate: endDate, latitude: latitude, longitude: longitude)
     }
 }

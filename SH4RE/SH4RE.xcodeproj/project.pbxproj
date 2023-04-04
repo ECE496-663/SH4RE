@@ -36,7 +36,9 @@
 		391AF85329C7C16500FB1053 /* EditAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391AF85229C7C16500FB1053 /* EditAccountView.swift */; };
 		391AF85529C7C1AA00FB1053 /* ReviewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391AF85429C7C1AA00FB1053 /* ReviewsView.swift */; };
 		391AF85729C7C1D500FB1053 /* FavouritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391AF85629C7C1D500FB1053 /* FavouritesView.swift */; };
+		395BDAF329DB67BC00B6EB80 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395BDAF229DB67BC00B6EB80 /* LocationManager.swift */; };
 		39ABA1BB29CB571500838275 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39ABA1BA29CB571500838275 /* ProfileView.swift */; };
+		39ABA1BD29CE817000838275 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39ABA1BC29CE817000838275 /* MapView.swift */; };
 		5939D35E29132D7000866FA5 /* SH4REApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D35D29132D7000866FA5 /* SH4REApp.swift */; };
 		5939D36029132D7000866FA5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939D35F29132D7000866FA5 /* ContentView.swift */; };
 		5939D36229132D7200866FA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5939D36129132D7200866FA5 /* Assets.xcassets */; };
@@ -142,7 +144,9 @@
 		391AF85229C7C16500FB1053 /* EditAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountView.swift; sourceTree = "<group>"; };
 		391AF85429C7C1AA00FB1053 /* ReviewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsView.swift; sourceTree = "<group>"; };
 		391AF85629C7C1D500FB1053 /* FavouritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesView.swift; sourceTree = "<group>"; };
+		395BDAF229DB67BC00B6EB80 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		39ABA1BA29CB571500838275 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		39ABA1BC29CE817000838275 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		5939D35A29132D7000866FA5 /* SH4RE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SH4RE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5939D35D29132D7000866FA5 /* SH4REApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SH4REApp.swift; sourceTree = "<group>"; };
 		5939D35F29132D7000866FA5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -376,6 +380,8 @@
 				9D080582292FE62200094169 /* SearchView.swift */,
 				1EB9FCD92979CC3A00659C5C /* FilterSheetView.swift */,
 				1E80DA7529BF8B7B0058F82A /* SearchModel.swift */,
+				39ABA1BC29CE817000838275 /* MapView.swift */,
+				395BDAF229DB67BC00B6EB80 /* LocationManager.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -637,6 +643,7 @@
 				1EB9FCDA2979CC3A00659C5C /* FilterSheetView.swift in Sources */,
 				9DB46C59296E56BB005F0216 /* DatePicker.swift in Sources */,
 				1E80DA7629BF8B7B0058F82A /* SearchModel.swift in Sources */,
+				395BDAF329DB67BC00B6EB80 /* LocationManager.swift in Sources */,
 				9D080594292FE9F400094169 /* AccountView.swift in Sources */,
 				9D16B1ED2995886D007F99D8 /* ChatLogViewModel.swift in Sources */,
 				5939D36029132D7000866FA5 /* ContentView.swift in Sources */,
@@ -660,6 +667,7 @@
 				D120FABA29668A7000CCD7A5 /* LoginView.swift in Sources */,
 				9D0518632998497400366A10 /* RKWeekdayHeader.swift in Sources */,
 				9D05185E2998497400366A10 /* RKMonth.swift in Sources */,
+				39ABA1BD29CE817000838275 /* MapView.swift in Sources */,
 				9D080596292FF43800094169 /* ViewListingView.swift in Sources */,
 				1E7CB011297DF4B6008E4854 /* DropdownMenu.swift in Sources */,
 				D119C03E29280D0600E83142 /* CreateListingView.swift in Sources */,
@@ -887,6 +895,8 @@
 				DEVELOPMENT_TEAM = R5ATHRRBR9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "This app requires your location to find results in your area";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app requires your location to find results in your area";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -927,6 +937,8 @@
 				DEVELOPMENT_TEAM = R5ATHRRBR9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "This app requires your location to find results in your area";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app requires your location to find results in your area";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
