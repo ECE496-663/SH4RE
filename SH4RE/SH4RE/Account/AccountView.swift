@@ -88,7 +88,8 @@ struct AccountView: View {
                 .padding(.bottom)
             })
             NavigationLink(destination: {
-                FavouritesView()
+                FavouritesView(tabSelection: $tabSelection)
+                    .environmentObject(currentUser)
             }, label: {
                 HStack {
                     Image(systemName: "heart")
