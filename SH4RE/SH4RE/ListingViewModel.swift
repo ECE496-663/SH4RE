@@ -734,9 +734,9 @@ func getStatus(requestId: String, listingId: String, completion: @escaping(Int)-
 }
 
 func sponsorListing(lid: String){
-    documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":1])
+    _ = documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":1])
 }
 
 func unsponsorListing(lid: String){
-    documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":0])
+    _ = documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":0])
 }

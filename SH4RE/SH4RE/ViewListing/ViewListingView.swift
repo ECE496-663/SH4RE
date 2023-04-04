@@ -102,7 +102,7 @@ struct ViewListingView: View {
                 })
             }
             else {
-                if (true){//listing.sponsored == true) {
+                if (listing.sponsored == 1) {
                     Button(action: {}, label: {
                         HStack {
                             Text("Promoted")
@@ -464,8 +464,8 @@ struct ViewListingView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 Button(action: {
-//                    sponsorListing(lid: listing.id)
-//                    listing.sponsored = true
+                    sponsorListing(lid: listing.id)
+                    listing.sponsored = 1
                     showPromoConfirmation.toggle()
                     showPromoted.toggle()
                 })
