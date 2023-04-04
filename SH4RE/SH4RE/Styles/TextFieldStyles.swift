@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocationUI
 
 struct textInputStyle: TextFieldStyle{
     //Making an optional error variable
@@ -38,6 +39,46 @@ struct textInputStyle: TextFieldStyle{
     }
 }
 
+struct locationInputStyle: TextFieldStyle{
+    
+    var button: LocationButton
+
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        HStack {
+            button
+                .background(.white)
+                .labelStyle(.iconOnly)
+                .foregroundColor(Color.primaryBase)
+                .tint(.white)
+            configuration
+                .textFieldStyle(PlainTextFieldStyle())
+            // Text alignment.
+                .multilineTextAlignment(.leading)
+            // Cursor color.
+                .accentColor(.primaryDark)
+            // Text color.
+                .foregroundColor(.black)
+                .padding(.leading, 5)
+        }
+        // TextField spacing.
+        .padding(.vertical, 8)
+        .padding(.leading, 16)
+        .padding(.trailing, 20)
+        // TextField border
+        .background(border)
+        .background(.white)
+        .cornerRadius(8)
+        
+    }
+    var border: some View {
+      RoundedRectangle(cornerRadius: 8)
+        .strokeBorder(
+            .gray,
+          lineWidth: 1
+        )
+    }
+}
+        
 /// This style expects a button with an image as the label to place at the beginning of the text field
 struct iconInputStyle: TextFieldStyle{
     

@@ -7,21 +7,22 @@
 
 import SwiftUI
 import Combine
+import CoreLocationUI
+import CoreLocation
 
 struct LocationEntryField: View {
     @Binding var location: String
+    @Binding var locationManager: LocationManager
+
     var body: some View {
         HStack {
             TextField("Postal Code e.g. A1A 1A1", text: $location)
                 .textFieldStyle(
-                    iconInputStyle(
-                        button: Button(action:{
-                            // Currently no action, have to set up location
-                            // This could be a staring point https://www.youtube.com/watch?v=cOD1l2lv2Jw&ab_channel=azamsharp
-                            // Additionally, check out the file "CurrentLocationButton"
-                        }, label:{
-                            Image(systemName: "scope")
-                        })
+                    locationInputStyle(
+                        button: LocationButton {
+                            locationManager.requestLocation()
+                            location = "Current Location"
+                        }
                     )
                 )
         }
@@ -42,12 +43,14 @@ struct FilterSheetView: View {
     @State private var startDate: Date
     @State private var endDate: Date
     @Binding var showingFilterSheet: Bool
+    @Binding var locationManager: LocationManager
     var doSearch: () -> Void
     
-    init(searchModel: SearchModel, showingFilterSheet: Binding<Bool>, doSearch: @escaping () -> Void ) {
+    init(searchModel: SearchModel, showingFilterSheet: Binding<Bool>, locationManager: Binding<LocationManager>, doSearch: @escaping () -> Void ) {
         self.doSearch = doSearch
         self.searchModel = searchModel
         _showingFilterSheet = showingFilterSheet
+        _locationManager = locationManager
         _category =  State(initialValue: searchModel.category)
         _location = State(initialValue: searchModel.location)
         _minPrice = State(initialValue: searchModel.minPrice)
@@ -58,15 +61,57 @@ struct FilterSheetView: View {
         _endDate = State(initialValue: searchModel.endDate)
     }
     
+    func isPostalCodeValid (postalCode: String) -> Bool {
+        if (postalCode == "Current Location") {
+            return true
+        }
+        let range = NSRange(location: 0, length: postalCode.utf16.count)
+        let regex1 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z][0-9][A-Za-z][0-9]")
+        let res1 = regex1!.firstMatch(in: postalCode, options: [], range: range)
+        let regex2 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z]-[0-9][A-Za-z][0-9]")
+        let res2 = regex2!.firstMatch(in: postalCode, options: [], range: range)
+        let regex3 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]")
+        let res3 = regex3!.firstMatch(in: postalCode, options: [], range: range)
+        if (res1 != nil || res2 != nil || res3 != nil) {
+            return true
+        }
+        return false
+    }
+    
+    func updateLocation (postalCode: String) {
+        if (postalCode == "") {
+            return
+        }
+        let geoCoder = CLGeocoder()
+        geoCoder.geocodeAddressString(postalCode) { (placemarks, error) in
+            guard
+                let placemarks = placemarks,
+                let location = placemarks.first?.location
+            else {
+                // handle no location found
+                return
+            }
+            // Use your location
+            locationManager.updateLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude)
+        }
+
+    }
+    
     fileprivate func setFilters(){
         searchModel.category = category
-        searchModel.location = location
+        searchModel.location = (isPostalCodeValid(postalCode: location)) ? location : ""
         searchModel.minPrice = minPrice
         searchModel.maxPrice = maxPrice
         searchModel.maxDistance = maxDistance
         searchModel.minRating = minRating
         searchModel.startDate = startDate
         searchModel.endDate = endDate
+        locationManager.updateDistance(distance: ((maxDistance == "") ? 10.0 : Double(maxDistance))!)
+        updateLocation(postalCode: location)
+        if (location == "Current Location") {
+            searchModel.latitude = locationManager.location.coordinate.latitude
+            searchModel.longitude = locationManager.location.coordinate.longitude
+        }
     }
     
     fileprivate func NumericTextField(label: String, textEntry: Binding<String>, error: Bool = false) -> some View {
@@ -99,6 +144,8 @@ struct FilterSheetView: View {
                 searchModel.resetFilters()
                 doSearch()
                 showingFilterSheet.toggle()
+                locationManager.updateDistance(distance: 10.0)
+                locationManager.updateLocation(lat: 43.66, lon: -79.39)
             })
             .foregroundColor(.primaryDark)
             .padding(.horizontal)
@@ -197,7 +244,7 @@ struct FilterSheetView: View {
                     VStack (alignment: .leading) {
                         Text("Location")
                             .font(.title2)
-                        LocationEntryField(location: $location)
+                        LocationEntryField(location: $location, locationManager: $locationManager)
                     }
 
                     //Distance
@@ -247,14 +294,3 @@ struct FilterSheetView: View {
         .background(Color("BackgroundGrey"))
     }
 }
-
-
-
-struct FilterSheetView_Previews: PreviewProvider {
-    static var previews: some View {
-        FilterSheetView(searchModel: SearchModel(), showingFilterSheet: .constant(true), doSearch: {})
-    }
-}
-
-
-
