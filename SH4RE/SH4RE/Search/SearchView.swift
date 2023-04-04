@@ -71,7 +71,8 @@ struct SearchView: View {
                     }, label:{
                         Image(systemName: "magnifyingglass")
                     }),
-                    colour: .gray
+                    colour: .gray,
+                    clearFunc: searchModel.searchQuery == "" ? nil : {searchModel.searchQuery = ""}
                 )
             )
             .focused($isFocusOn)
