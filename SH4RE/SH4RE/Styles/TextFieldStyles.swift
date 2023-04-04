@@ -44,6 +44,8 @@ struct iconInputStyle: TextFieldStyle{
     var button: Button<Image>
     var disableButton: Bool = false
     var colour: Color = .accentColor
+    /// If set, it will enable a clear button which when pressed, calls the passed function from this variable
+    var clearFunc: (() -> Void)? = nil
     
     var buttonColour: Color {
         return disableButton ? .gray : colour
@@ -62,6 +64,13 @@ struct iconInputStyle: TextFieldStyle{
             // Text color.
                 .foregroundColor(.black)
                 .padding(.leading, 5)
+            if (clearFunc != nil){
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(.textfield)
+                    .onTapGesture {
+                        clearFunc!()
+                    }
+            }
         }
         // TextField spacing.
         .padding(.vertical, 16)
@@ -100,7 +109,7 @@ struct TextFieldStyles_PreviewsHelper: View {
                     iconInputStyle(button: Button(action:{},
                                                       label:{
                                                           Image(systemName: "scope")
-                                                      }))
+                                                      }), clearFunc: username == "" ? nil : {username = ""})
                 )
         }
     }
