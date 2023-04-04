@@ -45,9 +45,7 @@ struct FavouritesView: View {
         .padding()
         .onAppear(){
             for listingID in favouritesModel.favourites {
-                print(listingID)
                 fetchSingleListing(lid: listingID, completion: { listing in
-                    print(listing)
                     listingsView.listings.append(listing)
                     self.listingsView.fetchProductMainImage( completion: { success in
                         if !success {
