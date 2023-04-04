@@ -317,6 +317,7 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         let description = data["Description"] as? String ?? ""
         let imagepath = data["image_path"] as? [String] ?? []
         let price = data["Price"] as? Float ?? 0
+        let sponsored = data["sponsored"] as? Int ?? 0
         let timeAvailability = data["Availability"] as? [Timestamp] ?? []
         var availability:[Date] = []
         let address = data!["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
@@ -325,7 +326,7 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
         }
-        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName, timestamp:created.dateValue())
+        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName, sponsored:sponsored, timestamp:created.dateValue())
         completion(listing)
     }
 }
