@@ -293,14 +293,3 @@ struct FilterSheetView: View {
         .background(Color("BackgroundGrey"))
     }
 }
-
-
-
-//struct FilterSheetView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        FilterSheetView(searchModel: SearchModel(), showingFilterSheet: .constant(true), doSearch: {})
-//    }
-//}
-
-
-

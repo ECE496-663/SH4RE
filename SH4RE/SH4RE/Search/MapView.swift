@@ -75,7 +75,6 @@ struct MapView: View {
             for listing in listingsView.listings {
                 listingPins.append(MapLocation(name: listing.id, listing: listing, productImage: listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!, latitude: listing.address["lat"]!, longitude: listing.address["lon"]!))
             }
-            print(listingPins)
         }
         .safeAreaInset(edge: .bottom) {
             if (selectedListing != nil) {

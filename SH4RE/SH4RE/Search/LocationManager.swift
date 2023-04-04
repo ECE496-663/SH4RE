@@ -2,7 +2,7 @@
 //  LocationManager.swift
 //  AutocompleteSearch
 //
-//  Created by Mohammad Azam on 12/13/21.
+//  Created by Wasif Butt on 2023-04-03.
 //
 
 import Foundation
@@ -43,8 +43,6 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         DispatchQueue.main.async {
             self.region = MKCoordinateRegion(center: local_location.coordinate, latitudinalMeters: self.locationDistance, longitudinalMeters: self.locationDistance)
         }
-        
-        print("\(local_location)")
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

@@ -124,31 +124,31 @@ struct iconInputStyle: TextFieldStyle{
 }
 
 
-//struct TextFieldStyles_PreviewsHelper: View {
-//    @State var username: String = ""
-//    var error: Bool = true
-//    var body: some View {
-//        VStack {
-//            TextField("Your email", text: $username)
-//                .frame(width: screenSize.width * 0.8)
-//                .textFieldStyle(textInputStyle())
-//            TextField("Your error", text: $username)
-//                .frame(width: screenSize.width * 0.8)
-//                .textFieldStyle(textInputStyle(error: error))
-//            TextField("Location", text: $username)
-//                .frame(width: screenSize.width * 0.8)
-//                .textFieldStyle(
-//                    locationInputStyle(button: Button(action:{},
-//                                                      label:{
-//                                                          Image(systemName: "scope")
-//                                                      }))
-//                )
-//        }
-//    }
-//}
-//
-//struct TextFieldStyles_Previews: PreviewProvider {
-//    static var previews: some View {
-//        TextFieldStyles_PreviewsHelper()
-//    }
-//}
+struct TextFieldStyles_PreviewsHelper: View {
+    @State var username: String = ""
+    var error: Bool = true
+    var body: some View {
+        VStack {
+            TextField("Your email", text: $username)
+                .frame(width: screenSize.width * 0.8)
+                .textFieldStyle(textInputStyle())
+            TextField("Your error", text: $username)
+                .frame(width: screenSize.width * 0.8)
+                .textFieldStyle(textInputStyle(error: error))
+            TextField("Location", text: $username)
+                .frame(width: screenSize.width * 0.8)
+                .textFieldStyle(
+                    iconInputStyle(button: Button(action:{},
+                                                      label:{
+                                                          Image(systemName: "scope")
+                                                      }))
+                )
+        }
+    }
+}
+
+struct TextFieldStyles_Previews: PreviewProvider {
+    static var previews: some View {
+        TextFieldStyles_PreviewsHelper()
+    }
+}
