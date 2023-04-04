@@ -77,7 +77,7 @@ struct ViewListingView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            if (listing.uid != getCurrentUserUid() && false) {
+            if (listing.uid != getCurrentUserUid()) {
                 Button(action: {
                     if (currentUser.isEmailVerified()) {
                         showPopUp.toggle()
