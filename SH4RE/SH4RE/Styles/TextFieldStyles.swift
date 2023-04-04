@@ -61,7 +61,7 @@ struct locationInputStyle: TextFieldStyle{
                 .padding(.leading, 5)
         }
         // TextField spacing.
-        .padding(.vertical, 16)
+        .padding(.vertical, 8)
         .padding(.leading, 16)
         .padding(.trailing, 20)
         // TextField border
