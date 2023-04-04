@@ -11,10 +11,10 @@ import MapKit
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     let manager = CLLocationManager()
-    private static let locationDistance: CLLocationDistance = 10000
-    @Published var location: CLLocation?
+    @Published var locationDistance: CLLocationDistance = 3000
+    @Published var location: CLLocation = CLLocation(latitude: 43.66, longitude: -79.39)
 
-    @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 43.66, longitude: -79.37), latitudinalMeters: LocationManager.locationDistance, longitudinalMeters: LocationManager.locationDistance)
+    @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 43.66, longitude: -79.39), latitudinalMeters: 3000, longitudinalMeters: 3000)
     
     override init() {
         super.init()
@@ -26,13 +26,18 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         manager.requestLocation()
     }
     
+    func updateDistance(distance: Double) {
+        locationDistance = distance * 1000
+        region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: (location.coordinate.latitude), longitude: (location.coordinate.longitude)), latitudinalMeters: locationDistance, longitudinalMeters: locationDistance)
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = CLLocation(latitude: (locations.first?.coordinate.latitude)!, longitude: (locations.first?.coordinate.longitude)!)
-        region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: (location?.coordinate.latitude)!, longitude: (location?.coordinate.longitude)!), latitudinalMeters: LocationManager.locationDistance, longitudinalMeters: LocationManager.locationDistance)
+        region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: (location.coordinate.latitude), longitude: (location.coordinate.longitude)), latitudinalMeters: locationDistance, longitudinalMeters: locationDistance)
         guard let local_location = locations.first else { return }
         
         DispatchQueue.main.async {
-            self.region = MKCoordinateRegion(center: local_location.coordinate, latitudinalMeters: Self.locationDistance, longitudinalMeters: Self.locationDistance)
+            self.region = MKCoordinateRegion(center: local_location.coordinate, latitudinalMeters: self.locationDistance, longitudinalMeters: self.locationDistance)
         }
         
         print("\(local_location)")

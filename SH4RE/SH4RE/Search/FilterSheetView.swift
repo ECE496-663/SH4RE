@@ -70,6 +70,7 @@ struct FilterSheetView: View {
         searchModel.minRating = minRating
         searchModel.startDate = startDate
         searchModel.endDate = endDate
+        locationManager.updateDistance(distance: ((maxDistance == "") ? 3.0 : Double(maxDistance))!)
     }
     
     fileprivate func NumericTextField(label: String, textEntry: Binding<String>, error: Bool = false) -> some View {
@@ -102,6 +103,7 @@ struct FilterSheetView: View {
                 searchModel.resetFilters()
                 doSearch()
                 showingFilterSheet.toggle()
+                locationManager.updateDistance(distance: 3.0)
             })
             .foregroundColor(.primaryDark)
             .padding(.horizontal)

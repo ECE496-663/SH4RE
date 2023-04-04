@@ -37,7 +37,7 @@ struct SearchView: View {
     @EnvironmentObject var currentUser: CurrentUser
     @State private var locationManager = LocationManager()
 
-    @StateObject private var listingsView = ListingViewModel()
+    @StateObject var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 15)]
     
     @State var showingFilterSheet = false
@@ -100,7 +100,7 @@ struct SearchView: View {
                             Text("Filtered")
                                 .foregroundColor(.primaryDark)
                         }
-                        NavigationLink(destination: MapView(userLat: $lat, userLon: $lon, distance: .constant(Int(searchModel.maxDistance) ?? 10), region: $locationManager.region), label: {
+                        NavigationLink(destination: MapView(tabSelection: $tabSelection, chatLogViewModelDict: $chatLogViewModelDict, region: $locationManager.region, listingsView: listingsView).environmentObject(currentUser), label: {
                             HStack { 
                                 Text("View Map")
                                 Image(systemName: "map.fill")
