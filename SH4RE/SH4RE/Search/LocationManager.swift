@@ -31,6 +31,10 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: (location.coordinate.latitude), longitude: (location.coordinate.longitude)), latitudinalMeters: locationDistance, longitudinalMeters: locationDistance)
     }
     
+    func updateLocation(lat: Double, lon: Double) {
+        region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: lon), latitudinalMeters: locationDistance, longitudinalMeters: locationDistance)
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = CLLocation(latitude: (locations.first?.coordinate.latitude)!, longitude: (locations.first?.coordinate.longitude)!)
         region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: (location.coordinate.latitude), longitude: (location.coordinate.longitude)), latitudinalMeters: locationDistance, longitudinalMeters: locationDistance)

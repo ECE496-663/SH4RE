@@ -61,9 +61,45 @@ struct FilterSheetView: View {
         _endDate = State(initialValue: searchModel.endDate)
     }
     
+    func isPostalCodeValid (postalCode: String) -> Bool {
+        if (postalCode == "Current Location") {
+            return true
+        }
+        let range = NSRange(location: 0, length: postalCode.utf16.count)
+        let regex1 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z][0-9][A-Za-z][0-9]")
+        let res1 = regex1!.firstMatch(in: postalCode, options: [], range: range)
+        let regex2 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z]-[0-9][A-Za-z][0-9]")
+        let res2 = regex2!.firstMatch(in: postalCode, options: [], range: range)
+        let regex3 = try? NSRegularExpression(pattern: "[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]")
+        let res3 = regex3!.firstMatch(in: postalCode, options: [], range: range)
+        if (res1 != nil || res2 != nil || res3 != nil) {
+            return true
+        }
+        return false
+    }
+    
+    func updateLocation (postalCode: String) {
+        if (postalCode == "") {
+            return
+        }
+        let geoCoder = CLGeocoder()
+        geoCoder.geocodeAddressString(postalCode) { (placemarks, error) in
+            guard
+                let placemarks = placemarks,
+                let location = placemarks.first?.location
+            else {
+                // handle no location found
+                return
+            }
+            // Use your location
+            locationManager.updateLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude)
+        }
+
+    }
+    
     fileprivate func setFilters(){
         searchModel.category = category
-        searchModel.location = location
+        searchModel.location = (isPostalCodeValid(postalCode: location)) ? location : ""
         searchModel.minPrice = minPrice
         searchModel.maxPrice = maxPrice
         searchModel.maxDistance = maxDistance
@@ -71,6 +107,11 @@ struct FilterSheetView: View {
         searchModel.startDate = startDate
         searchModel.endDate = endDate
         locationManager.updateDistance(distance: ((maxDistance == "") ? 3.0 : Double(maxDistance))!)
+        updateLocation(postalCode: location)
+        if (location == "Current Location") {
+            searchModel.latitude = locationManager.location.coordinate.latitude
+            searchModel.longitude = locationManager.location.coordinate.longitude
+        }
     }
     
     fileprivate func NumericTextField(label: String, textEntry: Binding<String>, error: Bool = false) -> some View {

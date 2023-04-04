@@ -122,6 +122,11 @@ class ListingViewModel : ObservableObject{
                 lat = location!.coordinate.latitude
                 lon = location!.coordinate.longitude
             }
+            if (postalCode == "Current Location") {
+                isPostalCodeValid = true
+                lat = completedSearch.latitude
+                lon = completedSearch.longitude
+            }
             var query = Query(searchString)
             if(isPostalCodeValid){
                 query.aroundLatLng = Point(latitude: lat, longitude: lon)
