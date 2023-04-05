@@ -27,6 +27,7 @@ struct Listing : Identifiable{
     var ownerName:String = ""
     var sponsored:Int = 0
     var timestamp: Date = Date(timeIntervalSinceReferenceDate: 0)
+    var postalCode: String = ""
 }
 
 struct Hit: Codable, Equatable{
@@ -42,6 +43,7 @@ struct Hit: Codable, Equatable{
     var ownerName:String = ""
     var sponsored:Int = 0
     var timestamp: Date
+    var postal: String
 }
 
 class ListingViewModel : ObservableObject{
@@ -66,6 +68,7 @@ class ListingViewModel : ObservableObject{
                 let ownerName = data["ownerName"] as? String ?? ""
                 let description = data["Description"] as? String ?? ""
                 let category = data["Category"] as? String ?? ""
+                let postalCode = data["postal"] as? String ?? ""
                 let imagepath = data["image_path"] as? [String] ?? []
                 let price = data["Price"] as? Float ?? 0
                 let sponsored = data["sponsored"] as? Int ?? 0
@@ -77,7 +80,7 @@ class ListingViewModel : ObservableObject{
                     availability.append(timestamp.dateValue())
                 }
                 
-                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored, timestamp: created.dateValue())
+                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored, timestamp: created.dateValue(), postalCode: postalCode)
                 
             }
             if QuerySnapshot!.isEmpty{
@@ -186,7 +189,7 @@ class ListingViewModel : ObservableObject{
                                           }
                                       }
                                       if(available == true){
-                                          let listing = Listing(id: hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName, sponsored: hit.sponsored, timestamp: hit.timestamp)
+                                          let listing = Listing(id: hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName, sponsored: hit.sponsored, timestamp: hit.timestamp, postalCode: hit.postal)
                                           indexedListings.append(listing)
                                           if(indexedListings.count == hitsToAdd){
                                               self.sortSponsored(indexedListings: indexedListings)
@@ -281,6 +284,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
             let title = data["Title"] as? String ?? ""
             let ownerName = data["ownerName"] as? String ?? ""
             let description = data["Description"] as? String ?? ""
+            let postalCode = data["postal"] as? String ?? ""
             let imagepath = data["image_path"] as? [String] ?? []
             let price = data["Price"] as? Float ?? 0
             let sponsored = data["sponsored"] as? Int ?? 0
@@ -293,7 +297,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
                 availability.append(timestamp.dateValue())
             }
             
-            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored, timestamp:created.dateValue())
+            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored, timestamp:created.dateValue(), postalCode: postalCode)
             
             listings.append(listing)
             if listings.count == snapshot?.documents.count {
@@ -314,12 +318,14 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
             return
         }
         let data = document.data()!
+        
         //Assign listing properties here
         let id = lid
         let uid = data["UID"] as? String ?? ""
         let title = data["Title"] as? String ?? ""
         let ownerName = data["ownerName"] as? String ?? ""
         let description = data["Description"] as? String ?? ""
+        let postalCode = data["postal"] as? String ?? ""
         let imagepath = data["image_path"] as? [String] ?? []
         let price = data["Price"] as? Float ?? 0
         let timeAvailability = data["Availability"] as? [Timestamp] ?? []
@@ -330,7 +336,7 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
         }
-        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName, timestamp:created.dateValue())
+        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName, timestamp:created.dateValue(), postalCode: postalCode)
         completion(listing)
     }
 }
