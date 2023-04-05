@@ -18,6 +18,7 @@ struct LoginView: View {
     @State private var errorDescription: String = ""
     @State private var showForgotPasswordPopUp: Bool = false
     @State private var email: String = ""
+    var setUpUserData: ()->()
 
 
     var body: some View {
@@ -79,6 +80,7 @@ struct LoginView: View {
                                 do {
                                     try await Auth.auth().signIn(withEmail: username, password: password)
                                     currentUser.hasLoggedIn = true
+                                    setUpUserData()
                                 }
                                 catch {
                                     errorInField = true
@@ -201,6 +203,6 @@ struct LoginView: View {
 
 struct LoginPage_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        LoginView(setUpUserData: {})
     }
 }

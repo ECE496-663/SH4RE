@@ -12,7 +12,7 @@ struct FavouritesView: View {
     @EnvironmentObject var currentUser: CurrentUser
     @StateObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 15)]
-    var favouritesModel = FavouritesModel()
+    @ObservedObject var favouritesModel: FavouritesModel
     
     var body: some View {
         ZStack {

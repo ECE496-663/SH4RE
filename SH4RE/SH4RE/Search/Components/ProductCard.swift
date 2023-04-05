@@ -111,6 +111,9 @@ struct ProductCard: View {
         .frame(width: width, height: height + 75)
         .background(.white)
         .cornerRadius(20)
+        .onReceive(favouritesModel.favourites.publisher, perform:{ _ in
+            favourited = favouritesModel.isFavourited(listingID: listing.id)
+        })
     }
 }
 
