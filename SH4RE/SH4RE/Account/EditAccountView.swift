@@ -34,13 +34,13 @@ struct EditAccountView: View {
         
         if(password.isEmpty && newPassword.isEmpty){
             if (name != user.name) {
-                documentUpdate(collectionPath: "User Info", documentID: getCurrentUserUid(), data: ["name": name])
+                _ = documentUpdate(collectionPath: "User Info", documentID: getCurrentUserUid(), data: ["name": name])
             }
             if (pfpChanged) {
                 let imgPath = "profilepictures/" + docRef.documentID + "/profile.jpg"
                 let storageManager = StorageManager()
                 storageManager.upload(image: profilePicture, path: imgPath)
-                documentUpdate(collectionPath: "User Info", documentID: docRef.documentID, data: ["pfp_path" : imgPath])
+                _ = documentUpdate(collectionPath: "User Info", documentID: docRef.documentID, data: ["pfp_path" : imgPath])
             }
             showPosted.toggle()
         }else{
@@ -59,13 +59,13 @@ struct EditAccountView: View {
                                 return
                             }else{
                                 if (name != user.name) {
-                                    documentUpdate(collectionPath: "User Info", documentID: getCurrentUserUid(), data: ["name": name])
+                                    _ = documentUpdate(collectionPath: "User Info", documentID: getCurrentUserUid(), data: ["name": name])
                                 }
                                 if (pfpChanged) {
                                     let imgPath = "profilepictures/" + docRef.documentID + "/profile.jpg"
                                     let storageManager = StorageManager()
                                     storageManager.upload(image: profilePicture, path: imgPath)
-                                    documentUpdate(collectionPath: "User Info", documentID: docRef.documentID, data: ["pfp_path" : imgPath])
+                                    _ = documentUpdate(collectionPath: "User Info", documentID: docRef.documentID, data: ["pfp_path" : imgPath])
                                 }
                                 showPosted.toggle()
                             }
