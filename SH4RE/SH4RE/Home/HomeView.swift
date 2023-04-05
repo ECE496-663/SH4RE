@@ -31,6 +31,8 @@ struct HomeView: View {
     @State private var recentListings = [Listing]()
     @State private var recentListing1Image: UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
     @State private var recentListing2Image: UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
+    @State private var chatLogViewModel1: ChatLogViewModel? = nil
+    @State private var chatLogViewModel2: ChatLogViewModel? = nil
 
     fileprivate func homeSearchBar() -> some View {
         return TextField("What are you looking for?", text: $searchModel.searchQuery)
@@ -99,13 +101,13 @@ struct HomeView: View {
                                     let listing1 = recentListings.count >= 1 ? recentListings[0] : empty_listing
                                     let listing2 = recentListings.count >= 2 ? recentListings[1] : empty_listing
                                     NavigationLink(destination: {
-                                        ViewListingView(tabSelection: $tabSelection, listing: listing1, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing1.uid,uid: listing1.uid, name: listing1.ownerName))).environmentObject(currentUser)
+                                        ViewListingView(tabSelection: $tabSelection, listing: listing1, chatLogViewModel: chatLogViewModel1 ?? ChatLogViewModel(chatUser: ChatUser(id: listing1.uid, uid: listing1.uid, name: listing1.ownerName))).environmentObject(currentUser)
                                     }, label: {
                                         ProductCard(favouritesModel: favouritesModel, listing: listing1, image: recentListing1Image)
                                     })
                                     Spacer()
                                     NavigationLink(destination: {
-                                        ViewListingView(tabSelection: $tabSelection, listing: listing2, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing2.uid,uid: listing2.uid, name: listing2.ownerName))).environmentObject(currentUser)
+                                        ViewListingView(tabSelection: $tabSelection, listing: listing2, chatLogViewModel: chatLogViewModel2 ?? ChatLogViewModel(chatUser: ChatUser(id: listing2.uid, uid: listing2.uid, name: listing2.ownerName))).environmentObject(currentUser)
                                     }, label: {
                                         ProductCard(favouritesModel: favouritesModel, listing: listing2, image: recentListing2Image)
                                     })
@@ -142,6 +144,15 @@ struct HomeView: View {
                 }
                 fetchMainImage(listing: listing2, completion: { image2 in
                     recentListing2Image = image2
+                })
+                
+                chatLogViewModel1 = ChatLogViewModel(chatUser: ChatUser(id:listing1.uid, uid: listing1.uid, name: listing1.ownerName))
+                getProfilePic(uid: listing1.uid, completion: { profilePic in
+                    chatLogViewModel1?.profilePic = profilePic
+                })
+                chatLogViewModel2 = ChatLogViewModel(chatUser: ChatUser(id:listing2.uid, uid: listing2.uid, name: listing2.ownerName))
+                getProfilePic(uid: listing2.uid, completion: { profilePic in
+                  chatLogViewModel2?.profilePic = profilePic
                 })
             })
         }

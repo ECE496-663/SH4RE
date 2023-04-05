@@ -264,34 +264,14 @@ struct ViewListingView: View {
             showPromotedPopUp
         }
         .onAppear() {
-            if (listing.uid == getCurrentUserUid()) {
-                fetchSingleListing(lid: listing.id, completion: { result in
-                    listing = result
-                    availabilityCalendar.disabledDates = result.availability
-                    numberOfImages = result.imagepath.count
-                    images.removeAll()
-                    for path in result.imagepath {
-                        let storageRef = Storage.storage().reference(withPath: path)
-                        storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
-                            if let error = error {
-                                print (error)
-                            } else {
-                                //Image Returned Successfully:
-                                let image = UIImage(data: data!)
-                                images.append(image)
-                            }
-                        }
-                    }
-                    
-                })
-            }
-            else {
-
-                availabilityCalendar.disabledDates = listing.availability
-                numberOfImages = listing.imagepath.count
-                for path in listing.imagepath {
+            fetchSingleListing(lid: listing.id, completion: { result in
+                listing = result
+                availabilityCalendar.disabledDates = result.availability
+                numberOfImages = result.imagepath.count
+                images.removeAll()
+                for path in result.imagepath {
                     let storageRef = Storage.storage().reference(withPath: path)
-                    storageRef.getData(maxSize: 1 * 1024 * 1024 as Int64) { [self] data, error in
+                    storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
                         if let error = error {
                             print (error)
                         } else {
@@ -301,7 +281,8 @@ struct ViewListingView: View {
                         }
                     }
                 }
-            }
+                
+            })
 
             getListingReviews(uid: listing.uid, lid: listing.id, completion: { reviews in
                 allReviews = reviews
@@ -370,11 +351,9 @@ struct ViewListingView: View {
                     if (startDateText != "") {
                         sendBookingRequest(uid: getCurrentUserUid(), listing_id: self.listing.id, title: self.listing.title, start: availabilityCalendar.startDate!, end: availabilityCalendar.endDate)
                     }
-                    
                     self.chatLogViewModel.fetchMessages()
                     availabilityCalendar.startDate = nil
                     availabilityCalendar.endDate = nil
-                    
                     showPopUp.toggle()
                 })
                 .fontWeight(.semibold)

@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseStorage
 
 struct FavouritesView: View {
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser
     @StateObject private var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 15)]
-    var favouritesModel = FavouritesModel()
+    @ObservedObject var favouritesModel: FavouritesModel
+    @State var chatLogViewModelDict : [String:ChatLogViewModel] = [:]
     
     var body: some View {
         ZStack {
@@ -32,7 +35,7 @@ struct FavouritesView: View {
                             // If theres no image for a listing, just use the placeholder
                             let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                             NavigationLink(destination: {
-                                ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: ""))).environmentObject(currentUser)
+                                ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: chatLogViewModelDict[listing.id] ?? ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.ownerName))).environmentObject(currentUser)
                             }, label: {
                                 ProductCard(favouritesModel: favouritesModel, listing: listing, image: productImage)
                             })
@@ -52,7 +55,36 @@ struct FavouritesView: View {
                             print("Failed to load images")
                         }
                     })
+                    Firestore.firestore().collection("User Info").document(listing.uid).getDocument() { (document, error) in
+                        guard let document = document else{
+                            return
+                        }
+                        self.chatLogViewModelDict[listing.id] = ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.ownerName))
+                        let data = document.data()!
+                        let imagePath = data["pfp_path"] as? String ?? ""
+                        
+                        if(imagePath != ""){
+                            let storageRef = Storage.storage().reference(withPath: imagePath)
+                            storageRef.getData(maxSize: 1 * 1024 * 1024) { [self] data, error in
+                                
+                                if let error = error {
+                                    //Error:
+                                    print (error)
+                                    
+                                } else {
+                                    guard let image = UIImage(data: data!) else{
+                                        return
+                                    }
+                                    
+                                    self.chatLogViewModelDict[listing.id]?.profilePic = image
+                                    
+                                }
+                            }
+                        }
+                    }
+                    
                 })
+                
             }
         }
 
