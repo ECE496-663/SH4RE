@@ -112,6 +112,10 @@ struct ProductCard: View {
         .background(.white)
         .cornerRadius(20)
         .onReceive(favouritesModel.favourites.publisher, perform:{ _ in
+            // In case the card appears before favs are recieved from server
+            favourited = favouritesModel.isFavourited(listingID: listing.id)
+        })
+        .onAppear(perform:{
             favourited = favouritesModel.isFavourited(listingID: listing.id)
         })
     }

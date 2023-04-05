@@ -46,7 +46,7 @@ struct AccountView: View {
     private var menu: some View {
         VStack {
             NavigationLink(destination: {
-                MyListingsView(tabSelection: $tabSelection)
+                MyListingsView(tabSelection: $tabSelection, favouritesModel: favouritesModel)
                     .environmentObject(currentUser)
             }, label: {
                 HStack {

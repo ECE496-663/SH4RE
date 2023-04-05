@@ -94,14 +94,14 @@ struct HomeView: View {
                                     let listing1 = recentListings.count >= 1 ? recentListings[0] : empty_listing
                                     let listing2 = recentListings.count >= 2 ? recentListings[1] : empty_listing
                                     NavigationLink(destination: {
-                                        ViewListingView(tabSelection: $tabSelection, listing: listing1, chatLogViewModel: chatLogViewModel1 ?? ChatLogViewModel(chatUser: ChatUser(id: listing1.uid, uid: listing1.uid, name: listing1.ownerName))).environmentObject(currentUser)
+                                        ViewListingView(tabSelection: $tabSelection, favouritesModel: favouritesModel, listing: listing1, chatLogViewModel: chatLogViewModel1 ?? ChatLogViewModel(chatUser: ChatUser(id: listing1.uid, uid: listing1.uid, name: listing1.ownerName))).environmentObject(currentUser)
                                     }, label: {
                                         ProductCard(favouritesModel: favouritesModel, listing: listing1, image: recentListing1Image)
                                     })
                                     Spacer()
                                         .frame(width: screenSize.width * 0.05)
                                     NavigationLink(destination: {
-                                        ViewListingView(tabSelection: $tabSelection, listing: listing2, chatLogViewModel: chatLogViewModel2 ?? ChatLogViewModel(chatUser: ChatUser(id: listing2.uid, uid: listing2.uid, name: listing2.ownerName))).environmentObject(currentUser)
+                                        ViewListingView(tabSelection: $tabSelection, favouritesModel: favouritesModel, listing: listing2, chatLogViewModel: chatLogViewModel2 ?? ChatLogViewModel(chatUser: ChatUser(id: listing2.uid, uid: listing2.uid, name: listing2.ownerName))).environmentObject(currentUser)
                                     }, label: {
                                         ProductCard(favouritesModel: favouritesModel, listing: listing2, image: recentListing2Image)
                                     })

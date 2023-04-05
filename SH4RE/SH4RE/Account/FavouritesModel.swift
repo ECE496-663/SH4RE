@@ -18,6 +18,7 @@ class FavouritesModel: ObservableObject {
     
     fileprivate func getFavouritesFromServer() {
         if(Auth.auth().currentUser != nil){
+            removeAll()
             Firestore.firestore().collection("User Info").document(getCurrentUserUid()).collection("Favourites").getDocuments() {(snapshot, error) in
                 snapshot?.documents.forEach({ (document) in
                     let id = document.documentID
