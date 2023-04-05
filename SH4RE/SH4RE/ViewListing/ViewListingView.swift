@@ -282,7 +282,7 @@ struct ViewListingView: View {
         }
         .sheet(isPresented: $showCal, onDismiss: didDismiss) {
             RKViewController(isPresented: $showCal, rkManager: availabilityCalendar)
-        }        
+        }
     }
     
     private var verifyEmailPopUp: some View {
