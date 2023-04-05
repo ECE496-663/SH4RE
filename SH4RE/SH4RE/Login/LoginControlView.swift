@@ -25,11 +25,17 @@ extension EnvironmentValues {
 struct LoginControlView: View {
     @AppStorage("hasSeenTutorial") var hasSeenTutorial: Bool = UserDefaults.standard.bool(forKey: "hasSeenTutorial")
     
+    @ObservedObject var favouritesModel: FavouritesModel
+    
     @State private var closeSplashScreen = false
     @State private var closeTutorialScreen = false
     @State private var showLogin = false
     @State private var showCreateAccount = false
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    func setUpUserData() {
+        favouritesModel.refresh()
+    }
 
     func showLoginScreen() {
         if (showCreateAccount) {
@@ -56,7 +62,7 @@ struct LoginControlView: View {
                     .position(x: screenSize.width * 0.5, y: (closeSplashScreen) ? screenSize.height * 0.452 : screenSize.height * 2)
             }
             else {
-                LoginView()
+                LoginView(setUpUserData: setUpUserData)
                     .environment(\.showCreateAccountScreen, showCreateAccountScreen)
                     .position(x: screenSize.width * 0.5, y: (showLogin) ? screenSize.height * 0.452 : screenSize.height * -2)
                 if (showCreateAccount) {
@@ -81,6 +87,6 @@ struct LoginControlView: View {
 
 struct LoginFlow_Previews: PreviewProvider {
     static var previews: some View {
-        LoginControlView()
+        LoginControlView(favouritesModel: FavouritesModel())
     }
 }

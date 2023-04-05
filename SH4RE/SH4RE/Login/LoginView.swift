@@ -16,6 +16,10 @@ struct LoginView: View {
     @State private var password: String = ""
     @State private var errorInField: Bool = false
     @State private var errorDescription: String = ""
+    @State private var showForgotPasswordPopUp: Bool = false
+    @State private var email: String = ""
+    var setUpUserData: ()->()
+
 
     var body: some View {
         ZStack {
@@ -52,7 +56,7 @@ struct LoginView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            
+                            showForgotPasswordPopUp.toggle()
                         })
                         {
                             Text("Forgot Password?\t\t")
@@ -76,6 +80,7 @@ struct LoginView: View {
                                 do {
                                     try await Auth.auth().signIn(withEmail: username, password: password)
                                     currentUser.hasLoggedIn = true
+                                    setUpUserData()
                                 }
                                 catch {
                                     errorInField = true
@@ -143,12 +148,61 @@ struct LoginView: View {
                 .cornerRadius(50)
             }
             .offset(x: 0, y: screenSize.height * 0.15)
+            
+            forgotPasswordPopUp
+        }
+        
+    }
+    
+    private var forgotPasswordPopUp: some View {
+        PopUp(show: $showForgotPasswordPopUp) {
+            VStack {
+                Text("Please enter your email.")
+                    .bold()
+                    .padding(.bottom)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.primaryDark)
+                
+                Text("If an account exists with this email, you will recieve an email to reset your password shortly.")
+                    .padding(.bottom)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.primaryDark)
+                
+                TextField("Email", text: $email)
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
+                    .frame(width: screenSize.width * 0.8)
+                    .textFieldStyle(textInputStyle())
+                    .padding(.bottom)
+                
+                Button(action: {
+                    sendForgotPasswordEmail(email: email)
+                    showForgotPasswordPopUp.toggle()
+                })
+                {
+                    Text("Send")
+                }
+                .buttonStyle(primaryButtonStyle())
+                Button(action: {
+                    showForgotPasswordPopUp.toggle()
+                })
+                {
+                    Text("Cancel")
+                }
+                .buttonStyle(secondaryButtonStyle())
+            }
+            .padding()
+            .frame(width: screenSize.width * 0.9, height: 350)
+            .background(.white)
+            .cornerRadius(30)
         }
     }
 }
 
 struct LoginPage_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        LoginView(setUpUserData: {})
     }
 }

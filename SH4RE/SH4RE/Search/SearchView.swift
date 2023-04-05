@@ -8,6 +8,8 @@ import SwiftUI
 import FirebaseStorage
 import Firebase
 import Combine
+import CoreLocation
+import MapKit
 
 extension View {
     func conditionalButtonStyleModifier<M1: ButtonStyle, M2: ButtonStyle>
@@ -33,8 +35,9 @@ struct SearchView: View {
     @ObservedObject var searchModel: SearchModel
     @ObservedObject var favouritesModel: FavouritesModel
     @EnvironmentObject var currentUser: CurrentUser
-    
-    @StateObject private var listingsView = ListingViewModel()
+    @State private var locationManager = LocationManager()
+
+    @StateObject var listingsView = ListingViewModel()
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 15)]
     
     @State var showingFilterSheet = false
@@ -42,11 +45,11 @@ struct SearchView: View {
     @State var showFilterButton = true
     @State var scrollOffset: CGFloat = 0.00
     
-    @State var startDate = Date(timeIntervalSinceReferenceDate: 0)
-    @State var endDate = Date(timeIntervalSinceReferenceDate: 0)
-    
     @State var chatLogViewModelDict : [String:ChatLogViewModel] = [:]
 
+    //Used to focus on the keyboard when the search icon is clicked
+    @FocusState var isFocusOn: Bool
+    
     // Manages the three most recent searches made by the user
     func addRecentSearch(searchQuery: String){
         if (searchQuery.isEmpty || searchQuery == ""){ return }
@@ -62,6 +65,26 @@ struct SearchView: View {
         searchModel.recentSearchQueries = savedValues
     }
 
+    fileprivate func searchBar() -> some View {
+        return TextField("What are you looking for?", text: $searchModel.searchQuery)
+            .textFieldStyle(
+                iconInputStyle(
+                    button: Button(action:{
+                        isFocusOn = true
+                    }, label:{
+                        Image(systemName: "magnifyingglass")
+                    }),
+                    colour: .gray,
+                    clearFunc: searchModel.searchQuery == "" ? nil : {searchModel.searchQuery = ""}
+                )
+            )
+            .focused($isFocusOn)
+            .onSubmit {
+                addRecentSearch(searchQuery: searchModel.searchQuery)
+                doSearch()
+            }
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .top) {
@@ -72,16 +95,20 @@ struct SearchView: View {
                             .font(.title.bold())
                         Spacer()
                         if (searchModel.filtersAreApplied()) {
-                            Text("Filtering is Enabled")
+                            Text("Filtered")
                                 .foregroundColor(.primaryDark)
                         }
+                        NavigationLink(destination: MapView(tabSelection: $tabSelection, chatLogViewModelDict: $chatLogViewModelDict, region: $locationManager.region, listingsView: listingsView).environmentObject(currentUser), label: {
+                            HStack { 
+                                Text("View Map")
+                                Image(systemName: "map.fill")
+                            }
+                        })
+                        .buttonStyle(secondaryButtonStyle(width: screenSize.width * 0.35))
+                        .opacity((listingsView.listings.isEmpty) ? 0.3 : 1)
+                        .disabled(listingsView.listings.isEmpty)
                     }
-                    TextField("What are you looking for?", text: $searchModel.searchQuery)
-                        .textFieldStyle(textInputStyle())
-                        .onSubmit {
-                            addRecentSearch(searchQuery: searchModel.searchQuery)
-                            doSearch()
-                        }
+                    searchBar()
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 15){
                             ForEach(listingsView.listings) { listing in
@@ -190,7 +217,7 @@ struct SearchView: View {
             falseCase: primaryButtonStyle(width: 120, tall: true))
         .padding(.bottom, 30)
         .sheet(isPresented: $showingFilterSheet) {
-            FilterSheetView(searchModel: searchModel, showingFilterSheet: $showingFilterSheet, doSearch: doSearch)
+            FilterSheetView(searchModel: searchModel, showingFilterSheet: $showingFilterSheet, locationManager: $locationManager, doSearch: doSearch)
                 .presentationDetents([.medium, .large])
         }
     }

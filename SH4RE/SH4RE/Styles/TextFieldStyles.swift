@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocationUI
 
 struct textInputStyle: TextFieldStyle{
     //Making an optional error variable
@@ -38,14 +39,17 @@ struct textInputStyle: TextFieldStyle{
     }
 }
 
-/// This style expects a button with an image as the label to place at the beginning of the tet field
 struct locationInputStyle: TextFieldStyle{
     
-    var button: Button<Image>
+    var button: LocationButton
 
     func _body(configuration: TextField<Self._Label>) -> some View {
         HStack {
             button
+                .background(.white)
+                .labelStyle(.iconOnly)
+                .foregroundColor(Color.primaryBase)
+                .tint(.white)
             configuration
                 .textFieldStyle(PlainTextFieldStyle())
             // Text alignment.
@@ -55,6 +59,59 @@ struct locationInputStyle: TextFieldStyle{
             // Text color.
                 .foregroundColor(.black)
                 .padding(.leading, 5)
+        }
+        // TextField spacing.
+        .padding(.vertical, 8)
+        .padding(.leading, 16)
+        .padding(.trailing, 20)
+        // TextField border
+        .background(border)
+        .background(.white)
+        .cornerRadius(8)
+        
+    }
+    var border: some View {
+      RoundedRectangle(cornerRadius: 8)
+        .strokeBorder(
+            .gray,
+          lineWidth: 1
+        )
+    }
+}
+        
+/// This style expects a button with an image as the label to place at the beginning of the text field
+struct iconInputStyle: TextFieldStyle{
+    
+    var button: Button<Image>
+    var disableButton: Bool = false
+    var colour: Color = .accentColor
+    /// If set, it will enable a clear button which when pressed, calls the passed function from this variable
+    var clearFunc: (() -> Void)? = nil
+    
+    var buttonColour: Color {
+        return disableButton ? .gray : colour
+    }
+
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        HStack {
+            button.disabled(disableButton)
+                .foregroundColor(buttonColour)
+            configuration
+                .textFieldStyle(PlainTextFieldStyle())
+            // Text alignment.
+                .multilineTextAlignment(.leading)
+            // Cursor color.
+                .accentColor(.primaryDark)
+            // Text color.
+                .foregroundColor(.black)
+                .padding(.leading, 5)
+            if (clearFunc != nil){
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(.textfield)
+                    .onTapGesture {
+                        clearFunc!()
+                    }
+            }
         }
         // TextField spacing.
         .padding(.vertical, 16)
@@ -90,10 +147,10 @@ struct TextFieldStyles_PreviewsHelper: View {
             TextField("Location", text: $username)
                 .frame(width: screenSize.width * 0.8)
                 .textFieldStyle(
-                    locationInputStyle(button: Button(action:{},
+                    iconInputStyle(button: Button(action:{},
                                                       label:{
                                                           Image(systemName: "scope")
-                                                      }))
+                                                      }), clearFunc: username == "" ? nil : {username = ""})
                 )
         }
     }

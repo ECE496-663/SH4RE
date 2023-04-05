@@ -13,15 +13,22 @@ class FavouritesModel: ObservableObject {
     @Published var favourites:Set<String> = []
     
     init(){
+        getFavouritesFromServer()
+    }
+    
+    fileprivate func getFavouritesFromServer() {
         if(Auth.auth().currentUser != nil){
             Firestore.firestore().collection("User Info").document(getCurrentUserUid()).collection("Favourites").getDocuments() {(snapshot, error) in
                 snapshot?.documents.forEach({ (document) in
-                    let data = document.data()
                     let id = document.documentID
                     self.favourites.insert(id)
                 })
             }
         }
+    }
+    
+    func refresh(){
+        getFavouritesFromServer()
     }
     
     func addFavourite(listingID:String){
@@ -32,6 +39,10 @@ class FavouritesModel: ObservableObject {
     func removeFavourite(listingID:String) {
         Firestore.firestore().collection("User Info").document(getCurrentUserUid()).collection("Favourites").document(listingID).delete()
         favourites.remove(listingID)
+    }
+    
+    func removeAll() {
+        favourites.removeAll()
     }
     
     /// Returns the updated state of whether or not the listing is favourited

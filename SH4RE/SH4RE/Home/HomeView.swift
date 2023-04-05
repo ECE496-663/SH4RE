@@ -24,6 +24,9 @@ struct HomeView: View {
     @EnvironmentObject var currentUser : CurrentUser
     @ObservedObject var searchModel: SearchModel
     @ObservedObject var favouritesModel: FavouritesModel
+
+    //Used to focus on the keyboard when the search icon is clicked
+    @FocusState var isFocusOn: Bool
     let categories = getCategoriesAndImg()
     @State private var recentListings = [Listing]()
     @State private var recentListing1Image: UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
@@ -31,6 +34,26 @@ struct HomeView: View {
     @State private var chatLogViewModel1: ChatLogViewModel? = nil
     @State private var chatLogViewModel2: ChatLogViewModel? = nil
 
+    fileprivate func homeSearchBar() -> some View {
+        return TextField("What are you looking for?", text: $searchModel.searchQuery)
+            .textFieldStyle(
+                iconInputStyle(
+                    button: Button(action:{
+                        isFocusOn = true
+                    }, label:{
+                        Image(systemName: "magnifyingglass")
+                    }),
+                    colour: .gray,
+                    clearFunc: searchModel.searchQuery == "" ? nil : {searchModel.searchQuery = ""}
+                )
+            )
+            .focused($isFocusOn)
+            .onSubmit {
+                searchModel.searchReady = true
+                tabSelection = 2
+            }
+    }
+    
     var body: some View {
         NavigationStack{
             ZStack(alignment: .top){
@@ -38,12 +61,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Search")
                         .font(.title.bold())
-                    TextField("What are you looking for?", text: $searchModel.searchQuery)
-                        .textFieldStyle(textInputStyle())
-                        .onSubmit {
-                            searchModel.searchReady = true
-                            tabSelection = 2
-                        }
+                    homeSearchBar()
                     ScrollView {
                         //Body
                         VStack(alignment: .leading){

@@ -21,6 +21,8 @@ extension EnvironmentValues {
 
 struct AccountView: View {
     @Binding var tabSelection: Int
+    @ObservedObject var searchModel: SearchModel
+    @ObservedObject var favouritesModel: FavouritesModel
     @EnvironmentObject var currentUser: CurrentUser
     @State private var showTutorial:Bool = false;
     @State private var profilePicture:UIImage = UIImage(named: "ProfilePhotoPlaceholder")!
@@ -87,7 +89,8 @@ struct AccountView: View {
                 .padding(.bottom)
             })
             NavigationLink(destination: {
-                FavouritesView()
+                FavouritesView(tabSelection: $tabSelection, favouritesModel:favouritesModel)
+                    .environmentObject(currentUser)
             }, label: {
                 HStack {
                     Image(systemName: "heart")
@@ -156,6 +159,9 @@ struct AccountView: View {
                             currentUser.hasLoggedIn = false
                             //Remove some user specific info
                             UserDefaults.standard.setValue([""], forKey: "RecentSearchQueries")
+                            searchModel.searchQuery = ""
+                            searchModel.resetFilters()
+                            favouritesModel.removeAll()
                         })
                         {
                             Text("Logout")
@@ -189,7 +195,7 @@ struct AccountView: View {
 
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountView(tabSelection: .constant(1))
+        AccountView(tabSelection: .constant(1), searchModel: SearchModel(), favouritesModel: FavouritesModel())
             .environmentObject(CurrentUser())
     }
 }
