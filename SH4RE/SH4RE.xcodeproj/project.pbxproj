@@ -26,10 +26,7 @@
 		1E80DA7629BF8B7B0058F82A /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E80DA7529BF8B7B0058F82A /* SearchModel.swift */; };
 		1EB9FCDA2979CC3A00659C5C /* FilterSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9FCD92979CC3A00659C5C /* FilterSheetView.swift */; };
 		1EB9FCDC2979D1AB00659C5C /* RatingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9FCDB2979D1AB00659C5C /* RatingPicker.swift */; };
-		1ECFE34629BFA49A0036F19A /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1ECFE34529BFA49A0036F19A /* Stickers.xcassets */; };
-		1ECFE34A29BFA49A0036F19A /* SH4RE Stickers.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1ECFE34329BFA4970036F19A /* SH4RE Stickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1ECFE34F29BFA5C80036F19A /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1ECFE34529BFA49A0036F19A /* Stickers.xcassets */; };
-		1ECFE35029BFA5E90036F19A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5939D36129132D7200866FA5 /* Assets.xcassets */; };
 		1ED168DC29C5180C00287CE8 /* FavouritesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */; };
 		1EE1D5C629BFB1A500A59AC1 /* Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE1D5C529BFB1A500A59AC1 /* Categories.swift */; };
 		391AF85129C7B8A400FB1053 /* MyListingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391AF85029C7B8A400FB1053 /* MyListingsView.swift */; };
@@ -85,13 +82,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1ECFE34829BFA49A0036F19A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5939D35229132D7000866FA5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1ECFE34229BFA4970036F19A;
-			remoteInfo = "SH4RE Stickers";
-		};
 		5939D36C29132D7200866FA5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5939D35229132D7000866FA5 /* Project object */;
@@ -115,7 +105,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1ECFE34A29BFA49A0036F19A /* SH4RE Stickers.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -135,7 +124,6 @@
 		1E80DA7529BF8B7B0058F82A /* SearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModel.swift; sourceTree = "<group>"; };
 		1EB9FCD92979CC3A00659C5C /* FilterSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSheetView.swift; sourceTree = "<group>"; };
 		1EB9FCDB2979D1AB00659C5C /* RatingPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingPicker.swift; sourceTree = "<group>"; };
-		1ECFE34329BFA4970036F19A /* SH4RE Stickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "SH4RE Stickers.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ECFE34529BFA49A0036F19A /* Stickers.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Stickers.xcassets; sourceTree = "<group>"; };
 		1ECFE34729BFA49A0036F19A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1ED168DB29C5180C00287CE8 /* FavouritesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesModel.swift; sourceTree = "<group>"; };
@@ -273,7 +261,6 @@
 				5939D35A29132D7000866FA5 /* SH4RE.app */,
 				5939D36B29132D7200866FA5 /* SH4RETests.xctest */,
 				5939D37529132D7200866FA5 /* SH4REUITests.xctest */,
-				1ECFE34329BFA4970036F19A /* SH4RE Stickers.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -450,21 +437,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1ECFE34229BFA4970036F19A /* SH4RE Stickers */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1ECFE34E29BFA49A0036F19A /* Build configuration list for PBXNativeTarget "SH4RE Stickers" */;
-			buildPhases = (
-				1ECFE34129BFA4970036F19A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "SH4RE Stickers";
-			productName = "SH4RE Stickers";
-			productReference = 1ECFE34329BFA4970036F19A /* SH4RE Stickers.appex */;
-			productType = "com.apple.product-type.app-extension.messages-sticker-pack";
-		};
 		5939D35929132D7000866FA5 /* SH4RE */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5939D37F29132D7200866FA5 /* Build configuration list for PBXNativeTarget "SH4RE" */;
@@ -477,7 +449,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1ECFE34929BFA49A0036F19A /* PBXTargetDependency */,
 			);
 			name = SH4RE;
 			packageProductDependencies = (
@@ -541,9 +512,6 @@
 				LastSwiftUpdateCheck = 1410;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					1ECFE34229BFA4970036F19A = {
-						CreatedOnToolsVersion = 14.1;
-					};
 					5939D35929132D7000866FA5 = {
 						CreatedOnToolsVersion = 14.1;
 					};
@@ -578,21 +546,11 @@
 				5939D35929132D7000866FA5 /* SH4RE */,
 				5939D36A29132D7200866FA5 /* SH4RETests */,
 				5939D37429132D7200866FA5 /* SH4REUITests */,
-				1ECFE34229BFA4970036F19A /* SH4RE Stickers */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1ECFE34129BFA4970036F19A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1ECFE35029BFA5E90036F19A /* Assets.xcassets in Resources */,
-				1ECFE34629BFA49A0036F19A /* Stickers.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		5939D35829132D7000866FA5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -704,11 +662,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1ECFE34929BFA49A0036F19A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1ECFE34229BFA4970036F19A /* SH4RE Stickers */;
-			targetProxy = 1ECFE34829BFA49A0036F19A /* PBXContainerItemProxy */;
-		};
 		5939D36D29132D7200866FA5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5939D35929132D7000866FA5 /* SH4RE */;
@@ -722,51 +675,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		1ECFE34C29BFA49A0036F19A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R5ATHRRBR9;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "SH4RE Stickers/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "SH4RE Stickers";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ece496.SH4RE.SH4REStickers;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		1ECFE34D29BFA49A0036F19A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R5ATHRRBR9;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "SH4RE Stickers/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "SH4RE Stickers";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ece496.SH4RE.SH4REStickers;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		5939D37D29132D7200866FA5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -892,7 +800,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"SH4RE/Preview Content\"";
-				DEVELOPMENT_TEAM = R5ATHRRBR9;
+				DEVELOPMENT_TEAM = 2G2PR4D355;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "This app requires your location to find results in your area";
@@ -934,7 +842,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"SH4RE/Preview Content\"";
-				DEVELOPMENT_TEAM = R5ATHRRBR9;
+				DEVELOPMENT_TEAM = 2G2PR4D355;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "This app requires your location to find results in your area";
@@ -1067,15 +975,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1ECFE34E29BFA49A0036F19A /* Build configuration list for PBXNativeTarget "SH4RE Stickers" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1ECFE34C29BFA49A0036F19A /* Debug */,
-				1ECFE34D29BFA49A0036F19A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		5939D35529132D7000866FA5 /* Build configuration list for PBXProject "SH4RE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
