@@ -27,7 +27,7 @@ struct ContentView: View {
     @State private var tabSelection = 1
     @State var listing: Listing = Listing()
     @StateObject var currentUser = CurrentUser()
-    @ObservedObject var searchModel = SearchModel()
+    @StateObject var searchModel = SearchModel()
     @StateObject var favouritesModel = FavouritesModel()
     init() {
         UITabBar.appearance().backgroundColor = UIColor(.backgroundGrey)
@@ -37,13 +37,13 @@ struct ContentView: View {
         ZStack {
             if (currentUser.hasLoggedIn) {
                 TabView(selection: $tabSelection) {
-                    HomeView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: FavouritesModel())
+                    HomeView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: favouritesModel)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Home", systemImage: "house.fill")
                         }
                         .tag(1)
-                    SearchView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: FavouritesModel())
+                    SearchView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: favouritesModel)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Search", systemImage: "safari.fill")
@@ -61,7 +61,7 @@ struct ContentView: View {
                             Label("Messages", systemImage: "message.fill")
                         }
                         .tag(4)
-                    AccountView(tabSelection: $tabSelection, searchModel: searchModel)
+                    AccountView(tabSelection: $tabSelection, searchModel: searchModel, favouritesModel: favouritesModel)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Account", systemImage: "person.crop.circle.fill")
@@ -71,7 +71,7 @@ struct ContentView: View {
                 .accentColor(.primaryDark)
             }
             else {
-                LoginControlView().environmentObject(currentUser)
+                LoginControlView(favouritesModel: favouritesModel).environmentObject(currentUser)
             }
         }
     }
