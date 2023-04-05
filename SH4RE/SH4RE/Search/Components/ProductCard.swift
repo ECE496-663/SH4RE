@@ -64,6 +64,7 @@ struct ProductCard: View {
         self.favouritesModel = favouritesModel
         self.listing = listing
         self.image = image
+        self.favourited = favouritesModel.isFavourited(listingID: listing.id)
     }
 
     func toggleFav(){
