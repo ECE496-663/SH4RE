@@ -102,7 +102,7 @@ struct MessagesChat: View {
                 }
             }
             
-            ScrollView {
+            ScrollView (showsIndicators: false) {
                 ScrollViewReader { scrollViewProxy in
                     VStack {
                         ForEach(vm.chatMessages) { message in

@@ -185,7 +185,7 @@ struct ViewListingView: View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
             
-            ScrollView {
+            ScrollView (showsIndicators: false) {
                 VStack(alignment: .leading) {
                     GeometryReader { geometry in
                         ImageCarouselView(numberOfImages: self.numberOfImages, isEditable: false) {

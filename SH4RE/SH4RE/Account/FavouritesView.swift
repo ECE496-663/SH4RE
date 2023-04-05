@@ -28,7 +28,7 @@ struct FavouritesView: View {
                     .multilineTextAlignment(.center)
                     .padding()
             }
-            ScrollView {
+            ScrollView (showsIndicators: false) {
                 NavigationStack {
                     LazyVGrid(columns: columns, spacing: 15){
                         ForEach(listingsView.listings) { listing in

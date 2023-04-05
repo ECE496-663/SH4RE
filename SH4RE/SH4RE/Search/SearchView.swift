@@ -109,7 +109,7 @@ struct SearchView: View {
                         .disabled(listingsView.listings.isEmpty)
                     }
                     searchBar()
-                    ScrollView {
+                    ScrollView (showsIndicators: false) {
                         LazyVGrid(columns: columns, spacing: 15){
                             ForEach(listingsView.listings) { listing in
                                 // If theres no image for a listing, just use the placeholder
@@ -140,6 +140,9 @@ struct SearchView: View {
                             scrollOffset = offset
                         }
                     }
+                    .refreshable(action: {
+                        doSearch()
+                    })
                     // Next two are for the floating filter button
                     .coordinateSpace(name: "scroll")
                     .overlay(
@@ -161,9 +164,6 @@ struct SearchView: View {
                 addRecentSearch(searchQuery: searchModel.searchQuery)
             }
         }
-        .refreshable(action: {
-            doSearch()
-        })
     }
     
     func doSearch(){

@@ -18,6 +18,7 @@ struct LandingView: View {
                 .foregroundColor(.white)
                 .position(x: screenSize.width * 0.5, y: screenSize.height * 0.4)
         }
+        .frame(height: screenSize.height)
     }
 }
 

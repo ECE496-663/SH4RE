@@ -426,7 +426,7 @@ struct CreateListingView: View {
             }
             else {
                 ScrollViewReader { value in
-                    ScrollView([.vertical]) {
+                    ScrollView([.vertical], showsIndicators: false) {
                         Text(isEditing ? "Edit Listing" : "New Post")
                             .font(.title.bold())
                             .frame(width: screenSize.width * 0.9, alignment: .leading)

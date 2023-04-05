@@ -62,7 +62,7 @@ struct HomeView: View {
                     Text("Search")
                         .font(.title.bold())
                     homeSearchBar()
-                    ScrollView {
+                    ScrollView (showsIndicators: false) {
                         //Body
                         VStack(alignment: .leading){
                             if(searchModel.recentSearchQueries.count > 1) {
@@ -70,25 +70,17 @@ struct HomeView: View {
                                 VStack (alignment: .leading) {
                                     Text("Recent Searches")
                                         .font(.title2.bold())
-                                    HStack(alignment: .center){
-                                        if(searchModel.recentSearchQueries.count == 2){
-                                            Spacer()
-                                        }
+                                    HStack {
                                         ForEach (searchModel.recentSearchQueries, id: \.self) { query in
-                                            Button(action: {
-                                                searchModel.searchQuery = query
-                                                searchModel.searchReady = true
-                                                tabSelection = 2
-                                            }) {
-                                                RecentSearchCard(searchText: query)
+                                            if (query != "") {
+                                                Button(action: {
+                                                    searchModel.searchQuery = query
+                                                    searchModel.searchReady = true
+                                                    tabSelection = 2
+                                                }) {
+                                                    RecentSearchCard(searchText: query)
+                                                }
                                             }
-                                            // match everything but the last
-                                            if query != searchModel.recentSearchQueries.last {
-                                                Spacer()
-                                            }
-                                        }
-                                        if(searchModel.recentSearchQueries.count == 2){
-                                            Spacer()
                                         }
                                     }
                                 }
@@ -106,6 +98,7 @@ struct HomeView: View {
                                         ProductCard(favouritesModel: favouritesModel, listing: listing1, image: recentListing1Image)
                                     })
                                     Spacer()
+                                        .frame(width: screenSize.width * 0.05)
                                     NavigationLink(destination: {
                                         ViewListingView(tabSelection: $tabSelection, listing: listing2, chatLogViewModel: chatLogViewModel2 ?? ChatLogViewModel(chatUser: ChatUser(id: listing2.uid, uid: listing2.uid, name: listing2.ownerName))).environmentObject(currentUser)
                                     }, label: {
@@ -126,6 +119,33 @@ struct HomeView: View {
                         }
                     }
                     .scrollIndicators(.hidden)
+                    .refreshable(action: {
+                        fetchRecentListings(completion: { listings in
+                            recentListings = listings
+                            guard let listing1 = listings.count >= 1 ? listings[0] : nil else{
+                                return
+                            }
+                            
+                            fetchMainImage(listing: listing1, completion: { image1 in
+                                recentListing1Image = image1
+                            })
+                            guard let listing2 = listings.count >= 2 ? listings[1] : nil else{
+                                return
+                            }
+                            fetchMainImage(listing: listing2, completion: { image2 in
+                                recentListing2Image = image2
+                            })
+                            
+                            chatLogViewModel1 = ChatLogViewModel(chatUser: ChatUser(id:listing1.uid, uid: listing1.uid, name: listing1.ownerName))
+                            getProfilePic(uid: listing1.uid, completion: { profilePic in
+                                chatLogViewModel1?.profilePic = profilePic
+                            })
+                            chatLogViewModel2 = ChatLogViewModel(chatUser: ChatUser(id:listing2.uid, uid: listing2.uid, name: listing2.ownerName))
+                            getProfilePic(uid: listing2.uid, completion: { profilePic in
+                              chatLogViewModel2?.profilePic = profilePic
+                            })
+                        })
+                    })
                 }
                 .padding(.horizontal)
             }
@@ -156,33 +176,6 @@ struct HomeView: View {
                 })
             })
         }
-        .refreshable(action: {
-            fetchRecentListings(completion: { listings in
-                recentListings = listings
-                guard let listing1 = listings.count >= 1 ? listings[0] : nil else{
-                    return
-                }
-                
-                fetchMainImage(listing: listing1, completion: { image1 in
-                    recentListing1Image = image1
-                })
-                guard let listing2 = listings.count >= 2 ? listings[1] : nil else{
-                    return
-                }
-                fetchMainImage(listing: listing2, completion: { image2 in
-                    recentListing2Image = image2
-                })
-                
-                chatLogViewModel1 = ChatLogViewModel(chatUser: ChatUser(id:listing1.uid, uid: listing1.uid, name: listing1.ownerName))
-                getProfilePic(uid: listing1.uid, completion: { profilePic in
-                    chatLogViewModel1?.profilePic = profilePic
-                })
-                chatLogViewModel2 = ChatLogViewModel(chatUser: ChatUser(id:listing2.uid, uid: listing2.uid, name: listing2.ownerName))
-                getProfilePic(uid: listing2.uid, completion: { profilePic in
-                  chatLogViewModel2?.profilePic = profilePic
-                })
-            })
-        })
     }
 }
 
@@ -190,14 +183,20 @@ struct HomeView: View {
 struct RecentSearchCard: View {
     var searchText: String = ""
     var body: some View {
-        Text(searchText)
-            .font(.headline)
-            .foregroundColor(.black)
-            .fixedSize(horizontal: false, vertical: false)
-            .multilineTextAlignment(.leading)
-            .padding()
-            .frame(width: 110, height: 100, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 18).fill(Color.darkGrey))
+        HStack {
+            Image(systemName: "magnifyingglass.circle.fill")
+                .tint(Color.primaryDark)
+                .padding(.leading, 5)
+            Text(searchText)
+                .bold()
+                .multilineTextAlignment(.leading)
+                .frame(width: 80, height: 50, alignment: .leading)
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: 9)
+                .stroke(Color.primaryBase, lineWidth: 1)
+        )
+        .background(.white)
     }
 }
 
