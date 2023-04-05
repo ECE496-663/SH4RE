@@ -16,8 +16,6 @@ struct MessagesInboxView: View {
     @EnvironmentObject var currentUser: CurrentUser
     @ObservedObject var vm = MainMessagesViewModel()
     @ObservedObject var favouritesModel: FavouritesModel
-    @State var shouldNavigateToChatLogView = false
-    var chatLogViewModel = ChatLogViewModel(chatUser: nil)
     @State var profilePicDict : [String:UIImage] = [:]
     
     var body: some View {
@@ -42,11 +40,9 @@ struct MessagesInboxView: View {
                         else {
                             messagesView
                         }
-                        NavigationLink("", isActive: $shouldNavigateToChatLogView) {
-                            MessagesChat(vm: chatLogViewModel, favouritesModel: favouritesModel, tabSelection: $tabSelection, currentUser: _currentUser)
-                        }
                     }
-                }.onAppear(){
+                }
+                .onAppear(){
                     vm.fetchCurrentUser()
                     vm.fetchRecentMessages()
                 }
@@ -72,22 +68,23 @@ struct MessagesInboxView: View {
         .padding()
     }
     
+    private func getCLVM(recentMessage: RecentMessage) -> ChatLogViewModel {
+        let uid = FirebaseManager.shared.auth.currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
+        let CLVM = ChatLogViewModel(chatUser: ChatUser(id: uid, uid: uid, name: recentMessage.name))
+        CLVM.profilePic = profilePicDict[recentMessage.toId] ?? UIImage(named: "ProfilePhotoPlaceholder")!
+        return CLVM
+    }
+    
     private var messagesView: some View {
         
         ScrollView {
                 ForEach(vm.recentMessages) { recentMessage in
                     
                     VStack {
-                        Button {
-                            let uid = FirebaseManager.shared.auth.currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
+                        NavigationLink(destination:{
+                            MessagesChat(vm: getCLVM(recentMessage: recentMessage), favouritesModel: favouritesModel, tabSelection: $tabSelection, currentUser: _currentUser)
                             
-                            self.chatUser = .init(id: uid, uid: uid, name: recentMessage.name)
-                            self.chatLogViewModel.chatUser = self.chatUser
-                            self.chatLogViewModel.fetchMessages()
-                            self.chatLogViewModel.profilePic = profilePicDict[recentMessage.toId] ?? UIImage(named: "ProfilePhotoPlaceholder")!
-                            self.shouldNavigateToChatLogView.toggle()
-                            
-                        } label: {
+                        }, label: {
                             HStack(spacing: 16) {
                                 Image(uiImage: profilePicDict[recentMessage.toId] ?? UIImage(named: "ProfilePhotoPlaceholder")!)
                                     .resizable()
@@ -111,7 +108,7 @@ struct MessagesInboxView: View {
                                     .font(.callout)
                                     .foregroundColor(.black)
                             }
-                        }
+                        })
                         Divider()
                             .padding(.vertical, 8)
                     }.padding(.horizontal)
