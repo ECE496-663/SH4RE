@@ -80,6 +80,7 @@ struct HomeView: View {
                                                 }) {
                                                     RecentSearchCard(searchText: query)
                                                 }
+                                                .padding(.leading, 1)
                                             }
                                         }
                                     }
