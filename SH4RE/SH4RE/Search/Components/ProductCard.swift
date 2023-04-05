@@ -114,6 +114,9 @@ struct ProductCard: View {
         .onReceive(favouritesModel.favourites.publisher, perform:{ _ in
             favourited = favouritesModel.isFavourited(listingID: listing.id)
         })
+        .onAppear(perform:{
+            favourited = favouritesModel.isFavourited(listingID: listing.id)
+        })
     }
 }
 

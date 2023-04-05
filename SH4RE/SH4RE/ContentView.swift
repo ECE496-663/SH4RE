@@ -55,7 +55,7 @@ struct ContentView: View {
                             Label("Post", systemImage: "plus.square.fill")
                         }
                         .tag(3)
-                    MessagesInboxView(tabSelection: $tabSelection)
+                    MessagesInboxView(tabSelection: $tabSelection, favouritesModel: favouritesModel)
                         .environmentObject(currentUser)
                         .tabItem {
                             Label("Messages", systemImage: "message.fill")

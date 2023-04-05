@@ -11,6 +11,7 @@ struct MyListingsView: View {
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser
     @StateObject private var listingsView = ListingViewModel()
+    @ObservedObject var favouritesModel: FavouritesModel
     var columns = [GridItem(.adaptive(minimum: 160), spacing: 15)]
 
     var body: some View {
@@ -31,9 +32,9 @@ struct MyListingsView: View {
                             // If theres no image for a listing, just use the placeholder
                             let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                             NavigationLink(destination: {
-                                ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: ""))).environmentObject(currentUser)
+                                ViewListingView(tabSelection: $tabSelection, favouritesModel: favouritesModel, listing: listing, chatLogViewModel: ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: ""))).environmentObject(currentUser)
                             }, label: {
-                                ProductCard(favouritesModel: FavouritesModel(), listing: listing, image: productImage)
+                                ProductCard(favouritesModel: favouritesModel, listing: listing, image: productImage)
                             })
                         }
                     }
@@ -61,7 +62,7 @@ struct MyListingsView: View {
 
 struct MyListingsView_Previews: PreviewProvider {
     static var previews: some View {
-        MyListingsView(tabSelection: .constant(5))
+        MyListingsView(tabSelection: .constant(5), favouritesModel: FavouritesModel())
             .environmentObject(CurrentUser())
     }
 }

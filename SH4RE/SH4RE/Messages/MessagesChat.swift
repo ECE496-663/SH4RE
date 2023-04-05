@@ -13,6 +13,7 @@ import FirebaseStorage
 struct MessagesChat: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var vm: ChatLogViewModel
+    @ObservedObject var favouritesModel: FavouritesModel
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser
     static let emptyScrollToString = "Empty"
@@ -69,7 +70,7 @@ struct MessagesChat: View {
                     .padding(.bottom)
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: ProfileView(uid: $uid, profilePicture: $profilePicture, tabSelection: $tabSelection, currentUser: _currentUser))
+                NavigationLink(destination: ProfileView(uid: $uid, profilePicture: $profilePicture, tabSelection: $tabSelection, favouritesModel: favouritesModel, currentUser: _currentUser))
                 {
                     Image(systemName: "info.circle.fill")
                 }

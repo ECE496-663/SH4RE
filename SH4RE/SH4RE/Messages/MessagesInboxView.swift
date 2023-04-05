@@ -15,6 +15,7 @@ struct MessagesInboxView: View {
     @State  var searchQuery: String = ""
     @EnvironmentObject var currentUser: CurrentUser
     @ObservedObject var vm = MainMessagesViewModel()
+    @ObservedObject var favouritesModel: FavouritesModel
     @State var shouldNavigateToChatLogView = false
     var chatLogViewModel = ChatLogViewModel(chatUser: nil)
     @State var profilePicDict : [String:UIImage] = [:]
@@ -42,7 +43,7 @@ struct MessagesInboxView: View {
                             messagesView
                         }
                         NavigationLink("", isActive: $shouldNavigateToChatLogView) {
-                            MessagesChat(vm: chatLogViewModel, tabSelection: $tabSelection, currentUser: _currentUser)
+                            MessagesChat(vm: chatLogViewModel, favouritesModel: favouritesModel, tabSelection: $tabSelection, currentUser: _currentUser)
                         }
                     }
                 }.onAppear(){

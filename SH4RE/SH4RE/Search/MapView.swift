@@ -25,6 +25,7 @@ struct MapView: View {
     @Binding var tabSelection: Int
     @Binding var chatLogViewModelDict:[String:ChatLogViewModel]
     @EnvironmentObject var currentUser: CurrentUser
+    @ObservedObject var favouritesModel: FavouritesModel
     @Binding var region:MKCoordinateRegion
     @ObservedObject var listingsView:ListingViewModel
     @State var listingPins:[MapLocation] = []
@@ -79,7 +80,7 @@ struct MapView: View {
         .safeAreaInset(edge: .bottom) {
             if (selectedListing != nil) {
                 NavigationLink(destination: {
-                    ViewListingView(tabSelection: $tabSelection, listing: selectedListing!.listing, chatLogViewModel: chatLogViewModelDict[selectedListing!.name] ?? ChatLogViewModel(chatUser: ChatUser(id: selectedListing?.listing.id,uid: (selectedListing?.listing.uid)!, name: (selectedListing?.listing.ownerName)!)) ).environmentObject(currentUser)
+                    ViewListingView(tabSelection: $tabSelection, favouritesModel: favouritesModel, listing: selectedListing!.listing, chatLogViewModel: chatLogViewModelDict[selectedListing!.name] ?? ChatLogViewModel(chatUser: ChatUser(id: selectedListing?.listing.id,uid: (selectedListing?.listing.uid)!, name: (selectedListing?.listing.ownerName)!))).environmentObject(currentUser)
                 }, label: {
                     LandscapeProductCard(listing: selectedListing!.listing, image: selectedListing!.productImage)
                 })

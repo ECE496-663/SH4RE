@@ -19,6 +19,7 @@ struct ViewListingView: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var tabSelection: Int
     @EnvironmentObject var currentUser: CurrentUser
+    @ObservedObject var favouritesModel: FavouritesModel
     
     //parameters passed in from search nav link
     @State var listing: Listing
@@ -308,7 +309,7 @@ struct ViewListingView: View {
                 }
                 Spacer()
                 
-                NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel, tabSelection: $tabSelection)) {
+                NavigationLink(destination: MessagesChat(vm:self.chatLogViewModel, favouritesModel: favouritesModel, tabSelection: $tabSelection)) {
                     HStack {
                         Text("Send")
                             .font(.body)
@@ -420,6 +421,6 @@ struct ViewListingView_Previews: PreviewProvider {
     static var previewChatLogModel = ChatLogViewModel(chatUser: ChatUser(id: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", uid: "Y4YBHDZDMEVo9yMVzGgBoVw2ZpH2", name: "Random"))
     
     static var previews: some View {
-        ViewListingView(tabSelection: .constant(2), listing: previewListing, chatLogViewModel: previewChatLogModel)
+        ViewListingView(tabSelection: .constant(2), favouritesModel: FavouritesModel(), listing: previewListing, chatLogViewModel: previewChatLogModel)
     }
 }

@@ -13,6 +13,7 @@ struct ProfileView: View {
     @Binding var uid:String
     @Binding var profilePicture:UIImage
     @Binding var tabSelection: Int
+    @ObservedObject var favouritesModel: FavouritesModel
     @EnvironmentObject var currentUser: CurrentUser
     @State private var name:String = "" // if not name
     @State private var numberOfStars:Float = 4.0
@@ -49,9 +50,9 @@ struct ProfileView: View {
                             // If theres no image for a listing, just use the placeholder
                             let productImage = listingsView.image_dict[listing.id] ?? UIImage(named: "placeholder")!
                             NavigationLink(destination: {
-                                ViewListingView(tabSelection: $tabSelection, listing: listing, chatLogViewModel: chatLogViewModelDict[listing.id] ?? ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.ownerName))).environmentObject(currentUser)
+                                ViewListingView(tabSelection: $tabSelection, favouritesModel: favouritesModel, listing: listing, chatLogViewModel: chatLogViewModelDict[listing.id] ?? ChatLogViewModel(chatUser: ChatUser(id: listing.uid,uid: listing.uid, name: listing.ownerName))).environmentObject(currentUser)
                             }, label: {
-                                ProductCard(favouritesModel: FavouritesModel(), listing: listing, image: productImage)
+                                ProductCard(favouritesModel: favouritesModel, listing: listing, image: productImage)
                             })
                         }
                     }
