@@ -32,7 +32,7 @@ struct MessagesInboxView: View {
                 UnverifiedView(tabSelection: $tabSelection).environmentObject(currentUser)
             }
             else {
-                NavigationView {
+                NavigationStack {
                     VStack {
                         customNavBar
                         if (vm.recentMessages.count == 0) {
