@@ -16,6 +16,42 @@ struct FavButtonBounce: ButtonStyle {
     }
 }
 
+struct LandscapeProductCard: View {
+    var listing: Listing;
+    var image:UIImage
+    private let width:CGFloat = screenSize.width * 0.85
+    private let height:CGFloat = screenSize.height * 0.1
+        
+    var body: some View {
+        ZStack (alignment: .topTrailing){
+            HStack (spacing: 0){
+                Image(uiImage: self.image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: width * 0.4 , height: height)
+                    .clipped()
+            
+                VStack (alignment: .leading) {
+                    Text(listing.title)
+                        .bold()
+                    Text("$\(String(format: "%.2f", listing.price)) / Day")
+                        .font(.caption)
+                }
+                .padding()
+                .frame(width: width * 0.6, height: height, alignment: .leading)
+                .background(.white)
+            }
+        }
+        .frame(width: width, height: height)
+        .background(.white)
+        .cornerRadius(20)
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color.primaryDark, lineWidth: 1)
+        )
+    }
+}
+
 struct ProductCard: View {
     @ObservedObject var favouritesModel: FavouritesModel
     var listing: Listing;
@@ -75,6 +111,9 @@ struct ProductCard: View {
         .frame(width: width, height: height + 75)
         .background(.white)
         .cornerRadius(20)
+        .onReceive(favouritesModel.favourites.publisher, perform:{ _ in
+            favourited = favouritesModel.isFavourited(listingID: listing.id)
+        })
     }
 }
 

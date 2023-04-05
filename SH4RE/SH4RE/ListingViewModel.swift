@@ -25,6 +25,7 @@ struct Listing : Identifiable{
     var category: String = ""
     var address:Dictionary<String,Double> = [:]
     var ownerName:String = ""
+    var sponsored:Int = 0
     var timestamp: Date = Date(timeIntervalSinceReferenceDate: 0)
     var postalCode: String = ""
 }
@@ -39,7 +40,8 @@ struct Hit: Codable, Equatable{
     var Price:Float
     var image_path = [String]()
     var _geoloc = Dictionary<String, Double>()
-    var ownerName:String
+    var ownerName:String = ""
+    var sponsored:Int = 0
     var timestamp: Date
     var postal: String
 }
@@ -69,6 +71,7 @@ class ListingViewModel : ObservableObject{
                 let postalCode = data["postal"] as? String ?? ""
                 let imagepath = data["image_path"] as? [String] ?? []
                 let price = data["Price"] as? Float ?? 0
+                let sponsored = data["sponsored"] as? Int ?? 0
                 let timeAvailability = data["Availability"] as? [Timestamp] ?? []
                 let created = data["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
                 let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
@@ -77,7 +80,7 @@ class ListingViewModel : ObservableObject{
                     availability.append(timestamp.dateValue())
                 }
                 
-                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, timestamp: created.dateValue(), postalCode: postalCode)
+                return Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored, timestamp: created.dateValue(), postalCode: postalCode)
                 
             }
             if QuerySnapshot!.isEmpty{
@@ -96,6 +99,7 @@ class ListingViewModel : ObservableObject{
         let minRating = completedSearch.minRating
         let postalCode = completedSearch.location
         let rad = completedSearch.maxDistance
+        var indexedListings = [Listing]()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd/MM/yyyy"
         let startDate:Date = dateFormatter.date(from: dateFormatter.string(from: completedSearch.startDate))!
@@ -124,6 +128,11 @@ class ListingViewModel : ObservableObject{
                 isPostalCodeValid = true
                 lat = location!.coordinate.latitude
                 lon = location!.coordinate.longitude
+            }
+            if (postalCode == "Current Location") {
+                isPostalCodeValid = true
+                lat = completedSearch.latitude
+                lon = completedSearch.longitude
             }
             var query = Query(searchString)
             if(isPostalCodeValid){
@@ -155,6 +164,7 @@ class ListingViewModel : ObservableObject{
                       let decoder = JSONDecoder()
                       decoder.dateDecodingStrategy = .millisecondsSince1970
                       let hits = try decoder.decode(Array<Hit>.self, from: hitsData)
+                      var hitsToAdd = hits.count
                       if hits.count != 0{
                           for hit in hits{
                               getListingRating(uid: hit.UID, lid:hit.objectID, completion: { rating in
@@ -179,14 +189,26 @@ class ListingViewModel : ObservableObject{
                                           }
                                       }
                                       if(available == true){
-                                          let listing = Listing(id:hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName, timestamp:hit.timestamp, postalCode: hit.postal)
-                                          self.listings.append(listing)
+                                          let listing = Listing(id: hit.objectID, uid: hit.UID, title: hit.Title, description: hit.Description, imagepath : hit.image_path, price: hit.Price, availability : hit.Availability, category: hit.Category, address: hit._geoloc, ownerName : hit.ownerName, sponsored: hit.sponsored, timestamp: hit.timestamp, postalCode: hit.postal)
+                                          indexedListings.append(listing)
+                                          if(indexedListings.count == hitsToAdd){
+                                              self.sortSponsored(indexedListings: indexedListings)
+                                              completion(true)
+                                          }
+                                      }else{
+                                          hitsToAdd-=1
+                                          if(indexedListings.count == hitsToAdd){
+                                              self.sortSponsored(indexedListings: indexedListings)
+                                              completion(true)
+                                          }
                                       }
-                                      
-                                      
-                                      
+                                  }else{
+                                      hitsToAdd -= 1
+                                      if(indexedListings.count == hitsToAdd){
+                                          self.sortSponsored(indexedListings: indexedListings)
+                                          completion(true)
+                                      }
                                   }
-                                  completion(true)
                               })
                           }
                       }
@@ -196,7 +218,19 @@ class ListingViewModel : ObservableObject{
               }
             }
         }
-        completion(false)
+    }
+    public func sortSponsored(indexedListings: [Listing]){
+        var sponsoredListings = [Listing]()
+        var nonSponsoredListings = [Listing]()
+        for listing in indexedListings{
+            if(listing.sponsored == 1){
+                sponsoredListings.append(listing)
+            }else{
+                nonSponsoredListings.append(listing)
+            }
+        }
+        sponsoredListings.append(contentsOf: nonSponsoredListings)
+        self.listings = sponsoredListings
     }
     
     public func fetchProductMainImage(completion: @escaping (Bool) -> Void) {
@@ -235,6 +269,8 @@ class ListingViewModel : ObservableObject{
     }
 }
 
+
+
 func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
     let db = Firestore.firestore()
     var listings = [Listing]()
@@ -251,6 +287,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
             let postalCode = data["postal"] as? String ?? ""
             let imagepath = data["image_path"] as? [String] ?? []
             let price = data["Price"] as? Float ?? 0
+            let sponsored = data["sponsored"] as? Int ?? 0
             let timeAvailability = data["Availability"] as? [Timestamp] ?? []
             let created = data["timestamp"] as? Timestamp ?? Timestamp(date:Date(timeIntervalSinceReferenceDate: 0))
             let category = data["Category"] as? String ?? ""
@@ -260,7 +297,7 @@ func fetchUsersListings(uid:String, completion: @escaping ([Listing]) -> Void) {
                 availability.append(timestamp.dateValue())
             }
             
-            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, timestamp:created.dateValue(), postalCode: postalCode)
+            let listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName: ownerName, sponsored: sponsored, timestamp:created.dateValue(), postalCode: postalCode)
             
             listings.append(listing)
             if listings.count == snapshot?.documents.count {
@@ -280,9 +317,8 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         guard let document = document else{
             return
         }
-        guard let data = document.data() else{
-            return
-        }
+        let data = document.data()!
+        
         //Assign listing properties here
         let id = lid
         let uid = data["UID"] as? String ?? ""
@@ -706,4 +742,12 @@ func getStatus(requestId: String, listingId: String, completion: @escaping(Int)-
             }
         }
     })
+}
+
+func sponsorListing(lid: String){
+    documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":1])
+}
+
+func unsponsorListing(lid: String){
+    documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":0])
 }

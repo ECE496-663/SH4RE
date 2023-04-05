@@ -281,11 +281,9 @@ struct CreateListingView: View {
             }
         }
         getUserName(uid: getCurrentUserUid(), completion: { name in
-            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name, "timestamp": Timestamp(date:Date()), "postal": postalCode] as [String : Any]
+            let listingFields = ["Title": title, "Description" : description, "Price" : cost, "Category" : categorySelection, "Availability": calAvail, "_geoloc": ["lat": lat, "lon": lon], "UID": getCurrentUserUid(), "ownerName":name, "sponsored":0, "timestamp": Timestamp(date:Date()), "postal": postalCode] as [String : Any]
             let documentID = documentWrite(collectionPath: "Listings", data: listingFields)
-            
-            
-            
+
             // upload images and add paths to data fields
             var index = 1
             var imgPath = ""
