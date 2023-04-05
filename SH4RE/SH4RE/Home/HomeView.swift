@@ -156,6 +156,33 @@ struct HomeView: View {
                 })
             })
         }
+        .refreshable(action: {
+            fetchRecentListings(completion: { listings in
+                recentListings = listings
+                guard let listing1 = listings.count >= 1 ? listings[0] : nil else{
+                    return
+                }
+                
+                fetchMainImage(listing: listing1, completion: { image1 in
+                    recentListing1Image = image1
+                })
+                guard let listing2 = listings.count >= 2 ? listings[1] : nil else{
+                    return
+                }
+                fetchMainImage(listing: listing2, completion: { image2 in
+                    recentListing2Image = image2
+                })
+                
+                chatLogViewModel1 = ChatLogViewModel(chatUser: ChatUser(id:listing1.uid, uid: listing1.uid, name: listing1.ownerName))
+                getProfilePic(uid: listing1.uid, completion: { profilePic in
+                    chatLogViewModel1?.profilePic = profilePic
+                })
+                chatLogViewModel2 = ChatLogViewModel(chatUser: ChatUser(id:listing2.uid, uid: listing2.uid, name: listing2.ownerName))
+                getProfilePic(uid: listing2.uid, completion: { profilePic in
+                  chatLogViewModel2?.profilePic = profilePic
+                })
+            })
+        })
     }
 }
 

@@ -161,6 +161,9 @@ struct SearchView: View {
                 addRecentSearch(searchQuery: searchModel.searchQuery)
             }
         }
+        .refreshable(action: {
+            doSearch()
+        })
     }
     
     func doSearch(){
