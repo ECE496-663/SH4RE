@@ -110,9 +110,6 @@ struct ProductCard: View {
         .frame(width: width, height: height + 75)
         .background(.white)
         .cornerRadius(20)
-        .onAppear() {
-            self.favourited = favouritesModel.isFavourited(listingID: listing.id)
-        }
     }
 }
 
