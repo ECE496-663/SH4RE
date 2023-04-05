@@ -77,7 +77,7 @@ struct MessagesInboxView: View {
     
     private var messagesView: some View {
         
-        ScrollView {
+        ScrollView (showsIndicators: false) {
                 ForEach(vm.recentMessages) { recentMessage in
                     
                     VStack {

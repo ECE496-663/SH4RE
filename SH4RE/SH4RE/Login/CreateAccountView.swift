@@ -24,152 +24,155 @@ struct CreateAccountView: View {
     @State private var showCameraSheet: Bool = false
 
     var body: some View {
-        ZStack {
-            Color(UIColor(.primaryBase))
-                .ignoresSafeArea()
-            VStack {
-                Text("Create Account")
-                    .foregroundColor(.white)
-                    .font(.system(size: 30))
-                    .padding(.top, 70)
-                    .padding(.bottom, 40)
-                ScrollView (.vertical, showsIndicators: false) {
-                    VStack (alignment: .trailing) {
-                        Spacer()
-                            .frame(height: screenSize.height * 0.01)
-                        VStack {
-                            Menu {
-                                Button("Camera", action: {showCameraSheet.toggle()})
-                                Button("Photo Library", action: {showPhotoLibSheet.toggle()})
-                            } label: {
-                                VStack {
-                                    Image(uiImage: profilePicture)
-                                        .resizable()
-                                        .clipShape(Circle())
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: screenSize.width * 0.1, height: screenSize.height * 0.1)
-                                    Image(systemName: "camera.fill")
-                                        .foregroundColor(.primaryDark)
-                                }
-                            }
-                            .sheet(isPresented: $showPhotoLibSheet) {
-                                ImagePicker(sourceType: .photoLibrary, selectedImage: $profilePicture)
-                            }
-                            .sheet(isPresented: $showCameraSheet) {
-                                ImagePicker(sourceType: .camera, selectedImage: $profilePicture)
-                            }
-                            Text("Name")
-                                .font(.system(size: 18))
-                                .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
-                            TextField("Your Name", text: $name)
-                                .disableAutocorrection(true)
-                                .frame(width: screenSize.width * 0.8)
-                                .textFieldStyle(textInputStyle())
-                                .padding(.bottom)
-                            Text("Email Address")
-                                .font(.system(size: 18))
-                                .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
-                            TextField("Your email", text: $username)
-                                .disableAutocorrection(true)
-                                .autocapitalization(.none)
-                                .frame(width: screenSize.width * 0.8)
-                                .textFieldStyle(textInputStyle())
-                                .padding(.bottom)
-                            
-                            Text("Password")
-                                .font(.system(size: 18))
-                                .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
-                            SecureField("Your password", text: $password)
-                                .disableAutocorrection(true)
-                                .autocapitalization(.none)
-                                .frame(width: screenSize.width * 0.8)
-                                .textFieldStyle(textInputStyle())
-                                .padding(.bottom)
-                            
-                            
-                            Text("Confirm Password")
-                                .font(.system(size: 18))
-                                .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
-                            SecureField("Your password", text: $confirmPassword)
-                                .disableAutocorrection(true)
-                                .autocapitalization(.none)
-                                .frame(width: screenSize.width * 0.8)
-                                .textFieldStyle(textInputStyle())
-                                .padding(.bottom)
-                        }
-                        
-                        Spacer()
-                        
+        GeometryReader { geometry in
+            ZStack {
+                Color(UIColor(.primaryBase))
+                    .ignoresSafeArea()
+                VStack {
+                    Text("Create Account")
+                        .foregroundColor(.white)
+                        .font(.system(size: 30))
+                        .padding(.bottom, 40)
+                    ScrollView (.vertical, showsIndicators: false) {
                         VStack (alignment: .trailing) {
-                            Button(action: {
-                                if (username.isEmpty || name.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-                                    errorInField = true
-                                    errorDescription = "Some entries missing"
-                                }
-                                else if (password != confirmPassword) {
-                                    errorInField = true
-                                    errorDescription = "Passwords did not match"
-                                }
-                                else {
-                                    Task {
-                                        do {
-                                            try await Auth.auth().createUser(withEmail: username, password: password)
-                                            currentUser.hasLoggedIn = true
-                                            currentUser.sendVerificationEmail()
-                                            
-                                            let documentID = documentWrite(collectionPath: "User Info", uid: Auth.auth().currentUser!.uid, data: ["name": name,"email": username])
-                                            
-                                            // upload profile picture
-                                            let imgPath = "profilepictures/" + documentID + "/profile.jpg"
-                                            storageManager.upload(image: profilePicture, path: imgPath)
-                                            if (documentUpdate(collectionPath: "User Info", documentID: documentID, data: ["pfp_path" : imgPath])) {
-                                                NSLog("error");
-                                            }
-                                        }
-                                        catch {
-                                            errorInField = true
-                                            errorDescription = error.localizedDescription
-                                        }
+                            Spacer()
+                                .frame(height: screenSize.height * 0.01)
+                            VStack {
+                                Menu {
+                                    Button("Camera", action: {showCameraSheet.toggle()})
+                                    Button("Photo Library", action: {showPhotoLibSheet.toggle()})
+                                } label: {
+                                    VStack {
+                                        Image(uiImage: profilePicture)
+                                            .resizable()
+                                            .clipShape(Circle())
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: screenSize.width * 0.1, height: screenSize.height * 0.1)
+                                        Image(systemName: "camera.fill")
+                                            .foregroundColor(.primaryDark)
                                     }
                                 }
-                            })
-                            {
-                                Text("Create Account")
+                                .sheet(isPresented: $showPhotoLibSheet) {
+                                    ImagePicker(sourceType: .photoLibrary, selectedImage: $profilePicture)
+                                }
+                                .sheet(isPresented: $showCameraSheet) {
+                                    ImagePicker(sourceType: .camera, selectedImage: $profilePicture)
+                                }
+                                Text("Name")
+                                    .font(.system(size: 18))
+                                    .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
+                                TextField("Your Name", text: $name)
+                                    .disableAutocorrection(true)
+                                    .frame(width: screenSize.width * 0.8)
+                                    .textFieldStyle(textInputStyle())
+                                    .padding(.bottom)
+                                Text("Email Address")
+                                    .font(.system(size: 18))
+                                    .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
+                                TextField("Your email", text: $username)
+                                    .disableAutocorrection(true)
+                                    .autocapitalization(.none)
+                                    .frame(width: screenSize.width * 0.8)
+                                    .textFieldStyle(textInputStyle())
+                                    .padding(.bottom)
+                                
+                                Text("Password")
+                                    .font(.system(size: 18))
+                                    .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
+                                SecureField("Your password", text: $password)
+                                    .disableAutocorrection(true)
+                                    .autocapitalization(.none)
+                                    .frame(width: screenSize.width * 0.8)
+                                    .textFieldStyle(textInputStyle())
+                                    .padding(.bottom)
+                                    .textContentType(.oneTimeCode)
+                                
+                                Text("Confirm Password")
+                                    .font(.system(size: 18))
+                                    .frame(maxWidth: screenSize.width * 0.8, alignment: .leading)
+                                SecureField("Your password", text: $confirmPassword)
+                                    .disableAutocorrection(true)
+                                    .autocapitalization(.none)
+                                    .frame(width: screenSize.width * 0.8)
+                                    .textFieldStyle(textInputStyle())
+                                    .padding(.bottom)
+                                    .textContentType(.oneTimeCode)
                             }
-                            .alertX(isPresented: $errorInField, content: {
-                                AlertX(
-                                    title: Text("ERROR: " + errorDescription),
-                                    theme: AlertX.Theme.custom(
-                                        windowColor: .grey,
-                                        alertTextColor: .errorColour,
-                                        enableShadow: true,
-                                        enableRoundedCorners: true,
-                                        enableTransparency: false,
-                                        cancelButtonColor: .white,
-                                        cancelButtonTextColor: .white,
-                                        defaultButtonColor: .primaryDark,
-                                        defaultButtonTextColor: .white
+                            
+                            Spacer()
+                            
+                            VStack (alignment: .trailing) {
+                                Button(action: {
+                                    if (username.isEmpty || name.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+                                        errorInField = true
+                                        errorDescription = "Some entries missing"
+                                    }
+                                    else if (password != confirmPassword) {
+                                        errorInField = true
+                                        errorDescription = "Passwords did not match"
+                                    }
+                                    else {
+                                        Task {
+                                            do {
+                                                try await Auth.auth().createUser(withEmail: username, password: password)
+                                                currentUser.hasLoggedIn = true
+                                                currentUser.sendVerificationEmail()
+                                                
+                                                let documentID = documentWrite(collectionPath: "User Info", uid: Auth.auth().currentUser!.uid, data: ["name": name,"email": username])
+                                                
+                                                // upload profile picture
+                                                let imgPath = "profilepictures/" + documentID + "/profile.jpg"
+                                                storageManager.upload(image: profilePicture, path: imgPath)
+                                                if (documentUpdate(collectionPath: "User Info", documentID: documentID, data: ["pfp_path" : imgPath])) {
+                                                    NSLog("error");
+                                                }
+                                            }
+                                            catch {
+                                                errorInField = true
+                                                errorDescription = error.localizedDescription
+                                            }
+                                        }
+                                    }
+                                })
+                                {
+                                    Text("Create Account")
+                                }
+                                .alertX(isPresented: $errorInField, content: {
+                                    AlertX(
+                                        title: Text("ERROR: " + errorDescription),
+                                        theme: AlertX.Theme.custom(
+                                            windowColor: .grey,
+                                            alertTextColor: .errorColour,
+                                            enableShadow: true,
+                                            enableRoundedCorners: true,
+                                            enableTransparency: false,
+                                            cancelButtonColor: .white,
+                                            cancelButtonTextColor: .white,
+                                            defaultButtonColor: .primaryDark,
+                                            defaultButtonTextColor: .white
+                                        )
                                     )
-                                )
-                            })
-                            .buttonStyle(primaryButtonStyle())
-                            Button(action: {
-                                showLoginScreen!()
-                            })
-                            {
-                                Text("Cancel")
+                                })
+                                .buttonStyle(primaryButtonStyle())
+                                Button(action: {
+                                    showLoginScreen!()
+                                })
+                                {
+                                    Text("Cancel")
+                                }
+                                .buttonStyle(secondaryButtonStyle())
                             }
-                            .buttonStyle(secondaryButtonStyle())
+                            .padding(.bottom, 50)
                         }
-                        .padding(.bottom, 50)
                     }
+                    .frame(maxWidth: screenSize.width)
+                    .background(Color.grey)
+                    .cornerRadius(50)
                 }
-                .frame(maxWidth: screenSize.width)
-                .background(Color.grey)
-                .cornerRadius(50)
             }
+            .frame(height: screenSize.height)
         }
-        .frame(height: screenSize.height)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 

@@ -328,6 +328,7 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         let postalCode = data["postal"] as? String ?? ""
         let imagepath = data["image_path"] as? [String] ?? []
         let price = data["Price"] as? Float ?? 0
+        let sponsored = data["sponsored"] as? Int ?? 0
         let timeAvailability = data["Availability"] as? [Timestamp] ?? []
         var availability:[Date] = []
         let address = data["_geoloc"] as? Dictionary<String,Double> ?? ["lat": -1, "long": -1]
@@ -336,7 +337,7 @@ func fetchSingleListing(lid:String, completion: @escaping (Listing) -> Void){
         for timestamp in timeAvailability{
             availability.append(timestamp.dateValue())
         }
-        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName, timestamp:created.dateValue(), postalCode: postalCode)
+        listing = Listing(id:id,uid:uid, title:title, description:description, imagepath:imagepath, price:price, availability: availability, category: category, address: address, ownerName:ownerName, sponsored:sponsored, timestamp:created.dateValue(), postalCode: postalCode)
         completion(listing)
     }
 }
@@ -745,9 +746,9 @@ func getStatus(requestId: String, listingId: String, completion: @escaping(Int)-
 }
 
 func sponsorListing(lid: String){
-    documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":1])
+    _ = documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":1])
 }
 
 func unsponsorListing(lid: String){
-    documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":0])
+    _ = documentUpdate(collectionPath: "Listings", documentID: lid, data: ["sponsored":0])
 }

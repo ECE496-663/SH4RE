@@ -29,6 +29,7 @@ struct LoginView: View {
                 .foregroundColor(.white)
                 .font(.system(size: 30))
                 .position(x: screenSize.width * 0.5, y: screenSize.height * 0.05)
+                .padding(.top)
 
             Group {
                 VStack {
@@ -151,7 +152,7 @@ struct LoginView: View {
             
             forgotPasswordPopUp
         }
-        
+        .frame(height: screenSize.height)
     }
     
     private var forgotPasswordPopUp: some View {
