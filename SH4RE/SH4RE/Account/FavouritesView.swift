@@ -42,10 +42,10 @@ struct FavouritesView: View {
                         }
                     }
                 }
+                .padding()
             }
         }
         .navigationTitle("Favourites")
-        .padding()
         .onAppear(){
             for listingID in favouritesModel.favourites {
                 fetchSingleListing(lid: listingID, completion: { listing in

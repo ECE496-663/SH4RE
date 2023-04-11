@@ -21,7 +21,6 @@ struct CreateAccountView: View {
     @State private var errorInField: Bool = false
     @State private var errorDescription: String = ""
     @State private var showPhotoLibSheet: Bool = false
-    @State private var showCameraSheet: Bool = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -38,10 +37,8 @@ struct CreateAccountView: View {
                             Spacer()
                                 .frame(height: screenSize.height * 0.01)
                             VStack {
-                                Menu {
-                                    Button("Camera", action: {showCameraSheet.toggle()})
-                                    Button("Photo Library", action: {showPhotoLibSheet.toggle()})
-                                } label: {
+                                Button(action: {showPhotoLibSheet.toggle()}
+                                ){
                                     VStack {
                                         Image(uiImage: profilePicture)
                                             .resizable()
@@ -54,9 +51,6 @@ struct CreateAccountView: View {
                                 }
                                 .sheet(isPresented: $showPhotoLibSheet) {
                                     ImagePicker(sourceType: .photoLibrary, selectedImage: $profilePicture)
-                                }
-                                .sheet(isPresented: $showCameraSheet) {
-                                    ImagePicker(sourceType: .camera, selectedImage: $profilePicture)
                                 }
                                 Text("Name")
                                     .font(.system(size: 18))

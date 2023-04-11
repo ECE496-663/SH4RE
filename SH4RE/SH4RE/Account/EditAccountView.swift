@@ -14,7 +14,6 @@ struct EditAccountView: View {
     @State private var user:User = User()
     @State private var profilePicture = UIImage(named: "ProfilePhotoPlaceholder")!
     @State private var showPhotoLibSheet: Bool = false
-    @State private var showCameraSheet: Bool = false
     @State private var pfpChanged: Bool = false
     @State private var name: String = ""
     @State private var password: String = ""
@@ -117,16 +116,10 @@ struct EditAccountView: View {
         ZStack {
             Color.backgroundGrey.ignoresSafeArea()
             VStack {
-                Menu {
-                    Button("Camera", action: {
-                        showCameraSheet.toggle()
-                        pfpChanged.toggle()
-                    })
-                    Button("Photo Library", action: {
-                        showPhotoLibSheet.toggle()
-                        pfpChanged.toggle()
-                    })
-                } label: {
+                Button(action: {
+                    showPhotoLibSheet.toggle()
+                    pfpChanged.toggle()
+                }){
                     VStack {
                         Image(uiImage: profilePicture)
                             .resizable()
@@ -140,10 +133,7 @@ struct EditAccountView: View {
                 .sheet(isPresented: $showPhotoLibSheet) {
                     ImagePicker(sourceType: .photoLibrary, selectedImage: $profilePicture)
                 }
-                .sheet(isPresented: $showCameraSheet) {
-                    ImagePicker(sourceType: .camera, selectedImage: $profilePicture)
-                }
-                
+
                 fields
                 
                 Spacer()
