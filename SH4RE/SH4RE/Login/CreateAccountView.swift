@@ -42,9 +42,9 @@ struct CreateAccountView: View {
                                     VStack {
                                         Image(uiImage: profilePicture)
                                             .resizable()
-                                            .clipShape(Circle())
                                             .aspectRatio(contentMode: .fill)
-                                            .frame(width: screenSize.width * 0.1, height: screenSize.height * 0.1)
+                                            .frame(width: screenSize.width * 0.2, height: screenSize.width * 0.2)
+                                            .clipShape(Circle())
                                         Image(systemName: "camera.fill")
                                             .foregroundColor(.primaryDark)
                                     }

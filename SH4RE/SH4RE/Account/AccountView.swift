@@ -33,12 +33,13 @@ struct AccountView: View {
         VStack {
             Image(uiImage: profilePicture)
                 .resizable()
-                .clipShape(Circle())
                 .aspectRatio(contentMode: .fill)
-                .frame(maxWidth: screenSize.width * 0.1, maxHeight: screenSize.height * 0.1)
+                .frame(width: screenSize.width * 0.3, height: screenSize.width * 0.3)
+                .clipShape(Circle())
             Text(name)
                 .font(.body)
             StarsView(numberOfStars: numberOfStars)
+                .padding(.bottom)
         }
         .frame(height: screenSize.height * 0.2)
     }
