@@ -25,9 +25,9 @@ struct ProfileView: View {
         VStack {
             Image(uiImage: profilePicture)
                 .resizable()
-                .clipShape(Circle())
                 .aspectRatio(contentMode: .fill)
-                .frame(maxWidth: screenSize.width * 0.1, maxHeight: screenSize.height * 0.1)
+                .frame(width: screenSize.width * 0.3, height: screenSize.width * 0.3)
+                .clipShape(Circle())
             Text(name)
                 .font(.body)
             StarsView(numberOfStars: numberOfStars)
@@ -64,12 +64,9 @@ struct ProfileView: View {
     }
     
     private var reviews: some View {
-        Group {
-            VStack (alignment: .leading) {
-                Text(name + "'s Reviews")
-                    .font(.title2.bold())
-            }
-            .frame(width: screenSize.width)
+        VStack (alignment: .leading) {
+            Text(name + "'s Reviews")
+                .font(.title2.bold())
             if (allReviews.count != 0) {
                 VStack(alignment: .leading) {
                     ForEach(allReviews) { review in
@@ -83,12 +80,14 @@ struct ProfileView: View {
                     .padding()
             }
         }
+        .frame(width: screenSize.width)
+        .padding(.leading)
     }
     
     var body: some View {
         ZStack (alignment: .top) {
             Color("BackgroundGrey").ignoresSafeArea()
-            VStack {
+            ScrollView (.vertical, showsIndicators: false) {
                 profile
                     .padding()
                 moreListings

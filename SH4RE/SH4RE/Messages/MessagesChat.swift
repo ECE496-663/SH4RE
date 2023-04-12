@@ -60,9 +60,9 @@ struct MessagesChat: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 Image(uiImage: profilePicture)
                     .resizable()
-                    .clipShape(Circle())
                     .aspectRatio(contentMode: .fill)
-                    .frame(height: screenSize.height * 0.03)
+                    .frame(width: screenSize.width * 0.05)
+                    .clipShape(Circle())
                     .padding(.bottom)
             }
             ToolbarItem(placement: .navigationBarLeading) {

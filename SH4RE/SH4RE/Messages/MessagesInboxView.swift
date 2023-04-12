@@ -148,6 +148,9 @@ struct MessagesInboxView: View {
                 }
             }
         }
+        .refreshable {
+            vm.fetchRecentMessages()
+        }
     }
         
     @State var chatUser: ChatUser?

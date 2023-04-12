@@ -60,7 +60,7 @@ struct ViewListingView: View {
     
     private var bottomBar: some View {
         HStack {
-            VStack {
+            VStack (alignment: .leading){
                 Text("Price")
                     .font(.callout)
                     .bold()
