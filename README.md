@@ -9,9 +9,9 @@ The app has 4 key general functionalities:
 2. Viewing listings (searching, map interface, viewing page)
 3. Account management (create account, favourties, my listings)
 4. Managing listings (create edit, delete, promote listings)
+
 Here is a general architectural diagram of our software: 
-
-
+![Blank diagram](https://user-images.githubusercontent.com/19561395/231496528-fd02dfe6-9590-4a01-8b0d-0258bb277bec.jpeg)
 
 ## Developer Environment
 Required Tools:
