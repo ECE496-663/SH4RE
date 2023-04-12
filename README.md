@@ -1,5 +1,17 @@
 # SH4RE-ECE496
-This repository holds the Xcode project for SH4RE.
+
+Demo Video: https://www.youtube.com/watch?v=YMjhxEgZy-A&ab_channel=WasifButt
+
+As part of our final year design project course ECE496, we developed SH4RE, a peer-to-peer rental iOS app that aims to simplify and streamline the rental process for users. Online applications that facilitate peer-to-peer buy/sell services, more generally referred to as classifieds, have been available for a while - however, they all focus on buying and selling. We want to fill the demand void and give users within Toronto an intuitive and straightforward way to rent household items within their local area. 
+
+The app has 4 key general functionalities:
+1. Rental requests (messaging and reviewing)
+2. Viewing listings (searching, map interface, viewing page)
+3. Account management (create account, favourties, my listings)
+4. Managing listings (create edit, delete, promote listings)
+Here is a general architectural diagram of our software: 
+
+
 
 ## Developer Environment
 Required Tools:
